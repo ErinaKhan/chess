@@ -59,7 +59,6 @@ def startGame():
                 print("You Lost, Better luck next time!")
                 
             print("\n\nReturning To Menu...")
-            wait(3)
             clear()
             startGame()
             
@@ -265,6 +264,7 @@ def mainMenuUI():
     print("----------------------------------------------------------------")
     print("----------------------------------------------------------------")
     print("----------------------------------------------------------------")
-    
+
 clear()
+AI.info()
 mainMenu()
