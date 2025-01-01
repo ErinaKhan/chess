@@ -5,6 +5,7 @@
 #-------------------------------------- SETUP --------------------------------------
 import keyboard
 import random
+import AI_engine as AI
 
 from os import system, name
 from time import sleep
@@ -108,7 +109,7 @@ def gameConfig():
             b1 = " "
             b2 = "<"
         clear()
-        
+
 def playersTurn(): # code stub
     pass
 
