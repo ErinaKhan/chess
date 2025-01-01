@@ -42,7 +42,7 @@ def startGame():
 
     while True:
         
-        if playerTurn == True:
+        if playerTurn:
             playersTurn()
         else:
             AITurn()
@@ -51,9 +51,9 @@ def startGame():
         #
         # printBoard(colour)
         
-        if hasWon() == True:
+        if hasWon():
 
-            if playerTurn == True:
+            if playerTurn:
                 print("You Won")
             else:
                 print("You Lost, Better luck next time!")
