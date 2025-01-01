@@ -37,20 +37,22 @@ def startGame():
 
     print("isYourTurn: " + str(playerTurn) + "\nTurnNumber: " + str(TurnNumber) + "\n")
     
-    printBoard()
+    printBoard(colour)
 
     while True:
         
-        if playerTurn:
-            playerTurn()
+        if playerTurn == True:
+            playersTurn()
         else:
             AITurn()
         
-        clear()
-        printBoard(colour)
+        #clear()
+        #
+        # printBoard(colour)
         
-        if hasWon():
-            if playerTurn:
+        if hasWon() == True:
+
+            if playerTurn == True:
                 print("You Won")
             else:
                 print("You Lost, Better luck next time!")
@@ -107,7 +109,7 @@ def gameConfig():
             b2 = "<"
         clear()
         
-def playerTurn(): # code stub
+def playersTurn(): # code stub
     pass
 
 def AITurn(): # code stub
@@ -120,12 +122,12 @@ def boardSetup(playerColour): # needs to flip the board depending on what pieces
     global board
     if playerColour == "White":
         board = [['♖','♘','♗','♕','♔','♗','♘','♖'],
-                 ['♟','♟','♟','♟','♟','♟','♟','♟'],
-                 [' ',' ',' ',' ',' ',' ',' ',' '],
-                 [' ',' ',' ',' ',' ',' ',' ',' '],
-                 [' ',' ',' ',' ',' ',' ',' ',' '],
-                 [' ',' ',' ',' ',' ',' ',' ',' '],
                  ['♙','♙','♙','♙','♙','♙','♙','♙'],
+                 [' ',' ',' ',' ',' ',' ',' ',' '],
+                 [' ',' ',' ',' ',' ',' ',' ',' '],
+                 [' ',' ',' ',' ',' ',' ',' ',' '],
+                 [' ',' ',' ',' ',' ',' ',' ',' '],
+                 ['♟','♟','♟','♟','♟','♟','♟','♟'],
                  ['♜','♞','♝','♛','♚','♝','♞','♜']]
     else:
         board = [['♜','♞','♝','♛','♚','♝','♞','♜'],
