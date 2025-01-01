@@ -40,14 +40,17 @@ def startGame():
     
     printBoard(colour)
 
+    resigning = False
+
     while True:
         
+        print(playerTurn)
+        sleep(2)
+
         if playerTurn:
-            playersTurn()
+            resigning = playersTurn()
         else:
             AI.AITurn()
-        
-        clear()
         
         printBoard(colour)
         
@@ -61,8 +64,12 @@ def startGame():
             print("\n\nReturning To Menu...")
             clear()
             startGame()
+
         else:
-            if playerTurn:
+            if resigning:
+                print("thanks for playing!!")
+                break
+            elif playerTurn:
                 playerTurn = False
             else:
                 playerTurn = True
@@ -114,8 +121,11 @@ def gameConfig():
         clear()
 
 def playersTurn(): # code stub
-    playerOptionsUI()
-    pass
+    isResigning = playerOptionsUI()
+    if isResigning == "resign":
+        return True
+    else:
+        return False
 
 def hasWon(): # code stub
     return False
@@ -190,10 +200,17 @@ def piece(x,y):
 
 def playerOptionsUI():
     userInput = ""
+    validMove = False
+    resigning = False
 
-    while len(userInput) == 2 and userInput[0].lower in [a,b,c,d,e,f,g,h] and int(userInput[1]) in [1,2,3,4,5,6,7,8]:
+    while not validMove and not resigning:
         userInput = str(input("\ntype a coordinate on the chess board (such as A8,a8,b5 etc...) of the piece you would like to move or 'resign' to resign\n\nInput: "))
-    
+
+        # the two different flags for inputs
+        validMove = len(userInput) == 2 and userInput[0].lower() in ['a','b','c','d','e','f','g','h'] and userInput[1] in ['1','2','3','4','5','6','7','8']
+        resigning = userInput.lower() == "resign"
+
+    return userInput
 
 def info():
     pass
