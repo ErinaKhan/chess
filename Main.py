@@ -32,7 +32,7 @@ def startGame():
     
     # main loop of program
     
-    colour,playerTurn,TurnNumber = load(gameConfig()) # new game or previous game
+    colour,playerTurn,TurnNumber = load(gameConfig()) # loads new game or previous game
 
     print(f"\nYour colour is {colour}!\n")
 
@@ -45,11 +45,11 @@ def startGame():
         if playerTurn:
             playersTurn()
         else:
-            AITurn()
+            AI.AITurn()
         
-        #clear()
-        #
-        # printBoard(colour)
+        clear()
+        
+        printBoard(colour)
         
         if hasWon():
 
@@ -61,8 +61,12 @@ def startGame():
             print("\n\nReturning To Menu...")
             clear()
             startGame()
+        else:
+            if playerTurn:
+                playerTurn = False
+            else:
+                playerTurn = True
             
-        break
         
 def load(gameType):
     colour = None
@@ -110,13 +114,11 @@ def gameConfig():
         clear()
 
 def playersTurn(): # code stub
+    playerOptionsUI()
     pass
 
-def AITurn(): # code stub
-    "IM DOING NOTHING!"
-    
 def hasWon(): # code stub
-    pass
+    return False
 
 def boardSetup(playerColour): # needs to flip the board depending on what pieces the player has
     global board
@@ -185,6 +187,16 @@ def piece(x,y):
 ####################################################################################
 ######################################## UI ########################################
 ####################################################################################
+
+def playerOptionsUI():
+    userInput = ""
+
+    while len(userInput) == 2 and userInput[0].lower in [a,b,c,d,e,f,g,h] and int(userInput[1]) in [1,2,3,4,5,6,7,8]:
+        userInput = str(input("\ntype a coordinate on the chess board (such as A8,a8,b5 etc...) of the piece you would like to move or 'resign' to resign\n\nInput: "))
+    
+
+def info():
+    pass
 
 def padding(): # to be wrapped around the pieces in the squares so the pieces are perfectly centred on the x axis
     return (pixelWidth) * " "
