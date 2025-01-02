@@ -108,6 +108,10 @@ def validMove(whereToo, whereFrom):
 def movePiece(whereToo, whereFrom):
     pass
 
+def isInCheck():
+    # returns true or false
+    pass
+
 def mainMenu():
     index = 0
     b1 = "<"
@@ -135,9 +139,12 @@ def mainMenu():
         clear()
 
 def piece(x,y):
+    # returns a string of the piece ASCII or a blank space " "
     return board[x][y]
 
 def selectPiece(colour):
+    # returns 'resigning' or the x and y coordinates of selected piece 
+
     x = -1
     y = -1
 
@@ -192,6 +199,7 @@ def padding(): # to be wrapped around the pieces in the squares so the pieces ar
     return (pixelWidth) * " "
 
 def line(lineType): 
+    # always returns a string
     # this is a function that can display different types of lines based on the parameter lineType
     # accepted parameters are 0, top, padding and if any other input is inputed it will return a simple line
     # all parameters are shown visually below

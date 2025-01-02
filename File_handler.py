@@ -13,6 +13,12 @@ def clear():
       _ = system('clear')
 
 def load(gameType):
+    # returns all variables needed by main to run the game
+    # colour -> the players colour in the game "White" or "Black"
+    # playerTurn -> boolean value 
+    # TurnNumber -> is 1 unless the game is loaded from an already started game where it may be different
+    # board -> 2d array 
+    # the parameter gameType holds all of the settings for the game and will be expanded in the future as gameConfig() grows
     colour = None
     playerTurn = None
     TurnNumber = None
@@ -34,6 +40,8 @@ def load(gameType):
     return colour,playerTurn,TurnNumber,board
 
 def gameConfig():
+    # returns the settings for the game as a string
+    
     index = 0
     b1 = "<"
     b2 = " "
@@ -58,7 +66,10 @@ def gameConfig():
             b2 = "<"
         clear()
 
-def boardSetup(playerColour): # needs to flip the board depending on what pieces the player has
+def boardSetup(playerColour): 
+    # returns a 2d array 
+    # flips the board depending on what pieces the player has
+    
     board = None
 
     if playerColour == "White":
@@ -87,6 +98,7 @@ def giveRandomColour():
     else:
         return "Black"
         
-def gamesAvailable(): # code stub
+def gamesAvailable():
+    # returns a string with either 'No games found' or 'N games found' where N is the number of games
     # will show player how many games they have on going
     return "No games found"
