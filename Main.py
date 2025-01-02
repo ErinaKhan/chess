@@ -36,11 +36,12 @@ def startGame():
     
     # main loop of program
     global board
+    
     colour,playerTurn,TurnNumber,newBoard = FileHandler.load(FileHandler.gameConfig()) # loads new game or previous game
 
     board = newBoard
-    print(f"\nYour colour is {colour}!\n")
 
+    print(f"\nYour colour is {colour}!\n")
     print("isYourTurn: " + str(playerTurn) + "\nTurnNumber: " + str(TurnNumber) + "\n")
     
     printBoard(colour)
@@ -57,7 +58,6 @@ def startGame():
         printBoard(colour)
         
         if hasWon():
-
             if playerTurn:
                 print("You Won")
             else:
@@ -66,12 +66,10 @@ def startGame():
             print("\n\nReturning To Menu...")
             clear()
             startGame()
-
         else:
             if resigning:
                 print("thanks for playing!!")
                 break
-           
             elif playerTurn:
                 playerTurn = False
             else:
@@ -88,10 +86,25 @@ def playersTurn(colour): # code stub
     else:
         print("you selected " + piece(pieceSelected[0],pieceSelected[1]))
         sleep(1)
+        movePiece()
 
 def hasWon(): # code stub
     return False
+
+def pieceType():
+    # returns a string that contains the type of piece it is
+    # examples are things such as 'rook', 'pawn', 'queens'
+    pass
+
+def canMove(pieceToMove, location):
+    # returns true or false
+    pass
                 
+def validMove(whereToo, whereFrom):
+    # returns true or false
+    # checks if the piece can move to the location given
+    pass 
+
 def movePiece(whereToo, whereFrom):
     pass
 
@@ -145,7 +158,7 @@ def selectPiece(colour):
     while (not validMove or not isValidPiece) and not resigning:
         clear()
         printBoard(colour)
-        userInput = str(input("\nEnter the coordinates on the chess board (such as A8,a8,b5 etc...) of the piece you would like to move or type 'resign' to resign\n\nInput: "))
+        userInput = str(input("\n\nEnter the coordinates on the chess board (such as A8,a8,b5 etc...) of the piece you would like to move or type 'resign' to resign\n\nInput: "))
 
         validMove = len(userInput) == 2 and userInput[0].lower() in ['a','b','c','d','e','f','g','h'] and userInput[1] in ['1','2','3','4','5','6','7','8']
         resigning = userInput.lower() == "resign"
