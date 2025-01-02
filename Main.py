@@ -4,7 +4,6 @@
 
 #-------------------------------------- SETUP --------------------------------------
 import keyboard
-
 import AI_engine as AI
 import File_handler as FileHandler
 
@@ -24,7 +23,7 @@ boardWidth = 8
 boardHeight = 8
 
 # used for the sizing of the ui on screen measured in characters
-pixelWidth = 4
+pixelWidth = 5
 pixelHeight = 1
 
 whitePieces = ['♜','♞','♝','♛','♚','♟']
@@ -68,6 +67,7 @@ def startGame():
             startGame()
         else:
             if resigning:
+                clear()
                 print("thanks for playing!!")
                 break
             elif playerTurn:
@@ -84,33 +84,218 @@ def playersTurn(colour): # code stub
         sleep(2)
         return True
     else:
-        print("you selected " + piece(pieceSelected[0],pieceSelected[1]))
-        sleep(1)
-        movePiece()
+        pieceImage = piece(pieceSelected[0],pieceSelected[1])
+        movePiece(pieceImage, pieceSelected, colour)
 
 def hasWon(): # code stub
+    # someone wins if isInCheck() == True and kingMoves() == []
     return False
 
-def pieceType():
+def pieceType(pieceSelected):
     # returns a string that contains the type of piece it is
     # examples are things such as 'rook', 'pawn', 'queens'
-    pass
-
-def canMove(pieceToMove, location):
-    # returns true or false
+    if pieceSelected in ['♟','♙']:
+        return "Pawn"
+    elif pieceSelected in ['♞','♘']:
+        return "Horse"
+    elif pieceSelected in ['♝','♗']:
+        return "Bishop"
+    elif pieceSelected in ['♜','♖']:
+        return "Rook"
+    elif pieceSelected in ['♛','♕']:
+        return "Queen"
+    elif pieceSelected in ['♚','♔']:
+        return "King"
     pass
                 
-def validMove(whereToo, whereFrom):
-    # returns true or false
-    # checks if the piece can move to the location given
-    pass 
+def validMoves(pieceSelected, whereFrom):
+    # returns all valid moves the piece can do
+    moveType = pieceType(pieceSelected)
+    moves = []
 
-def movePiece(whereToo, whereFrom):
-    pass
+    print(moveType)
+    print(whereFrom)
+    if moveType == "Pawn":
+        moves = pawnMoves(whereFrom)
+    elif moveType == "Horse":
+        moves = horseMoves(whereFrom)
+    elif moveType == "Bishop":
+        moves = bishopMoves(whereFrom)
+    elif moveType == "Rook":
+        moves = rookMoves(whereFrom)
+    elif moveType == "King":
+        moves = kingMoves(whereFrom)
+    elif moveType == "Queen":
+        moves = bishopMoves(whereFrom) + rookMoves(whereFrom)
+    else:
+        print("An error has occured")
+        print(f"piece of type {moveType} not recognised")
+
+    print(moves) 
+    input()
+    return moves
+
+def pawnMoves(start):
+    moves = []
+    onespace = (start[0] - 1,start[1])
+
+    if not headbutts(onespace) and not outOfBounds(onespace):
+        moves = moves + [onespace]
+    
+    if start[0] == 6: 
+        # the pawn can move a max of two spaces forwards 
+        twospace = (start[0] - 2,start[1])
+        
+        if not headbutts(twospace) and not headbutts(onespace) and not outOfBounds(twospace):
+            moves = moves + [twospace]
+
+    return moves
+
+def horseMoves(start):
+    p1 = (start[0] - 2,start[1] + 1)
+    p2 = (start[0] - 2,start[1] - 1)
+    p3 = (start[0] + 2,start[1] + 1)
+    p4 = (start[0] + 2,start[1] - 1)
+    p5 = (start[0] + 1,start[1] + 1)
+    p6 = (start[0] + 1,start[1] - 1)
+    p7 = (start[0] + 1,start[1] + 1)
+    p8 = (start[0] + 1,start[1] - 1)
+    fullSet = [p1,p2,p3,p4,p5,p6,p7,p8]
+    moves = []
+
+    for i in fullSet:
+        if not headbutts(i) and not outOfBounds(i):
+            moves = moves + [i]
+
+    return moves
+
+def rookMoves(start):
+    # finds all horizontal moves first
+    # then finds all vertical moves 
+
+    i = start[1]
+    moves = []
+
+    while True:
+        i = i + 1
+        point = (start[0],i)
+        if headbutts(point) or outOfBounds(point):
+            break
+        else:
+            moves = moves + [point]
+
+    i = start[1]
+            
+    while True:
+        i = i - 1
+        point = (start[0],i)
+        if headbutts(point) or outOfBounds(point):
+            break
+        else:
+            moves = moves + [point]
+
+    i = start[0]
+
+    while True:
+        i = i + 1
+        point = (i,start[1])
+        if headbutts(point) or outOfBounds(point):
+            break
+        else:
+            moves = moves + [point]
+
+    i = start[0]
+
+    while True:
+        i = i - 1
+        point = (i,start[1])
+        if headbutts(point) or outOfBounds(point):
+            break
+        else:
+            moves = moves + [point]
+        
+    return moves
+
+def bishopMoves(start):
+    moves = []
+    point = (start[0] - 1,start[1] + 1)
+    while True:
+        if headbutts(point) or outOfBounds(point):
+            break
+        moves = moves + [point]
+        point = (point[0] - 1,point[1] + 1)
+
+    point = (start[0] + 1,start[1] + 1)
+    while True:
+        if headbutts(point) or outOfBounds(point):
+            break
+        moves = moves + [point]
+        point = (point[0] + 1,point[1] + 1)
+
+    point = (start[0] + 1,start[1] - 1)
+    while True:
+        if headbutts(point) or outOfBounds(point):
+            break
+        moves = moves + [point]
+        point = (point[0] + 1,point[1] - 1)
+
+    point = (start[0] - 1,start[1] - 1)
+    while True:
+        if headbutts(point) or outOfBounds(point):
+            break
+        moves = moves + [point]
+        point = (point[0] - 1,point[1] - 1)
+
+    return moves
+
+def kingMoves(start):
+    p1 = (start[0] + 1,start[1])
+    p2 = (start[0] - 1,start[1])
+    p3 = (start[0],start[1] + 1)
+    p4 = (start[0],start[1] + 1)
+    p5 = (start[0] + 1,start[1] + 1)
+    p6 = (start[0] - 1,start[1] + 1)
+    p7 = (start[0] + 1,start[1] - 1)
+    p8 = (start[0] - 1,start[1] - 1)
+    fullSet = [p1,p2,p3,p4,p5,p6,p7,p8]
+    moves = []
+
+    for i in fullSet:
+        if not headbutts(i) and not outOfBounds(i):
+            moves = moves + [i]
+
+    return moves
+
+def headbutts(coordinates):
+    try:
+        return piece(coordinates[0],coordinates[1]) != " "
+    except:
+        return True
+
+def movePiece(pieceSelected, whereFrom, pieceColour):
+    print("you selected " + pieceSelected + " " + chr(whereFrom[1] + 65) + str(8 - whereFrom[0]))
+    moves = validMoves(pieceSelected,whereFrom)
+    validInput = False
+    canMoveToLocation = False
+
+    while not validInput or not canMoveToLocation:
+        userInput = input("\nEnter a valid coordinate on the chess board to move your piece too: ")
+        validInput = len(userInput) == 2 and userInput[0].lower() in ['a','b','c','d','e','f','g','h'] and userInput[1] in ['1','2','3','4','5','6','7','8']
+        
+        if validInput:
+            location = (8 - int(userInput[1]), ord(userInput[0].upper()) - 65) 
+        
+            canMoveToLocation = location in moves
+
+    print(f"can move to location: {userInput}")
+    input()
 
 def isInCheck():
     # returns true or false
     pass
+
+def outOfBounds(coordinates):
+    return coordinates[0] < 0 or coordinates[0] > 7 or coordinates[1] < 0 or coordinates[1] > 7
 
 def mainMenu():
     index = 0
@@ -125,9 +310,11 @@ def mainMenu():
         print("----------------------------------------------------------------")
     
         if keyboard.read_key() == "enter":
-            clear()
-            startGame()
-            break
+            if index == 0:
+                clear()
+                startGame()
+            else:
+                break
         elif keyboard.read_key() == "up" and index == 1:
             index = 0
             b1 = "<"
@@ -141,6 +328,10 @@ def mainMenu():
 def piece(x,y):
     # returns a string of the piece ASCII or a blank space " "
     return board[x][y]
+
+def setSquare(x,y,new):
+    global board
+    board[x][y] = new
 
 def selectPiece(colour):
     # returns 'resigning' or the x and y coordinates of selected piece 
@@ -183,17 +374,18 @@ def selectPiece(colour):
                 print("\nCan only select one of your pieces")
                 sleep(1)
 
-    print("valid!")
-    sleep(1)
     if resigning:
         return "resigning"
     else:
         return x,y
 
-
 ####################################################################################
 ######################################## UI ########################################
 ####################################################################################
+
+def moveOverlay(selectedPiece):
+    # a ui that overlays X's over the board in the spots where the currently selected piece can move
+    pass
 
 def padding(): # to be wrapped around the pieces in the squares so the pieces are perfectly centred on the x axis
     return (pixelWidth) * " "
@@ -276,4 +468,9 @@ def mainMenuUI():
     print("----------------------------------------------------------------")
 
 clear()
+print((1,2) == (1,2))
+print((1,2) == (1,3))
+print((1,2) in [(1,2)])
+print((1,2) in [(1,3)])
+print((3,2) in [(5,2),(4,2)])
 mainMenu()
