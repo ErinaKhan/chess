@@ -121,12 +121,17 @@ def gameConfig():
             b2 = "<"
         clear()
 
+
+
 def playersTurn(colour): # code stub
-    isResigning = playerOptionsUI(colour)
-    if isResigning == "resign":
-        return True
+    
+    pieceSelected = selectPiece(colour)
+    if pieceSelected == "resigning":
+        print("resigning...")
+        sleep(2)
     else:
-        return False
+        print("you selected " + piece(pieceSelected[0],pieceSelected[1]))
+        sleep(1)
 
 def hasWon(): # code stub
     return False
@@ -199,13 +204,20 @@ def piece(x,y):
 ######################################## UI ########################################
 ####################################################################################
 
-def playerOptionsUI(colour):
+def selectPiece(colour):
+    x = -1
+    y = -1
+
     userInput = ""
+
+    #-----------------------
+    # flags for valid input
+    #-----------------------
     validMove = False
     resigning = False
     isValidPiece = False
-    
     playerWhite = True
+    #-----------------------
 
     if colour == "Black":
         playerWhite = False
@@ -213,25 +225,31 @@ def playerOptionsUI(colour):
     while (not validMove or not isValidPiece) and not resigning:
         clear()
         printBoard(colour)
-        userInput = str(input("\ntype a coordinate on the chess board (such as A8,a8,b5 etc...) of the piece you would like to move or 'resign' to resign\n\nInput: "))
-        # the two different flags for inputs
+        userInput = str(input("\nEnter the coordinates on the chess board (such as A8,a8,b5 etc...) of the piece you would like to move or type 'resign' to resign\n\nInput: "))
+
         validMove = len(userInput) == 2 and userInput[0].lower() in ['a','b','c','d','e','f','g','h'] and userInput[1] in ['1','2','3','4','5','6','7','8']
         resigning = userInput.lower() == "resign"
     
         if validMove and not resigning:
-            isBlack = piece(8 - int(userInput[1]), ord(userInput[0].lower()) - 97) in blackPieces
-            isWhite = piece(8 - int(userInput[1]), ord(userInput[0].lower()) - 97)  in whitePieces
+            x = 8 - int(userInput[1])
+            y = ord(userInput[0].lower()) - 97
+
+            isBlack = piece(x,y) in blackPieces
+            isWhite = piece(x,y)  in whitePieces
+
             isValidPiece = (isBlack and not playerWhite) or (isWhite and playerWhite)
+
             if not isValidPiece: 
                 print("\nCan only select one of your pieces")
                 sleep(1)
 
     print("valid!")
     sleep(1)
-    return userInput
+    if resigning:
+        return "resigning"
+    else:
+        return x,y
 
-def info():
-    pass
 
 def padding(): # to be wrapped around the pieces in the squares so the pieces are perfectly centred on the x axis
     return (pixelWidth) * " "
