@@ -4,8 +4,9 @@
 
 #-------------------------------------- SETUP --------------------------------------
 import keyboard
-import random
+
 import AI_engine as AI
+import File_handler as FileHandler
 
 from os import system, name
 from time import sleep
@@ -34,9 +35,10 @@ blackPieces = ['♖','♘','♗','♕','♔','♙']
 def startGame():
     
     # main loop of program
-    
-    colour,playerTurn,TurnNumber = load(gameConfig()) # loads new game or previous game
+    global board
+    colour,playerTurn,TurnNumber,newBoard = FileHandler.load(FileHandler.gameConfig()) # loads new game or previous game
 
+    board = newBoard
     print(f"\nYour colour is {colour}!\n")
 
     print("isYourTurn: " + str(playerTurn) + "\nTurnNumber: " + str(TurnNumber) + "\n")
@@ -74,103 +76,25 @@ def startGame():
                 playerTurn = False
             else:
                 playerTurn = True
-            
-        
-def load(gameType):
-    colour = None
-    playerTurn = None
-    TurnNumber = None
-    
-    if gameType == "new":
-        
-        colour = giveRandomColour()
-        playerTurn = False
-        TurnNumber = 1
-        
-        if colour == "White":
-            playerTurn = True
-            
-        boardSetup(colour)
-    else: # loading a previously played unfinished game
-        pass
-    
-    return colour,playerTurn,TurnNumber
-
-def gameConfig():
-    index = 0
-    b1 = "<"
-    b2 = " "
-    sleep(1)
-    while True:
-        print(f"New Game {b1}")
-        print(f"Load Game ({gamesAvailable()}) {b2}")
-        
-        if keyboard.read_key() == "enter":
-            clear()
-            if index == 0:
-                return "new"
-            else:
-                return "old"
-        elif keyboard.read_key() == "up" and index == 1:
-            index = 0
-            b1 = "<"
-            b2 = " " 
-        elif keyboard.read_key() == "down" and index == 0:
-            index = 1
-            b1 = " "
-            b2 = "<"
-        clear()
-
-
 
 def playersTurn(colour): # code stub
     
-    pieceSelected = selectPiece(colour)
+    pieceSelected = selectPiece(colour) # will return coordinates of piece to move or a message saying the players 'resigning'
+
     if pieceSelected == "resigning":
         print("resigning...")
         sleep(2)
+        return True
     else:
         print("you selected " + piece(pieceSelected[0],pieceSelected[1]))
         sleep(1)
 
 def hasWon(): # code stub
     return False
-
-def boardSetup(playerColour): # needs to flip the board depending on what pieces the player has
-    global board
-    if playerColour == "White":
-        board = [['♖','♘','♗','♕','♔','♗','♘','♖'],
-                 ['♙','♙','♙','♙','♙','♙','♙','♙'],
-                 [' ',' ',' ',' ',' ',' ',' ',' '],
-                 [' ',' ',' ',' ',' ',' ',' ',' '],
-                 [' ',' ',' ',' ',' ',' ',' ',' '],
-                 [' ',' ',' ',' ',' ',' ',' ',' '],
-                 ['♟','♟','♟','♟','♟','♟','♟','♟'],
-                 ['♜','♞','♝','♛','♚','♝','♞','♜']]
-    else:
-        board = [['♜','♞','♝','♛','♚','♝','♞','♜'],
-                 ['♙','♙','♙','♙','♙','♙','♙','♙'],
-                 [' ',' ',' ',' ',' ',' ',' ',' '],
-                 [' ',' ',' ',' ',' ',' ',' ',' '],
-                 [' ',' ',' ',' ',' ',' ',' ',' '],
-                 [' ',' ',' ',' ',' ',' ',' ',' '],
-                 ['♟','♟','♟','♟','♟','♟','♟','♟'],
-                 ['♖','♘','♗','♕','♔','♗','♘','♖']]
                 
-    
-def gamesAvailable(): # code stub
-    # will show player how many games they have on going
-    return "No games found"
-
 def movePiece(whereToo, whereFrom):
     pass
-    
-def giveRandomColour():
-    if random.randint(0,1) == 0:
-        return "White"
-    else:
-        return "Black"
-        
+
 def mainMenu():
     index = 0
     b1 = "<"
@@ -199,10 +123,6 @@ def mainMenu():
 
 def piece(x,y):
     return board[x][y]
-
-####################################################################################
-######################################## UI ########################################
-####################################################################################
 
 def selectPiece(colour):
     x = -1
@@ -250,6 +170,10 @@ def selectPiece(colour):
     else:
         return x,y
 
+
+####################################################################################
+######################################## UI ########################################
+####################################################################################
 
 def padding(): # to be wrapped around the pieces in the squares so the pieces are perfectly centred on the x axis
     return (pixelWidth) * " "
