@@ -43,7 +43,7 @@ def startGame():
     print(f"\nYour colour is {colour}!\n")
     print("isYourTurn: " + str(playerTurn) + "\nTurnNumber: " + str(TurnNumber) + "\n")
     
-    printBoard(colour)
+    drawBoard(colour)
 
     resigning = False
 
@@ -54,7 +54,7 @@ def startGame():
         else:
             AI.AITurn()
         
-        printBoard(colour)
+        drawBoard(colour)
         
         if hasWon():
             if playerTurn:
@@ -75,17 +75,26 @@ def startGame():
             else:
                 playerTurn = True
 
-def playersTurn(colour): # code stub
-    
-    pieceSelected = selectPiece(colour) # will return coordinates of piece to move or a message saying the players 'resigning'
+def playersTurn(colour):
+    validPiece = False 
+    while not validPiece:
+        pieceSelected = selectPiece(colour) # will return coordinates of piece to move or a message saying the players 'resigning'
 
-    if pieceSelected == "resigning":
-        print("resigning...")
-        sleep(2)
-        return True
-    else:
-        pieceImage = piece(pieceSelected[0],pieceSelected[1])
-        movePiece(pieceImage, pieceSelected, colour)
+        if pieceSelected == "resigning":
+            print("resigning...")
+            sleep(2)
+            validPiece = True
+            return True
+        else:
+            pieceImage = piece(pieceSelected[0],pieceSelected[1])
+            moves = validMoves(pieceImage,pieceSelected)
+            if len(moves) > 0:
+                validPiece = True
+                movePiece(pieceImage, pieceSelected,moves, colour)
+            else:
+                print("This piece has no moves pick another")
+                input()
+
 
 def hasWon(): # code stub
     # someone wins if isInCheck() == True and kingMoves() == []
@@ -113,8 +122,6 @@ def validMoves(pieceSelected, whereFrom):
     moveType = pieceType(pieceSelected)
     moves = []
 
-    print(moveType)
-    print(whereFrom)
     if moveType == "Pawn":
         moves = pawnMoves(whereFrom)
     elif moveType == "Horse":
@@ -131,8 +138,6 @@ def validMoves(pieceSelected, whereFrom):
         print("An error has occured")
         print(f"piece of type {moveType} not recognised")
 
-    print(moves) 
-    input()
     return moves
 
 def pawnMoves(start):
@@ -272,22 +277,25 @@ def headbutts(coordinates):
     except:
         return True
 
-def movePiece(pieceSelected, whereFrom, pieceColour):
-    print("you selected " + pieceSelected + " " + chr(whereFrom[1] + 65) + str(8 - whereFrom[0]))
-    moves = validMoves(pieceSelected,whereFrom)
+def movePiece(pieceSelected, whereFrom, moves, pieceColour):
+    clear()
+    createMovesOverlay(moves)
+    drawBoard(pieceColour)
+  
+    print("\n\nyou selected " + pieceSelected + " " + chr(whereFrom[1] + 65) + str(8 - whereFrom[0]))
     validInput = False
     canMoveToLocation = False
 
     while not validInput or not canMoveToLocation:
         userInput = input("\nEnter a valid coordinate on the chess board to move your piece too: ")
         validInput = len(userInput) == 2 and userInput[0].lower() in ['a','b','c','d','e','f','g','h'] and userInput[1] in ['1','2','3','4','5','6','7','8']
-        
+
         if validInput:
             location = (8 - int(userInput[1]), ord(userInput[0].upper()) - 65) 
-        
-            canMoveToLocation = location in moves
+            canMoveToLocation = location in moves 
 
     print(f"can move to location: {userInput}")
+    cleanBoard("X")
     input()
 
 def isInCheck():
@@ -327,11 +335,13 @@ def mainMenu():
 
 def piece(x,y):
     # returns a string of the piece ASCII or a blank space " "
+    global board
     return board[x][y]
 
 def setSquare(x,y,new):
     global board
     board[x][y] = new
+    
 
 def selectPiece(colour):
     # returns 'resigning' or the x and y coordinates of selected piece 
@@ -355,9 +365,8 @@ def selectPiece(colour):
 
     while (not validMove or not isValidPiece) and not resigning:
         clear()
-        printBoard(colour)
+        drawBoard(colour)
         userInput = str(input("\n\nEnter the coordinates on the chess board (such as A8,a8,b5 etc...) of the piece you would like to move or type 'resign' to resign\n\nInput: "))
-
         validMove = len(userInput) == 2 and userInput[0].lower() in ['a','b','c','d','e','f','g','h'] and userInput[1] in ['1','2','3','4','5','6','7','8']
         resigning = userInput.lower() == "resign"
     
@@ -379,13 +388,22 @@ def selectPiece(colour):
     else:
         return x,y
 
+def cleanBoard(symbol):
+    for x in range(boardHeight):
+        for y in range(boardWidth):
+            if piece(x,y) == symbol:
+                setSquare(x,y,' ')
+
 ####################################################################################
 ######################################## UI ########################################
 ####################################################################################
 
-def moveOverlay(selectedPiece):
-    # a ui that overlays X's over the board in the spots where the currently selected piece can move
-    pass
+def createMovesOverlay(moves):
+    # a ui that overlays X's over the board in the spots where the currently selected piece can move 
+    for i in range(len(moves)):
+        x = moves[i]
+        setSquare(x[0],x[1], "X")
+    
 
 def padding(): # to be wrapped around the pieces in the squares so the pieces are perfectly centred on the x axis
     return (pixelWidth) * " "
@@ -425,7 +443,7 @@ def fillSquare(): # padding for the inside of the squares
     for i in range(pixelHeight):
         line("padding")
     
-def printBoard(playerColour):
+def drawBoard(playerColour):
     line("top")
     for x in range(boardHeight):
         line(x)
@@ -435,6 +453,9 @@ def printBoard(playerColour):
             print(f"{padding()}{piece(x,y)}{padding()}|", end = "")
         fillSquare()
     line(1)
+
+def printOverlay(overlay):
+    pass
 
 def mainMenuUI():
     print("----------------------------------------------------------------")
@@ -468,9 +489,4 @@ def mainMenuUI():
     print("----------------------------------------------------------------")
 
 clear()
-print((1,2) == (1,2))
-print((1,2) == (1,3))
-print((1,2) in [(1,2)])
-print((1,2) in [(1,3)])
-print((3,2) in [(5,2),(4,2)])
 mainMenu()
