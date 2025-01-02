@@ -161,10 +161,10 @@ def horseMoves(start):
     p2 = (start[0] - 2,start[1] - 1)
     p3 = (start[0] + 2,start[1] + 1)
     p4 = (start[0] + 2,start[1] - 1)
-    p5 = (start[0] + 1,start[1] + 1)
-    p6 = (start[0] + 1,start[1] - 1)
-    p7 = (start[0] + 1,start[1] + 1)
-    p8 = (start[0] + 1,start[1] - 1)
+    p5 = (start[0] + 1,start[1] - 2)
+    p6 = (start[0] - 1,start[1] - 2)
+    p7 = (start[0] + 1,start[1] + 2)
+    p8 = (start[0] - 1,start[1] + 2)
     fullSet = [p1,p2,p3,p4,p5,p6,p7,p8]
     moves = []
 
