@@ -26,6 +26,9 @@ boardHeight = 8
 pixelWidth = 4
 pixelHeight = 1
 
+whitePieces = ['♜','♞','♝','♛','♚','♟']
+blackPieces = ['♖','♘','♗','♕','♔','♙']
+
 #------------------------------------ FUNCTIONS ------------------------------------
 
 def startGame():
@@ -200,16 +203,30 @@ def playerOptionsUI(colour):
     userInput = ""
     validMove = False
     resigning = False
+    isValidPiece = False
+    
+    playerWhite = True
 
-    while not validMove and not resigning:
+    if colour == "Black":
+        playerWhite = False
+
+    while (not validMove or not isValidPiece) and not resigning:
         clear()
         printBoard(colour)
         userInput = str(input("\ntype a coordinate on the chess board (such as A8,a8,b5 etc...) of the piece you would like to move or 'resign' to resign\n\nInput: "))
         # the two different flags for inputs
         validMove = len(userInput) == 2 and userInput[0].lower() in ['a','b','c','d','e','f','g','h'] and userInput[1] in ['1','2','3','4','5','6','7','8']
         resigning = userInput.lower() == "resign"
+    
+        if validMove and not resigning:
+            isBlack = piece(8 - int(userInput[1]), ord(userInput[0].lower()) - 97) in blackPieces
+            isWhite = piece(8 - int(userInput[1]), ord(userInput[0].lower()) - 97)  in whitePieces
+            isValidPiece = (isBlack and not playerWhite) or (isWhite and playerWhite)
+            if not isValidPiece: 
+                print("\nCan only select one of your pieces")
+                sleep(1)
 
-    print("valid")
+    print("valid!")
     sleep(1)
     return userInput
 
@@ -296,5 +313,4 @@ def mainMenuUI():
     print("----------------------------------------------------------------")
 
 clear()
-AI.info()
 mainMenu()
