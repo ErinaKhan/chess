@@ -257,7 +257,7 @@ def kingMoves(start):
     p1 = (start[0] + 1,start[1])
     p2 = (start[0] - 1,start[1])
     p3 = (start[0],start[1] + 1)
-    p4 = (start[0],start[1] + 1)
+    p4 = (start[0],start[1] - 1)
     p5 = (start[0] + 1,start[1] + 1)
     p6 = (start[0] - 1,start[1] + 1)
     p7 = (start[0] + 1,start[1] - 1)
@@ -285,6 +285,7 @@ def movePiece(pieceSelected, whereFrom, moves, pieceColour):
     print("\n\nyou selected " + pieceSelected + " " + chr(whereFrom[1] + 65) + str(8 - whereFrom[0]))
     validInput = False
     canMoveToLocation = False
+    location = None
 
     while not validInput or not canMoveToLocation:
         userInput = input("\nEnter a valid coordinate on the chess board to move your piece too: ")
@@ -296,6 +297,7 @@ def movePiece(pieceSelected, whereFrom, moves, pieceColour):
 
     print(f"can move to location: {userInput}")
     cleanBoard("X")
+    movePieceUI(location, whereFrom)
     input()
 
 def isInCheck():
@@ -398,13 +400,16 @@ def cleanBoard(symbol):
 ######################################## UI ########################################
 ####################################################################################
 
+def movePieceUI(whereToo,whereFrom):
+    setSquare(whereToo[0],whereToo[1], piece(whereFrom[0],whereFrom[1]))
+    setSquare(whereFrom[0],whereFrom[1],' ')
+
 def createMovesOverlay(moves):
     # a ui that overlays X's over the board in the spots where the currently selected piece can move 
     for i in range(len(moves)):
         x = moves[i]
         setSquare(x[0],x[1], "X")
     
-
 def padding(): # to be wrapped around the pieces in the squares so the pieces are perfectly centred on the x axis
     return (pixelWidth) * " "
 
