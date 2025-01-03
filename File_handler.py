@@ -36,7 +36,8 @@ def load(gameType):
         board = boardSetup(colour)
     elif gameType == "old": # loading a previously played unfinished game or a game from FEN notation
         pass
-    else:
+    elif gameType == "FEN":
+        board = FENBoard(getFEN())
         pass
     
     return colour,playerTurn,TurnNumber,board
@@ -114,6 +115,69 @@ def boardSetup(playerColour):
                  ['♖','♘','♗','♕','♔','♗','♘','♖']]
     return board
 
+FENlookup = {
+    "r": "♖",
+    "n": "♘",
+    "b": "♗",
+    "q": "♕",
+    "k": "♔",
+    "p": "♙",
+    "R": "♜",
+    "N": "♞",
+    "B": "♝",
+    "Q": "♛",
+    "K": "♚",
+    "P": "♟",
+}
+
+def validFEN(fen):
+    return fen.count('/') == 7
+
+def getFEN():
+    sleep(2)
+    fen = ""
+    while not validFEN(fen):
+        clear()
+        fen = input("Enter a valid FEN string in the space below\n\ninput: ")
+    return fen
+
+def FENBoard(fenString):
+    
+    # https://en.wikipedia.org/wiki/Forsyth–Edwards_Notation for more info
+    allInfo = fenString.split(' ')
+    boardData = allInfo[0].split("/")
+    whosTurn = allInfo[1]
+    canCastle = allInfo[2]
+    enPassant = allInfo[3]
+    halfMoves = allInfo[4]
+    fullMoves = allInfo[5]
+
+    board = [[' ',' ',' ',' ',' ',' ',' ',' '],
+             [' ',' ',' ',' ',' ',' ',' ',' '],
+             [' ',' ',' ',' ',' ',' ',' ',' '],
+             [' ',' ',' ',' ',' ',' ',' ',' '],
+             [' ',' ',' ',' ',' ',' ',' ',' '],
+             [' ',' ',' ',' ',' ',' ',' ',' '],
+             [' ',' ',' ',' ',' ',' ',' ',' '],
+             [' ',' ',' ',' ',' ',' ',' ',' ']]
+
+    for i in range(len(boardData)):
+       actualIndex = 0
+       for j in range(len(boardData[i])):
+        
+            if boardData[i][j] in ['1','2','3','4','5','6','7','8']:
+                numOfTimes = int(boardData[i][j])
+                for x in range(numOfTimes):
+                    board[i][actualIndex + x] = ' ' 
+                actualIndex = actualIndex + numOfTimes - 1
+            else:
+                piece = FENlookup[boardData[i][j]]
+                board[i][actualIndex] = piece
+            
+            actualIndex = actualIndex + 1
+
+    return board
+
 def giveRandomColour():
     if random.randint(0,1) == 0:
         return "White"
@@ -124,3 +188,4 @@ def gamesAvailable():
     # returns a string with either 'No games found' or 'N games found' where N is the number of games
     # will show player how many games they have on going
     return "No games found"
+
