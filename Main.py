@@ -45,7 +45,7 @@ def startGame():
     print(f"\nYour colour is {colour}!\n")
     print("isYourTurn: " + str(playerTurn) + "\nTurnNumber: " + str(TurnNumber) + "\n")
     
-    drawBoard(colour)
+    drawBoard()
 
     resigning = False
 
@@ -56,7 +56,7 @@ def startGame():
         else:
             Engine.AITurn()
         
-        drawBoard(colour)
+        drawBoard()
         
         if hasWon():
             if playerTurn:
@@ -92,7 +92,7 @@ def playersTurn(colour):
             moves = validMoves(pieceImage,pieceSelected)
             if len(moves) > 0:
                 validPiece = True
-                movePiece(pieceImage, pieceSelected,moves, colour)
+                movePiece(pieceImage, pieceSelected,moves)
             else:
                 print("This piece has no moves pick another")
                 input()
@@ -280,10 +280,10 @@ def headbutts(coordinates):
     except:
         return True
 
-def movePiece(pieceSelected, whereFrom, moves, pieceColour):
+def movePiece(pieceSelected, whereFrom, moves):
     clear()
     createMovesOverlay(moves)
-    drawBoard(pieceColour)
+    drawBoard()
   
     print("\n\nyou selected " + pieceSelected + " " + chr(whereFrom[1] + 65) + str(8 - whereFrom[0]))
     validInput = False
@@ -451,7 +451,7 @@ def fillSquare(): # padding for the inside of the squares
     for i in range(pixelHeight):
         line("padding")
     
-def drawBoard(playerColour):
+def drawBoard():
     line("top")
     for x in range(boardHeight):
         line(x)
