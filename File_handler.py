@@ -92,27 +92,11 @@ def gameConfig():
 def boardSetup(playerColour): 
     # returns a 2d array 
     # flips the board depending on what pieces the player has
-    
     board = None
-
     if playerColour == "White":
-        board = [['♖','♘','♗','♕','♔','♗','♘','♖'],
-                 ['♙','♙','♙','♙','♙','♙','♙','♙'],
-                 [' ',' ',' ',' ',' ',' ',' ',' '],
-                 [' ',' ',' ',' ',' ',' ',' ',' '],
-                 [' ',' ',' ',' ',' ',' ',' ',' '],
-                 [' ',' ',' ',' ',' ',' ',' ',' '],
-                 ['♟','♟','♟','♟','♟','♟','♟','♟'],
-                 ['♜','♞','♝','♛','♚','♝','♞','♜']]
+        board = FENBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
     else:
-        board = [['♜','♞','♝','♛','♚','♝','♞','♜'],
-                 ['♟','♟','♟','♟','♟','♟','♟','♟'],
-                 [' ',' ',' ',' ',' ',' ',' ',' '],
-                 [' ',' ',' ',' ',' ',' ',' ',' '],
-                 [' ',' ',' ',' ',' ',' ',' ',' '],
-                 [' ',' ',' ',' ',' ',' ',' ',' '],
-                 ['♙','♙','♙','♙','♙','♙','♙','♙'],
-                 ['♖','♘','♗','♕','♔','♗','♘','♖']]
+        board = FENBoard("RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr w KQkq - 0 1")
     return board
 
 FENlookup = {
