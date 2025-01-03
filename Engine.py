@@ -6,3 +6,7 @@ def info():
 def AITurn():
     pass
 
+
+#print(bin(4) and bin(2))
+#print(bin(4))
+#print(bin(2))

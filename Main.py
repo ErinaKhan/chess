@@ -4,7 +4,7 @@
 
 #-------------------------------------- SETUP --------------------------------------
 import keyboard
-import AI_engine as AI
+import Engine
 import File_handler as FileHandler
 
 from os import system, name
@@ -17,6 +17,8 @@ def clear():
    # for mac and linux
    else:
       _ = system('clear')
+
+#------------------------------------------------------------------------------------
 
 # actual size of board (8x8) 64 squares total
 boardWidth = 8
@@ -52,7 +54,7 @@ def startGame():
         if playerTurn:
             resigning = playersTurn(colour)
         else:
-            AI.AITurn()
+            Engine.AITurn()
         
         drawBoard(colour)
         
@@ -157,6 +159,7 @@ def pawnMoves(start):
     return moves
 
 def horseMoves(start):
+    # moves in L shape
     p1 = (start[0] - 2,start[1] + 1)
     p2 = (start[0] - 2,start[1] - 1)
     p3 = (start[0] + 2,start[1] + 1)

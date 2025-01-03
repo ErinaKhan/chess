@@ -34,7 +34,9 @@ def load(gameType):
             playerTurn = True
             
         board = boardSetup(colour)
-    else: # loading a previously played unfinished game
+    elif gameType == "old": # loading a previously played unfinished game or a game from FEN notation
+        pass
+    else:
         pass
     
     return colour,playerTurn,TurnNumber,board
@@ -53,7 +55,27 @@ def gameConfig():
         if keyboard.read_key() == "enter":
             clear()
             if index == 0:
-                return "new"
+                b1 = "<"
+                b2 = " "
+                sleep(1)
+                while True:
+                    clear()
+                    print(f"New Game {b1}")
+                    print(f"Load Game from FEN {b2}")
+                    if keyboard.read_key() == "enter":
+                        clear()
+                        if index == 0:
+                            return "new"
+                        else:
+                            return "FEN"
+                    elif keyboard.read_key() == "up" and index == 1:
+                        index = 0
+                        b1 = "<"
+                        b2 = " " 
+                    elif keyboard.read_key() == "down" and index == 0:
+                        index = 1
+                        b1 = " "
+                        b2 = "<"
             else:
                 return "old"
         elif keyboard.read_key() == "up" and index == 1:
