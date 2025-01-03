@@ -42,6 +42,10 @@ def startGame():
 
     board = newBoard
 
+    Engine.convertToBitBoard(board)
+
+    sleep(20)
+
     print(f"\nYour colour is {colour}!\n")
     print("isYourTurn: " + str(playerTurn) + "\nTurnNumber: " + str(TurnNumber) + "\n")
     
@@ -346,7 +350,6 @@ def piece(x,y):
 def setSquare(x,y,new):
     global board
     board[x][y] = new
-    
 
 def selectPiece(colour):
     # returns 'resigning' or the x and y coordinates of selected piece 
@@ -370,7 +373,7 @@ def selectPiece(colour):
 
     while (not validMove or not isValidPiece) and not resigning:
         clear()
-        drawBoard(colour)
+        drawBoard()
         userInput = str(input("\n\nEnter the coordinates on the chess board (such as A8,a8,b5 etc...) of the piece you would like to move or type 'resign' to resign\n\nInput: "))
         validMove = len(userInput) == 2 and userInput[0].lower() in ['a','b','c','d','e','f','g','h'] and userInput[1] in ['1','2','3','4','5','6','7','8']
         resigning = userInput.lower() == "resign"
