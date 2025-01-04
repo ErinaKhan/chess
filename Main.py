@@ -112,7 +112,7 @@ def selectDestination(square,legalMoves,overlay):
         UI.drawBoard(overlay)
 
         while not validCoordinates(chosenCoordinates):
-            chosenCoordinates = input("\n\nEnter a legal location to move the piece too\n\nInput: ")
+            chosenCoordinates = input(f"\n\nEnter a legal location to move the {Engine.getPieceTypeFromSquare(square)} too\n\nInput: ")
             
         currentSquareInBinary = coordinatesToBinary(chosenCoordinates)
     
