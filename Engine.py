@@ -87,16 +87,9 @@ global squaresToEdge
 
 global whosTurn 
 whosTurn = "White"
+
 castlingRights = False
 enPassantSquare = False
-
-# actual size of board (8x8) 64 squares total
-boardWidth = 8
-boardHeight = 8
-
-# used for the sizing of the ui on screen measured in characters
-pixelWidth = 5
-pixelHeight = 1
 
 pieceLookup = {
     "BLACKROOK": "♖",
@@ -111,10 +104,11 @@ pieceLookup = {
     "WHITEQUEEN": "♛",
     "WHITEKING": "♚",
     "WHITEPAWN": "♟",
-    "NONENONE": " "
+    "NONENONE": " ",
+    "MOVEOVERLAY": "X"
 }
 
-def validateCoordinates(coordinates): 
+def validateCoordinates(coordinates):
     # tuple input
     # boolean output
     validFiles = ['a','b','c','d','e','f','g','h']
@@ -193,10 +187,7 @@ def getPieceTypeFromSquare(square):
         return "KING" 
     else:
         return "NONE"
-
-def selectSquare(x):
-    pass
-
+    
 def generateAllMoves():
     moves = []
 
@@ -256,9 +247,6 @@ def evaluate():
     pass
 
 def search():
-    pass
-
-def AITurn():
     pass
 
 ##################################################################################################################################################################################
@@ -339,7 +327,7 @@ def convertToBitBoard(board):
                 colour = currentSquare[1]
                 currentSquare = currentSquare[0]
                 valueToAdd = int(math.pow(2,i))
-                if colour != "WHITE":
+                if colour == "WHITE":
                     if currentSquare == "PAWN":
                         whitePawns = whitePawns + valueToAdd
                     elif currentSquare == "HORSE":
@@ -385,59 +373,3 @@ def convertToBitBoard(board):
     #print(bin(blackRooks))
     #print(bin(blackQueens))
     #print(bin(blackKing))
-
-
-
-    
-def padding(): # to be wrapped around the pieces in the squares so the pieces are perfectly centred on the x axis
-    return (pixelWidth) * " "
-
-def line(lineType): 
-    # always returns a string
-    # this is a function that can display different types of lines based on the parameter lineType
-    # accepted parameters are 0, top, padding and if any other input is inputed it will return a simple line
-    # all parameters are shown visually below
-    # 'padding' parameter is used to centre the peice on the y axis
-    #
-    #  ------- <- 0 and the else clause
-    #  |     | <- 'padding' 
-    #  |     |
-    #  |     | <- 'padding'
-    #  ------- <- 0 and else clause
-    #
-    # the only difference between 0 and the else clause is wether the line should start on the next line or current line
-    # only the first line of the board uses the 0 input into the function
-    
-    if lineType == 0:
-        print(("  " +(((pixelWidth * 2) + 3) * "-") * boardWidth)[:-7],end = "")
-        
-    elif lineType == "top": # gets the alphabet at the top of the board            
-        print("  ", end="")
-        for i in range(boardWidth):
-            print(" " + padding() + chr(i+65) + padding(),end="")
-        print("\n",end="")
-        
-    elif lineType == "padding":
-        print("\n  |" + (padding() + " " + padding() + "|") * boardWidth, end = "")
-        
-    else:
-        print(("\n  " + (((pixelWidth * 2) + 3) * "-") * boardWidth)[:-7],end = "")
-        
-def fillSquare(): # padding for the inside of the squares
-    for i in range(pixelHeight):
-        line("padding")
-    
-def drawBoard():
-    line("top")
-    for rank in range(boardHeight):
-        line(rank)
-        fillSquare()
-        print(f"\n{8 - rank} |", end = "")
-        for file in range(boardWidth):
-            currentSquareIndex = (rank * 8) + file
-            squareBinary = int(math.pow(2,64 - currentSquareIndex - 1))
-            colour = str(getColour(squareBinary))
-            piece = str(getPieceTypeFromSquare(squareBinary))
-            print(f"{padding()}{pieceLookup[colour+piece]}{padding()}|", end = "")
-        fillSquare()
-    line(1)

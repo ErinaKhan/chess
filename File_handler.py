@@ -37,10 +37,9 @@ def load(gameType):
     elif gameType == "old": # loading a previously played unfinished game or a game from FEN notation
         pass
     elif gameType == "FEN":
-        board = FENBoard(getFEN())
-        pass
+        board,colour,playerTurn = FENBoard(getFEN())
     
-    return colour,playerTurn,TurnNumber,board
+    return colour,playerTurn,board
 
 def gameConfig():
     # returns the settings for the game as a string
@@ -94,9 +93,9 @@ def boardSetup(playerColour):
     # flips the board depending on what pieces the player has
     board = None
     if playerColour == "White":
-        board = FENBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+        board = FENBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")[0]
     else:
-        board = FENBoard("RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr w KQkq - 0 1")
+        board = FENBoard("RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr w KQkq - 0 1")[0]
     return board
 
 FENlookup = {
@@ -136,6 +135,11 @@ def FENBoard(fenString):
     halfMoves = allInfo[4]
     fullMoves = allInfo[5]
 
+    if whosTurn == "w":
+        whosTurn = "White"
+    else:
+        whosTurn = "Black"
+
     board = [[' ',' ',' ',' ',' ',' ',' ',' '],
              [' ',' ',' ',' ',' ',' ',' ',' '],
              [' ',' ',' ',' ',' ',' ',' ',' '],
@@ -160,7 +164,7 @@ def FENBoard(fenString):
             
             actualIndex = actualIndex + 1
 
-    return board
+    return board,whosTurn,True
 
 def giveRandomColour():
     if random.randint(0,1) == 0:
