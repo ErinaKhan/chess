@@ -200,8 +200,53 @@ def generateAllMoves(turn):
 
                     moves = moves + generateSlidingPieceMoves(currentSquareIndex, pieceType)
 
+                elif pieceType == "PAWN":
+                    moves = moves + generatePawnMoves(currentSquareIndex, turn)
+                    pass
+
+                elif pieceType == "HORSE":
+                    pass
+
+                elif pieceType == "KING":
+                    pass
+
 
     return moves
+
+def generatePawnMoves(startSquare,colour):
+    moves = []
+    directionEnd = 1
+    direction = -1
+
+    if (startSquare >= 48 and startSquare <= 55 and playerColour) or (startSquare >= 8 and startSquare <= 15 and enemyColour):
+        directionEnd = 2
+
+    if playerColour == colour:
+        direction = 1
+    elif enemyColour == colour:
+        direction = 0
+    
+    if direction != -1:
+        for squares in range(directionEnd):
+            targetSquare = startSquare + (directionOffsets[direction] * (squares + 1))
+
+            if getColour(int(math.pow(2,targetSquare))) == playerColour:
+                break
+
+            if getColour(int(math.pow(2,targetSquare))) == enemyColour:
+                break
+
+            moves = moves + [[startSquare,targetSquare]]
+    else: 
+        print("ERROR")
+
+    return moves
+
+def generateHorseMoves():
+    pass
+
+def generateKingMoves():
+    pass
 
 def generateSlidingPieceMoves(startSquare, piece):
     # pieces such as the queen,bishop and rook
@@ -243,9 +288,6 @@ def filterMovesBySquare(square, colour):
             squaresMoves = squaresMoves + [move]
 
     return squaresMoves
-
-def pawnPieceMoves():
-    pass
 
 def evaluate():
     pass

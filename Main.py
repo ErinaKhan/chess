@@ -62,6 +62,7 @@ def startGame():
 def playersTurn(colour):
     square = selectPiece(colour) # square eg 001000, 10000 etc
     legalMoves = Engine.filterMovesBySquare(int(math.log(square,2)),colour)
+    UI.sleep(10)
     chosenLegalMove = selectDestination(square,legalMoves,UI.createOverlay(legalMoves))
     print(chosenLegalMove)
     Engine.updateBoard(square,chosenLegalMove)
