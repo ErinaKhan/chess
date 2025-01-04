@@ -58,8 +58,14 @@ def line(lineType):
 def fillSquare(): # padding for the inside of the squares
     for i in range(pixelHeight):
         line("padding")
-    
-def drawBoard(): # need to have an overlay variable with a list of moves to draw X's on
+
+def createOverlay(moves):
+    overlay = []
+    for move in moves:
+        overlay = overlay + [move[1]]
+    return overlay
+
+def drawBoard(overlay): # need to have an overlay variable with a list of moves to draw X's on
     line("top")
     for rank in range(boardHeight):
         line(rank)
@@ -70,7 +76,13 @@ def drawBoard(): # need to have an overlay variable with a list of moves to draw
             squareBinary = int(math.pow(2,currentSquareIndex))
             colour = str(Engine.getColour(squareBinary))
             piece = str(Engine.getPieceTypeFromSquare(squareBinary))
-            print(f"{padding()}{Engine.pieceLookup[colour+piece]}{padding()}|", end = "")
+            if overlay != None:
+                if currentSquareIndex in overlay:
+                    print(f"{padding()}X{padding()}|", end = "")
+                else:
+                    print(f"{padding()}{Engine.pieceLookup[colour+piece]}{padding()}|", end = "")
+            else:
+                print(f"{padding()}{Engine.pieceLookup[colour+piece]}{padding()}|", end = "")
         fillSquare()
     line(1)
 

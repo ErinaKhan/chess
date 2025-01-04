@@ -80,7 +80,7 @@ global enemyColour
 
 # offsets needed for all horizonatal and diagonal moves shown visually in the diagram at the top of the code
 # use first 4 indexes for straight line moves like the rook and the last 4 for diagonal moves or all indexes for the queen
-directionOffsets = [8,-8, 1, -1, 7, -7, 9, -9]  
+directionOffsets = [-8,8,1,-1,-9,9,-7,7]    
 
 # 2d array that stores squares to edge for every square on the board and is pre computed to allow quicker lookup times
 global squaresToEdge
@@ -108,28 +108,6 @@ pieceLookup = {
     "MOVEOVERLAY": "X"
 }
 
-def validateCoordinates(coordinates):
-    # tuple input
-    # boolean output
-    validFiles = ['a','b','c','d','e','f','g','h']
-    validRanks = ['1','2','3','4','5','6','7','8']
-    rank = coordinates[0]
-    file = coordinates[1]
-
-    if (rank in validRanks) and (file in validFiles):
-        return True
-    else:
-        return False
-
-def convertCoordinates(coordinates): 
-    # tuple input
-    # int output
-    file = ord(coordinates[0].upper()) - 65
-    rank = 8 - int(coordinates[1])
-    posOnBitboard = (rank * 8) + file
-    bitboardValue = int(math.pow(2,64 - posOnBitboard - 1))
-    return bitboardValue
-
 def assignColours(plrColour):
     global playerColour
     global enemyColour
@@ -142,6 +120,8 @@ def assignColours(plrColour):
         enemyColour = "WHITE"
 
 def getColour(square):
+    if square == None:
+        return None
     # input is an int
     if square & whitePieces != 0:
         return "WHITE"
@@ -149,6 +129,20 @@ def getColour(square):
         return "BLACK"
     else:
         return "NONE"
+
+def inCheck(colour):
+    if colour == "WHITE":
+        pass
+    elif colour == "BLACK":
+        pass
+    else:
+        return "ERROR"
+
+def canMove(square):
+    return True
+
+def updateBoard(square,chosenLegalMove):
+    pass
 
 def precomputeSquaresToEdge():
     global squaresToEdge
@@ -188,7 +182,7 @@ def getPieceTypeFromSquare(square):
     else:
         return "NONE"
     
-def generateAllMoves():
+def generateAllMoves(turn):
     moves = []
 
     for file in range(8):
@@ -196,15 +190,15 @@ def generateAllMoves():
         for rank in range(8):
 
             currentSquareIndex = (rank * 8) + file
-            squareBinary = int(math.pow(2,64 - currentSquareIndex - 1))
+            squareBinary = int(math.pow(2,currentSquareIndex))
 
-            if getColour(squareBinary) == whosTurn:
+            if getColour(squareBinary) == turn: # need to change
 
                 pieceType = getPieceTypeFromSquare(squareBinary)
 
                 if pieceType == "ROOK" or pieceType == "BISHOP" or pieceType == "QUEEN":
 
-                    moves = moves + generateSlidingPieceMoves(squareBinary, pieceType)
+                    moves = moves + generateSlidingPieceMoves(currentSquareIndex, pieceType)
 
 
     return moves
@@ -225,20 +219,30 @@ def generateSlidingPieceMoves(startSquare, piece):
         directionEnd = 8
 
     for direction in range(directionStart, directionEnd):
-        
+    
         for squares in range(squaresToEdge[startSquare][direction]):
 
-            targetSquare = startSquare + directionOffsets[direction] * (squares + 1) # from start square to edge of board
+            targetSquare = startSquare + (directionOffsets[direction] * (squares + 1)) # from start square to edge of board
 
-            if getColour(targetSquare) == playerColour:
+            if getColour(int(math.pow(2,targetSquare))) == enemyColour:
                 break
 
-            moves = moves + [startSquare,targetSquare]
+            moves = moves + [[startSquare,targetSquare]]
 
-            if getColour(targetSquare) == enemyColour:
+            if getColour(int(math.pow(2,targetSquare))) == playerColour:
                 break
-
+        
     return moves
+
+def filterMovesBySquare(square, colour):
+    squaresMoves = []
+    allMoves = generateAllMoves(colour)
+   
+    for move in allMoves:
+        if move[0] == square:
+            squaresMoves = squaresMoves + [move]
+
+    return squaresMoves
 
 def pawnPieceMoves():
     pass
