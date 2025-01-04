@@ -21,19 +21,11 @@ def load(gameType):
     # the parameter gameType holds all of the settings for the game and will be expanded in the future as gameConfig() grows
     colour = None
     playerTurn = None
-    TurnNumber = None
     board = None
 
     if gameType == "new":
         
-        colour = giveRandomColour()
-        playerTurn = False
-        TurnNumber = 1
-        
-        if colour == "White":
-            playerTurn = True
-            
-        board = boardSetup(colour)
+        board,colour,playerTurn = boardSetup(giveRandomColour())
     elif gameType == "old": # loading a previously played unfinished game or a game from FEN notation
         pass
     elif gameType == "FEN":
@@ -92,11 +84,12 @@ def boardSetup(playerColour):
     # returns a 2d array 
     # flips the board depending on what pieces the player has
     board = None
-    if playerColour == "White":
-        board = FENBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")[0]
+    if playerColour == "WHITE":
+        data = FENBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+        return data[0],"WHITE",True
     else:
-        board = FENBoard("RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr w KQkq - 0 1")[0]
-    return board
+        data = FENBoard("RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr w KQkq - 0 1")
+        return data[0],"BLACK",True
 
 FENlookup = {
     "r": "♖",
@@ -136,9 +129,9 @@ def FENBoard(fenString):
     fullMoves = allInfo[5]
 
     if whosTurn == "w":
-        whosTurn = "White"
+        whosTurn = "WHITE"
     else:
-        whosTurn = "Black"
+        whosTurn = "BLACK"
 
     board = [[' ',' ',' ',' ',' ',' ',' ',' '],
              [' ',' ',' ',' ',' ',' ',' ',' '],
@@ -168,9 +161,9 @@ def FENBoard(fenString):
 
 def giveRandomColour():
     if random.randint(0,1) == 0:
-        return "White"
+        return "WHITE"
     else:
-        return "Black"
+        return "BLACK"
         
 def gamesAvailable():
     # returns a string with either 'No games found' or 'N games found' where N is the number of games

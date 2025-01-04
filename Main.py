@@ -127,7 +127,7 @@ Engine.precomputeSquaresToEdge()
 colour,playerTurn,newBoard = FileHandler.load(FileHandler.gameConfig()) # loads new game or previous game
 Engine.assignColours(colour)
 Engine.convertToBitBoard(newBoard)
-playersTurn("WHITE")
+playersTurn(colour)
 
 
 

@@ -222,9 +222,9 @@ def generatePawnMoves(startSquare,colour):
         directionEnd = 2
 
     if playerColour == colour:
-        direction = 1
-    elif enemyColour == colour:
         direction = 0
+    elif enemyColour == colour:
+        direction = 1
     
     if direction != -1:
         for squares in range(directionEnd):
@@ -269,12 +269,12 @@ def generateSlidingPieceMoves(startSquare, piece):
 
             targetSquare = startSquare + (directionOffsets[direction] * (squares + 1)) # from start square to edge of board
 
-            if getColour(int(math.pow(2,targetSquare))) == enemyColour:
+            if getColour(int(math.pow(2,targetSquare))) == playerColour:
                 break
 
             moves = moves + [[startSquare,targetSquare]]
 
-            if getColour(int(math.pow(2,targetSquare))) == playerColour:
+            if getColour(int(math.pow(2,targetSquare))) == enemyColour:
                 break
         
     return moves
