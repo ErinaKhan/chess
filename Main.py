@@ -500,4 +500,9 @@ def mainMenuUI():
     print("----------------------------------------------------------------")
 
 clear()
-mainMenu()
+#mainMenu()
+
+colour,playerTurn,TurnNumber,newBoard = FileHandler.load(FileHandler.gameConfig()) # loads new game or previous game
+print(colour)
+Engine.convertToBitBoard(newBoard)
+Engine.drawBoard()
