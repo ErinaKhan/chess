@@ -213,10 +213,6 @@ def updateBoard(square,chosenLegalMove,colour):
     nonBinSquare = int(math.log(square,2))
     nonBinMove = int(math.log(chosenLegalMove,2))
 
-    if isPromoting(square,nonBinMove):
-        print("Promoting")
-        UI.sleep(5)
-
     if isEnPassant(nonBinSquare,square,nonBinMove):
         print("En Passant")
         UI.sleep(5)
@@ -273,11 +269,17 @@ def updateBoard(square,chosenLegalMove,colour):
 
                 w[i] = w[i] ^ chosenLegalMove
                 whiteAssignment(i,w[i])
+
+    if isPromoting(square,nonBinMove): 
+        print("Promoting")
+        UI.sleep(5)
+        promote(chosenLegalMove,colour)
         
     lastMove = [nonBinSquare,nonBinMove]
     whitePieces = whitePawns | whiteBishops | whiteHorses | whiteRooks | whiteQueens | whiteKing
     blackPieces = blackPawns | blackBishops | blackHorses | blackRooks | blackQueens | blackKing
     bitWordBoard = whitePieces | blackPieces
+    
     print(canCastle(colour))
 
 
@@ -562,6 +564,49 @@ def colourType(piece):
         return "WHITE"
     if piece in blackPieces:
         return "BLACK"
+    
+def promote(chosenLegalMove,colour):
+    global whiteHorses
+    global whiteBishops
+    global whiteRooks
+    global whiteQueens
+    global whitePawns
+
+    global blackPawns
+    global blackHorses
+    global blackBishops
+    global blackRooks
+    global blackQueens
+
+    valid = False
+    pieces = ["BISHOP","HORSE","ROOK","QUEEN"]
+
+    while not valid: 
+        pieceToBecome = input("\n\nPick a piece for your PAWN to promote too (type: rook,horse,bishop or queen): ").upper()
+        for i in range(len(pieces)):
+            if pieceToBecome == pieces[i]:
+                if colour == "WHITE":
+                    whitePawns = whitePawns ^ chosenLegalMove
+                    if i == 0:
+                        whiteBishops = whiteBishops | chosenLegalMove
+                    elif i == 1:
+                        whiteHorses = whiteHorses | chosenLegalMove
+                    elif i == 2:
+                        whiteRooks = whiteRooks | chosenLegalMove
+                    elif i == 3:
+                        whiteQueens = whiteQueens | chosenLegalMove
+                else:
+                    blackPawns = blackPawns ^ chosenLegalMove
+                    if i == 0:
+                        blackBishops = blackBishops | chosenLegalMove
+                    elif i == 1:
+                        blackHorses = blackHorses | chosenLegalMove
+                    elif i == 2:
+                        blackRooks = blackRooks | chosenLegalMove
+                    elif i == 3:
+                        blackQueens = blackQueens | chosenLegalMove
+                    
+                valid = True
 
 def getPieceType(pieceSelected):
     # returns a string that contains the type of piece it is
