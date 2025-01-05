@@ -136,6 +136,8 @@ def assignColours(plrColour):
         playerColour = "BLACK"
         enemyColour = "WHITE"
 
+    return enemyColour
+
 def getColour(square):
     if square == None:
         return None
@@ -154,9 +156,6 @@ def inCheck(colour):
         pass
     else:
         return "ERROR"
-
-def canMove(square):
-    return True
 
 def whiteAssignment(i,value):
     global whitePawns
@@ -214,25 +213,18 @@ def updateBoard(square,chosenLegalMove,colour):
     nonBinMove = int(math.log(chosenLegalMove,2))
 
     if isEnPassant(nonBinSquare,square,nonBinMove):
-        print("En Passant")
-        UI.sleep(5)
         direction = 0
-
         if nonBinMove - nonBinSquare > 0:
             direction = -1
         else: 
             direction = 1
-
         if colour == "WHITE":
             blackPawns = blackPawns ^ int(math.pow(2, nonBinMove + (direction * 8)))
         else:
             whitePawns = whitePawns ^ int(math.pow(2, nonBinMove + (direction * 8)))
 
     if isCastling(nonBinSquare,square, nonBinMove):
-
         placementForRook = int(math.log(chosenLegalMove,2))
-        print("Castling")
-        UI.sleep(5)
 
         if placementForRook == 6:
             updateBoard(int(math.pow(2,7)),int(math.pow(2,5)),colour)
@@ -252,7 +244,7 @@ def updateBoard(square,chosenLegalMove,colour):
                 w[i] = w[i] | chosenLegalMove
                 whiteAssignment(i,w[i])
 
-            elif chosenLegalMove & b[i] != 0:
+            if chosenLegalMove & b[i] != 0:
 
                 b[i] = b[i] ^ chosenLegalMove
                 blackAssignment(i,b[i])
@@ -265,14 +257,12 @@ def updateBoard(square,chosenLegalMove,colour):
                 b[i] = b[i] | chosenLegalMove
                 blackAssignment(i,b[i])
 
-            elif chosenLegalMove & w[i] != 0:
+            if chosenLegalMove & w[i] != 0:
 
                 w[i] = w[i] ^ chosenLegalMove
                 whiteAssignment(i,w[i])
 
-    if isPromoting(square,nonBinMove): 
-        print("Promoting")
-        UI.sleep(5)
+    if isPromoting(chosenLegalMove,nonBinMove): 
         promote(chosenLegalMove,colour)
         
     lastMove = [nonBinSquare,nonBinMove]
@@ -280,8 +270,7 @@ def updateBoard(square,chosenLegalMove,colour):
     blackPieces = blackPawns | blackBishops | blackHorses | blackRooks | blackQueens | blackKing
     bitWordBoard = whitePieces | blackPieces
     
-    print(canCastle(colour))
-
+    canCastle(colour)
 
 def precomputeSquaresToEdge():
     global squaresToEdge
@@ -336,7 +325,7 @@ def generateAllMoves(turn):
                 pieceType = getPieceTypeFromSquare(squareBinary)
 
                 if pieceType == "ROOK" or pieceType == "BISHOP" or pieceType == "QUEEN":
-                    moves = moves + generateSlidingPieceMoves(currentSquareIndex, pieceType)
+                    moves = moves + generateSlidingPieceMoves(currentSquareIndex, pieceType,turn)
                 elif pieceType == "PAWN":
                     moves = moves + generatePawnMoves(currentSquareIndex, turn)
                 elif pieceType == "HORSE":
@@ -375,7 +364,7 @@ def generatePawnMoves(startSquare,colour):
 
             moves = moves + [[startSquare,targetSquare]]
 
-        if (startSquare >= 32 and startSquare <= 39 and playerColour) or (startSquare >= 24 and startSquare <= 31 and enemyColour):
+        if (startSquare >= 32 and startSquare <= 39 and enemyColour == colour) or (startSquare >= 24 and startSquare <= 31 and playerColour == colour):
             
             if squaresToEdge[startSquare][2] >= 1 and lastMove != None:
 
@@ -399,8 +388,6 @@ def generateHorseMoves(startSquare,colour):
         targetSquareLeft = None
         targetSquareRight = None
 
-        print(f"{i} : {squaresToEdge[startSquare][i]}")
-
         if i == 0 or i == 1:
             if squaresToEdge[startSquare][3] >= 1:
                 targetSquareLeft = squareBetween - 1
@@ -412,14 +399,13 @@ def generateHorseMoves(startSquare,colour):
                 targetSquareRight = squareBetween + directionOffsets[1]
 
         if targetSquareLeft != None:
-            if (getColour(int(math.pow(2,targetSquareLeft))) != colour):
+            if (getColour(int(math.pow(2,targetSquareLeft))) != colour) and targetSquareLeft >= 0:
                 moves = moves + [[startSquare,targetSquareLeft]]
 
         if targetSquareRight != None:
-            if (getColour(int(math.pow(2,targetSquareRight))) != colour):
+            if (getColour(int(math.pow(2,targetSquareRight))) != colour) and targetSquareRight >= 0:
                 moves = moves + [[startSquare,targetSquareRight]]
 
-    print(moves)
     return moves
 
 def generateKingMoves(startSquare,colour):
@@ -442,8 +428,7 @@ def generateKingMoves(startSquare,colour):
 
     return moves
             
-
-def generateSlidingPieceMoves(startSquare, piece):
+def generateSlidingPieceMoves(startSquare, piece,colour):
     # pieces such as the queen,bishop and rook
     global squaresToEdge
     moves = []
@@ -464,12 +449,12 @@ def generateSlidingPieceMoves(startSquare, piece):
 
             targetSquare = startSquare + (directionOffsets[direction] * (squares + 1)) # from start square to edge of board
 
-            if getColour(int(math.pow(2,targetSquare))) == playerColour:
+            if getColour(int(math.pow(2,targetSquare))) == colour:
                 break
 
             moves = moves + [[startSquare,targetSquare]]
 
-            if getColour(int(math.pow(2,targetSquare))) == enemyColour:
+            if getColour(int(math.pow(2,targetSquare))) != colour and getColour(int(math.pow(2,targetSquare))) != "NONE":
                 break
         
     return moves
@@ -495,10 +480,53 @@ def isCastling(square,binary, chosenLegalMove):
         return True
     return False
 
-def isPromoting(square,chosenLegalMove):
-    if (chosenLegalMove >= 0 and chosenLegalMove <= 7) or (chosenLegalMove >= 56 and chosenLegalMove <= 63) and getPieceTypeFromSquare(square) == "PAWN":
+def isPromoting(binary,chosenLegalMove):
+    if ((chosenLegalMove >= 0 and chosenLegalMove <= 7) or (chosenLegalMove >= 56 and chosenLegalMove <= 63)) and getPieceTypeFromSquare(binary) == "PAWN":
         return True
     return False
+
+def promote(chosenLegalMove,colour):
+    global whiteHorses
+    global whiteBishops
+    global whiteRooks
+    global whiteQueens
+    global whitePawns
+
+    global blackPawns
+    global blackHorses
+    global blackBishops
+    global blackRooks
+    global blackQueens
+
+    valid = False
+    pieces = ["BISHOP","HORSE","ROOK","QUEEN"]
+
+    while not valid: 
+        pieceToBecome = input("\n\nPick a piece for your PAWN to promote too (type: rook,horse,bishop or queen): ").upper()
+        for i in range(len(pieces)):
+            if pieceToBecome == pieces[i]:
+                if colour == "WHITE":
+                    whitePawns = whitePawns ^ chosenLegalMove
+                    if i == 0:
+                        whiteBishops = whiteBishops | chosenLegalMove
+                    elif i == 1:
+                        whiteHorses = whiteHorses | chosenLegalMove
+                    elif i == 2:
+                        whiteRooks = whiteRooks | chosenLegalMove
+                    elif i == 3:
+                        whiteQueens = whiteQueens | chosenLegalMove
+                else:
+                    blackPawns = blackPawns ^ chosenLegalMove
+                    if i == 0:
+                        blackBishops = blackBishops | chosenLegalMove
+                    elif i == 1:
+                        blackHorses = blackHorses | chosenLegalMove
+                    elif i == 2:
+                        blackRooks = blackRooks | chosenLegalMove
+                    elif i == 3:
+                        blackQueens = blackQueens | chosenLegalMove
+                    
+                valid = True
 
 def canCastle(colour):
     global wKingMoved
@@ -543,8 +571,6 @@ def canCastle(colour):
                     bqueenSide = False
         return bkingSide,bqueenSide
 
-
-
 def evaluate():
     pass
 
@@ -564,49 +590,6 @@ def colourType(piece):
         return "WHITE"
     if piece in blackPieces:
         return "BLACK"
-    
-def promote(chosenLegalMove,colour):
-    global whiteHorses
-    global whiteBishops
-    global whiteRooks
-    global whiteQueens
-    global whitePawns
-
-    global blackPawns
-    global blackHorses
-    global blackBishops
-    global blackRooks
-    global blackQueens
-
-    valid = False
-    pieces = ["BISHOP","HORSE","ROOK","QUEEN"]
-
-    while not valid: 
-        pieceToBecome = input("\n\nPick a piece for your PAWN to promote too (type: rook,horse,bishop or queen): ").upper()
-        for i in range(len(pieces)):
-            if pieceToBecome == pieces[i]:
-                if colour == "WHITE":
-                    whitePawns = whitePawns ^ chosenLegalMove
-                    if i == 0:
-                        whiteBishops = whiteBishops | chosenLegalMove
-                    elif i == 1:
-                        whiteHorses = whiteHorses | chosenLegalMove
-                    elif i == 2:
-                        whiteRooks = whiteRooks | chosenLegalMove
-                    elif i == 3:
-                        whiteQueens = whiteQueens | chosenLegalMove
-                else:
-                    blackPawns = blackPawns ^ chosenLegalMove
-                    if i == 0:
-                        blackBishops = blackBishops | chosenLegalMove
-                    elif i == 1:
-                        blackHorses = blackHorses | chosenLegalMove
-                    elif i == 2:
-                        blackRooks = blackRooks | chosenLegalMove
-                    elif i == 3:
-                        blackQueens = blackQueens | chosenLegalMove
-                    
-                valid = True
 
 def getPieceType(pieceSelected):
     # returns a string that contains the type of piece it is
@@ -725,17 +708,3 @@ def convertToBitBoard(board):
 
     bKingMoved = blackKing
     bRooksMoved = blackRooks
-    #print(bin(whitePieces))
-    #print(bin(blackPieces))
-    #print(bin(whitePawns))
-    #print(bin(whiteHorses))
-    #print(bin(whiteBishops))
-    #print(bin(whiteRooks))
-    #print(bin(whiteQueens))
-    #print(bin(whiteKing)) 
-    #print(bin(blackPawns))
-    #print(bin(blackHorses))
-    #print(bin(blackBishops))
-    #print(bin(blackRooks))
-    #print(bin(blackQueens))
-    #print(bin(blackKing))

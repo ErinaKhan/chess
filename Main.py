@@ -4,6 +4,7 @@
 
 #-------------------------------------- SETUP --------------------------------------
 import Engine
+import random
 import File_handler as FileHandler
 import UI_Handler as UI
 import math
@@ -14,9 +15,10 @@ def startGame():
     # main loop of program
     Engine.precomputeSquaresToEdge()
     colour,playerTurn,newBoard = FileHandler.load(FileHandler.gameConfig()) # loads new game or previous game
-    Engine.assignColours(colour)
+    enemyColour = Engine.assignColours(colour)
 
-    
+
+
     Engine.convertToBitBoard(newBoard)
 
     print(f"\nYour colour is {colour}!\n")
@@ -31,7 +33,7 @@ def startGame():
         if playerTurn:
             resigning = playersTurn(colour)
         else:
-            AITurn()
+            AITurn(enemyColour)
         
         UI.drawBoard(None)
         
@@ -57,17 +59,32 @@ def startGame():
                 playerTurn = True
 
 def playersTurn(colour):
-    square,isResigning = selectPiece(colour) 
+    valid = False
+    while not valid:
+        square,isResigning = selectPiece(colour) 
 
-    if not isResigning:
-        legalMoves = Engine.filterMovesBySquare(int(math.log(square,2)),colour)
-        chosenLegalMove = selectDestination(square,legalMoves,UI.createOverlay(legalMoves))
-        Engine.updateBoard(square,int(math.pow(2,chosenLegalMove)),colour)
-        return False
-    else:
-        return True
+        if not isResigning:
+            legalMoves = Engine.filterMovesBySquare(int(math.log(square,2)),colour)
+            valid = len(legalMoves) > 0
+            if valid:
+                chosenLegalMove = selectDestination(square,legalMoves,UI.createOverlay(legalMoves))
+                Engine.updateBoard(square,int(math.pow(2,chosenLegalMove)),colour)
+                return False
+            else:
+                print("\nThis piece cant move, try again")
+                UI.sleep(1.5)
+        else:
+            valid = True
+            return True
     
-def AITurn():
+def AITurn(colour):
+    moves = Engine.generateAllMoves(colour)
+    print(moves)
+    index = random.randint(0, len(moves) - 1)
+    chosenMove = moves[index]
+    print(chosenMove)
+    UI.sleep(10)
+    Engine.updateBoard(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour)
     pass
 
 def hasWon(): # code stub
@@ -90,7 +107,7 @@ def coordinatesToBinary(coordinates):
 def selectPiece(colour):
     chosenCoordinates = "XX"
     currentSquareInBinary = None
-    while Engine.getColour(currentSquareInBinary) != colour or not Engine.canMove(currentSquareInBinary):
+    while Engine.getColour(currentSquareInBinary) != colour:
         chosenCoordinates = "XX"
         UI.clear()
         UI.drawBoard(None)
