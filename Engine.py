@@ -141,8 +141,86 @@ def inCheck(colour):
 def canMove(square):
     return True
 
-def updateBoard(square,chosenLegalMove):
-    pass
+def whiteAssignment(i,value):
+    global whitePawns
+    global whiteHorses
+    global whiteBishops
+    global whiteRooks
+    global whiteQueens
+    global whiteKing
+
+    if i == 0:
+        whitePawns = value
+    elif i == 1:
+        whiteBishops = value
+    elif i == 2:
+        whiteHorses = value
+    elif i == 3:
+        whiteRooks = value
+    elif i == 4:
+        whiteQueens = value
+    elif i == 5:
+        whiteKing = value
+
+def blackAssignment(i,value):
+    global blackPawns
+    global blackHorses
+    global blackBishops
+    global blackRooks
+    global blackQueens
+    global blackKing
+    if i == 0:
+        blackPawns = value
+    elif i == 1:
+        blackBishops = value
+    elif i == 2:
+        blackHorses = value
+    elif i == 3:
+        blackRooks = value
+    elif i == 4:
+        blackQueens = value
+    elif i == 5:
+        blackKing = value    
+
+def updateBoard(square,chosenLegalMove,colour):
+    global bitWordBoard
+    global whitePieces
+    global blackPieces
+
+    w = [whitePawns, whiteBishops, whiteHorses, whiteRooks, whiteQueens, whiteKing]
+    b = [blackPawns, blackBishops, blackHorses, blackRooks, blackQueens, blackKing]
+
+    if colour == "WHITE":
+        for i in range(6):
+
+            if square & w[i] != 0:
+                # this is the set its in
+                w[i] = w[i] ^ square
+                w[i] = w[i] | chosenLegalMove
+                whiteAssignment(i,w[i])
+
+            elif chosenLegalMove & b[i] != 0:
+
+                b[i] = b[i] ^ chosenLegalMove
+                blackAssignment(i,b[i])
+    else:
+        for i in range(6):
+
+            if square & b[i] != 0:
+                # this is the set its in
+                b[i] = b[i] ^ square
+                b[i] = b[i] | chosenLegalMove
+                blackAssignment(i,b[i])
+
+            elif chosenLegalMove & w[i] != 0:
+
+                w[i] = w[i] ^ chosenLegalMove
+                whiteAssignment(i,w[i])
+        
+    whitePieces = whitePawns | whiteBishops | whiteHorses | whiteRooks | whiteQueens | whiteKing
+    blackPieces = blackPawns | blackBishops | blackHorses | blackRooks | blackQueens | blackKing
+    bitWordBoard = whitePieces | blackPieces
+
 
 def precomputeSquaresToEdge():
     global squaresToEdge
@@ -197,18 +275,13 @@ def generateAllMoves(turn):
                 pieceType = getPieceTypeFromSquare(squareBinary)
 
                 if pieceType == "ROOK" or pieceType == "BISHOP" or pieceType == "QUEEN":
-
                     moves = moves + generateSlidingPieceMoves(currentSquareIndex, pieceType)
-
                 elif pieceType == "PAWN":
                     moves = moves + generatePawnMoves(currentSquareIndex, turn)
-                    pass
-
                 elif pieceType == "HORSE":
-                    pass
-
+                    moves = moves + generateHorseMoves(currentSquareIndex)
                 elif pieceType == "KING":
-                    pass
+                    moves = moves + generateKingMoves(currentSquareIndex)
 
 
     return moves
@@ -242,11 +315,49 @@ def generatePawnMoves(startSquare,colour):
 
     return moves
 
-def generateHorseMoves():
-    pass
+def generateHorseMoves(startSquare):
+    moves = []
 
-def generateKingMoves():
-    pass
+    for i in range(4):
+    
+        squareBetween = startSquare + (directionOffsets[i] * 2)
+        targetSquareLeft = None
+        targetSquareRight = None
+
+        print(f"{i} : {squaresToEdge[startSquare][i]}")
+
+        if i == 0 or i == 1:
+            if squaresToEdge[startSquare][3] >= 1:
+                targetSquareLeft = squareBetween - 1
+            if squaresToEdge[startSquare][2] >= 1:
+                targetSquareRight = squareBetween + 1
+        else:
+            if squaresToEdge[startSquare][i] >= 2:
+                targetSquareLeft = squareBetween + directionOffsets[0]
+                targetSquareRight = squareBetween + directionOffsets[1]
+
+        if targetSquareLeft != None:
+            if (getColour(int(math.pow(2,targetSquareLeft))) != playerColour):
+                moves = moves + [[startSquare,targetSquareLeft]]
+
+        if targetSquareRight != None:
+            if (getColour(int(math.pow(2,targetSquareRight))) != playerColour):
+                moves = moves + [[startSquare,targetSquareRight]]
+
+    print(moves)
+    return moves
+
+def generateKingMoves(startSquare):
+    moves = []
+    for i in range(8):
+        if squaresToEdge[startSquare][i] >= 1:  
+            targetSquare = startSquare + directionOffsets[i]
+
+            if getColour(int(math.pow(2,targetSquare))) != playerColour:
+                moves = moves + [[startSquare, targetSquare]]
+
+    return moves
+            
 
 def generateSlidingPieceMoves(startSquare, piece):
     # pieces such as the queen,bishop and rook

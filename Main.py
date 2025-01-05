@@ -12,13 +12,10 @@ import math
 def startGame():
     
     # main loop of program
-    global board
-    
+    Engine.precomputeSquaresToEdge()
     colour,playerTurn,newBoard = FileHandler.load(FileHandler.gameConfig()) # loads new game or previous game
-
-    board = newBoard
-
-    Engine.convertToBitBoard(board)
+    Engine.assignColours(colour)
+    Engine.convertToBitBoard(newBoard)
 
     print(f"\nYour colour is {colour}!\n")
     print("isYourTurn: " + str(playerTurn) + "\n")
@@ -29,14 +26,12 @@ def startGame():
 
     while True:
 
-        UI.sleep(5)
-
         if playerTurn:
-            playersTurn(colour)
+            resigning = playersTurn(colour)
         else:
             AITurn()
         
-        UI.drawBoard()
+        UI.drawBoard(None)
         
         if hasWon():
             if playerTurn:
@@ -60,13 +55,16 @@ def startGame():
                 playerTurn = True
 
 def playersTurn(colour):
-    square = selectPiece(colour) # square eg 001000, 10000 etc
-    legalMoves = Engine.filterMovesBySquare(int(math.log(square,2)),colour)
-    UI.sleep(10)
-    chosenLegalMove = selectDestination(square,legalMoves,UI.createOverlay(legalMoves))
-    print(chosenLegalMove)
-    Engine.updateBoard(square,chosenLegalMove)
+    square,isResigning = selectPiece(colour) 
 
+    if not isResigning:
+        legalMoves = Engine.filterMovesBySquare(int(math.log(square,2)),colour)
+        chosenLegalMove = selectDestination(square,legalMoves,UI.createOverlay(legalMoves))
+        Engine.updateBoard(square,int(math.pow(2,chosenLegalMove)),colour)
+        return False
+    else:
+        return True
+    
 def AITurn():
     pass
 
@@ -97,11 +95,11 @@ def selectPiece(colour):
         while not validCoordinates(chosenCoordinates):
             chosenCoordinates = input("\n\nEnter the coordinates on the chess board (such as A8,a8,b5 etc...) of the piece you would like to move or type 'resign' to resign\n\nInput: ")
             if chosenCoordinates == "resign":
-                return "RESIGNING"
+                return None, True
 
         currentSquareInBinary = coordinatesToBinary(chosenCoordinates)
 
-    return currentSquareInBinary
+    return currentSquareInBinary,False
 
 def selectDestination(square,legalMoves,overlay):
     chosenCoordinates = "XX"
@@ -123,11 +121,6 @@ def selectDestination(square,legalMoves,overlay):
 
     return int(math.log(currentSquareInBinary,2))
 
-Engine.precomputeSquaresToEdge()
-colour,playerTurn,newBoard = FileHandler.load(FileHandler.gameConfig()) # loads new game or previous game
-Engine.assignColours(colour)
-Engine.convertToBitBoard(newBoard)
-playersTurn(colour)
-
+startGame()
 
 
