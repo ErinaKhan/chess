@@ -84,7 +84,8 @@ directionOffsets = [-8,8,1,-1,-9,9,-7,7]
 
 # 2d array that stores squares to edge for every square on the board and is pre computed to allow quicker lookup times
 global squaresToEdge
-
+global lastMove
+lastMove = [11,27]
 global whosTurn 
 whosTurn = "White"
 
@@ -186,6 +187,7 @@ def updateBoard(square,chosenLegalMove,colour):
     global bitWordBoard
     global whitePieces
     global blackPieces
+    global lastMove
 
     w = [whitePawns, whiteBishops, whiteHorses, whiteRooks, whiteQueens, whiteKing]
     b = [blackPawns, blackBishops, blackHorses, blackRooks, blackQueens, blackKing]
@@ -217,6 +219,7 @@ def updateBoard(square,chosenLegalMove,colour):
                 w[i] = w[i] ^ chosenLegalMove
                 whiteAssignment(i,w[i])
         
+    lastMove = [int(math.log(square,2)),int(math.log(chosenLegalMove,2))]
     whitePieces = whitePawns | whiteBishops | whiteHorses | whiteRooks | whiteQueens | whiteKing
     blackPieces = blackPawns | blackBishops | blackHorses | blackRooks | blackQueens | blackKing
     bitWordBoard = whitePieces | blackPieces
@@ -279,9 +282,9 @@ def generateAllMoves(turn):
                 elif pieceType == "PAWN":
                     moves = moves + generatePawnMoves(currentSquareIndex, turn)
                 elif pieceType == "HORSE":
-                    moves = moves + generateHorseMoves(currentSquareIndex)
+                    moves = moves + generateHorseMoves(currentSquareIndex,turn)
                 elif pieceType == "KING":
-                    moves = moves + generateKingMoves(currentSquareIndex)
+                    moves = moves + generateKingMoves(currentSquareIndex,turn)
 
 
     return moves
@@ -291,7 +294,10 @@ def generatePawnMoves(startSquare,colour):
     directionEnd = 1
     direction = -1
 
-    if (startSquare >= 48 and startSquare <= 55 and playerColour) or (startSquare >= 8 and startSquare <= 15 and enemyColour):
+    playerOnStartingRank = startSquare >= 48 and startSquare <= 55 and playerColour
+    enemyOnStartingRank = startSquare >= 8 and startSquare <= 15 and enemyColour
+
+    if (playerOnStartingRank) or (enemyOnStartingRank):
         directionEnd = 2
 
     if playerColour == colour:
@@ -310,12 +316,23 @@ def generatePawnMoves(startSquare,colour):
                 break
 
             moves = moves + [[startSquare,targetSquare]]
+
+        if (startSquare >= 32 and startSquare <= 39 and playerColour) or (startSquare >= 24 and startSquare <= 31 and enemyColour):
+            
+            if squaresToEdge[startSquare][2] >= 1 and lastMove != None:
+
+                if (lastMove[0] >= 8 and lastMove[0] <= 15) and (lastMove[1] == lastMove[0] + 16) and playerColour == colour and getPieceTypeFromSquare(int(math.pow(2,lastMove[1]))) == "PAWN":
+                    moves = moves + [[startSquare, lastMove[1] - 8]] 
+                if (lastMove[0] >= 48 and lastMove[0] <= 55) and (lastMove[1] == lastMove[0] - 16) and enemyColour == colour and getPieceTypeFromSquare(int(math.pow(2,lastMove[1]))) == "PAWN":
+                    moves = moves + [[startSquare, lastMove[1] + 8]] 
+            if squaresToEdge[startSquare][3] >= 1:
+                pass
     else: 
         print("ERROR")
 
     return moves
 
-def generateHorseMoves(startSquare):
+def generateHorseMoves(startSquare,colour):
     moves = []
 
     for i in range(4):
@@ -337,23 +354,23 @@ def generateHorseMoves(startSquare):
                 targetSquareRight = squareBetween + directionOffsets[1]
 
         if targetSquareLeft != None:
-            if (getColour(int(math.pow(2,targetSquareLeft))) != playerColour):
+            if (getColour(int(math.pow(2,targetSquareLeft))) != colour):
                 moves = moves + [[startSquare,targetSquareLeft]]
 
         if targetSquareRight != None:
-            if (getColour(int(math.pow(2,targetSquareRight))) != playerColour):
+            if (getColour(int(math.pow(2,targetSquareRight))) != colour):
                 moves = moves + [[startSquare,targetSquareRight]]
 
     print(moves)
     return moves
 
-def generateKingMoves(startSquare):
+def generateKingMoves(startSquare,colour):
     moves = []
     for i in range(8):
         if squaresToEdge[startSquare][i] >= 1:  
             targetSquare = startSquare + directionOffsets[i]
 
-            if getColour(int(math.pow(2,targetSquare))) != playerColour:
+            if getColour(int(math.pow(2,targetSquare))) != colour:
                 moves = moves + [[startSquare, targetSquare]]
 
     return moves
@@ -399,6 +416,12 @@ def filterMovesBySquare(square, colour):
             squaresMoves = squaresMoves + [move]
 
     return squaresMoves
+
+def enPassant():
+    pass
+
+def castling():
+    pass
 
 def evaluate():
     pass
