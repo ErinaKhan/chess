@@ -56,6 +56,7 @@
 ######################################################################################################
 ######################################################################################################
 import math
+import UI_Handler as UI
 
 global bitWordBoard
 global whitePieces
@@ -77,6 +78,21 @@ global blackKing
 
 global playerColour
 global enemyColour
+
+#------------------------------------------------------------------------------------------------------------------------
+
+# used for tracking castling
+
+global wKingMoved
+global wRooksMoved
+
+global bKingMoved
+global bRooksMoved
+
+global wqueenSide
+global wkingSide
+global bqueenSide
+global bkingSide
 
 # offsets needed for all horizonatal and diagonal moves shown visually in the diagram at the top of the code
 # use first 4 indexes for straight line moves like the rook and the last 4 for diagonal moves or all indexes for the queen
@@ -191,38 +207,47 @@ def updateBoard(square,chosenLegalMove,colour):
 
     w = [whitePawns, whiteBishops, whiteHorses, whiteRooks, whiteQueens, whiteKing]
     b = [blackPawns, blackBishops, blackHorses, blackRooks, blackQueens, blackKing]
+    binSquare = int(math.log(square,2))
 
-    if colour == "WHITE":
-        for i in range(6):
-
-            if square & w[i] != 0:
-                # this is the set its in
-                w[i] = w[i] ^ square
-                w[i] = w[i] | chosenLegalMove
-                whiteAssignment(i,w[i])
-
-            elif chosenLegalMove & b[i] != 0:
-
-                b[i] = b[i] ^ chosenLegalMove
-                blackAssignment(i,b[i])
+    if isPromoting(binSquare,chosenLegalMove):
+        pass
+    if isEnPassant(binSquare,chosenLegalMove):
+        pass
+    if isCastling(binSquare,chosenLegalMove):
+        pass
     else:
-        for i in range(6):
+        if colour == "WHITE":
+            for i in range(6):
 
-            if square & b[i] != 0:
-                # this is the set its in
-                b[i] = b[i] ^ square
-                b[i] = b[i] | chosenLegalMove
-                blackAssignment(i,b[i])
+                if square & w[i] != 0:
+                    # this is the set its in
+                    w[i] = w[i] ^ square
+                    w[i] = w[i] | chosenLegalMove
+                    whiteAssignment(i,w[i])
 
-            elif chosenLegalMove & w[i] != 0:
+                elif chosenLegalMove & b[i] != 0:
 
-                w[i] = w[i] ^ chosenLegalMove
-                whiteAssignment(i,w[i])
+                    b[i] = b[i] ^ chosenLegalMove
+                    blackAssignment(i,b[i])
+        else:
+            for i in range(6):
+
+                if square & b[i] != 0:
+                    # this is the set its in
+                    b[i] = b[i] ^ square
+                    b[i] = b[i] | chosenLegalMove
+                    blackAssignment(i,b[i])
+
+                elif chosenLegalMove & w[i] != 0:
+
+                    w[i] = w[i] ^ chosenLegalMove
+                    whiteAssignment(i,w[i])
         
     lastMove = [int(math.log(square,2)),int(math.log(chosenLegalMove,2))]
     whitePieces = whitePawns | whiteBishops | whiteHorses | whiteRooks | whiteQueens | whiteKing
     blackPieces = blackPawns | blackBishops | blackHorses | blackRooks | blackQueens | blackKing
     bitWordBoard = whitePieces | blackPieces
+    print(canCastle(colour))
 
 
 def precomputeSquaresToEdge():
@@ -373,6 +398,17 @@ def generateKingMoves(startSquare,colour):
             if getColour(int(math.pow(2,targetSquare))) != colour:
                 moves = moves + [[startSquare, targetSquare]]
 
+    kingSide,queenSide = canCastle(colour)
+    
+    if kingSide:
+        if getPieceTypeFromSquare(int(math.pow(2,startSquare + 1))) == "NONE" and getPieceTypeFromSquare(int(math.pow(2,startSquare + 2))) == "NONE":
+            moves = moves + [[startSquare, startSquare + 2]]
+    if queenSide:
+        if getPieceTypeFromSquare(int(math.pow(2,startSquare - 1))) == "NONE" and getPieceTypeFromSquare(int(math.pow(2,startSquare - 2))) == "NONE" and getPieceTypeFromSquare(int(math.pow(2,startSquare - 3))) == "NONE":
+            moves = moves + [[startSquare, startSquare - 2]]
+
+
+
     return moves
             
 
@@ -417,11 +453,59 @@ def filterMovesBySquare(square, colour):
 
     return squaresMoves
 
-def enPassant():
-    pass
+def isEnPassant(square,chosenLegalMove):
+    return False
+    
+def isCastling(square,chosenLegalMove):
+    return False
 
-def castling():
-    pass
+def isPromoting(square,chosenLegalMove):
+    return False
+
+def canCastle(colour):
+    global wKingMoved
+    global wRooksMoved
+
+    global bKingMoved
+    global bRooksMoved
+
+    global whiteRooks
+    global whiteKing
+
+    global blackRooks
+    global blackKing
+
+    global wqueenSide
+    global wkingSide
+    global bqueenSide
+    global bkingSide
+
+    if colour == "WHITE":
+        if whiteRooks != 0:
+            if wKingMoved & whiteKing == 0:
+                wKingMoved = 0
+                wkingSide = False 
+                wqueenSide = False
+            if wRooksMoved & whiteRooks != whiteRooks:
+                if wRooksMoved > whiteRooks:
+                    wkingSide = False
+                if wRooksMoved < whiteRooks:
+                    wqueenSide = False
+        return wkingSide,wqueenSide
+    else:
+        if blackRooks != 0:
+            if bKingMoved & blackKing == 0:
+                bKingMoved = 0
+                bkingSide = False 
+                bqueenSide = False
+            if bRooksMoved & blackRooks != blackRooks:
+                if bRooksMoved > blackRooks:
+                    bkingSide = False
+                if bRooksMoved < blackRooks:
+                    bqueenSide = False
+        return bkingSide,bqueenSide
+
+
 
 def evaluate():
     pass
@@ -539,6 +623,27 @@ def convertToBitBoard(board):
     blackPieces = blackPawns | blackBishops | blackHorses | blackRooks | blackQueens | blackKing
     bitWordBoard = whitePieces | blackPieces
 
+    global wKingMoved
+    global wRooksMoved
+
+    global bKingMoved
+    global bRooksMoved
+
+    global wqueenSide
+    global wkingSide
+    global bqueenSide
+    global bkingSide
+
+    wkingSide = True
+    wqueenSide = True
+    bkingSide = True
+    bqueenSide = True
+
+    wKingMoved = whiteKing
+    wRooksMoved = whiteRooks
+
+    bKingMoved = blackKing
+    bRooksMoved = blackRooks
     #print(bin(whitePieces))
     #print(bin(blackPieces))
     #print(bin(whitePawns))
