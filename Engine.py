@@ -101,7 +101,7 @@ directionOffsets = [-8,8,1,-1,-9,9,-7,7]
 # 2d array that stores squares to edge for every square on the board and is pre computed to allow quicker lookup times
 global squaresToEdge
 global lastMove
-lastMove = [11,27]
+lastMove = [0,0]
 global whosTurn 
 whosTurn = "White"
 
@@ -204,46 +204,77 @@ def updateBoard(square,chosenLegalMove,colour):
     global whitePieces
     global blackPieces
     global lastMove
+    global whitePawns
+    global blackPawns
 
     w = [whitePawns, whiteBishops, whiteHorses, whiteRooks, whiteQueens, whiteKing]
     b = [blackPawns, blackBishops, blackHorses, blackRooks, blackQueens, blackKing]
-    binSquare = int(math.log(square,2))
 
-    if isPromoting(binSquare,chosenLegalMove):
-        pass
-    if isEnPassant(binSquare,chosenLegalMove):
-        pass
-    if isCastling(binSquare,chosenLegalMove):
-        pass
-    else:
+    nonBinSquare = int(math.log(square,2))
+    nonBinMove = int(math.log(chosenLegalMove,2))
+
+    if isPromoting(square,nonBinMove):
+        print("Promoting")
+        UI.sleep(5)
+
+    if isEnPassant(nonBinSquare,square,nonBinMove):
+        print("En Passant")
+        UI.sleep(5)
+        direction = 0
+
+        if nonBinMove - nonBinSquare > 0:
+            direction = -1
+        else: 
+            direction = 1
+
         if colour == "WHITE":
-            for i in range(6):
-
-                if square & w[i] != 0:
-                    # this is the set its in
-                    w[i] = w[i] ^ square
-                    w[i] = w[i] | chosenLegalMove
-                    whiteAssignment(i,w[i])
-
-                elif chosenLegalMove & b[i] != 0:
-
-                    b[i] = b[i] ^ chosenLegalMove
-                    blackAssignment(i,b[i])
+            blackPawns = blackPawns ^ int(math.pow(2, nonBinMove + (direction * 8)))
         else:
-            for i in range(6):
+            whitePawns = whitePawns ^ int(math.pow(2, nonBinMove + (direction * 8)))
 
-                if square & b[i] != 0:
+    if isCastling(nonBinSquare,square, nonBinMove):
+
+        placementForRook = int(math.log(chosenLegalMove,2))
+        print("Castling")
+        UI.sleep(5)
+
+        if placementForRook == 6:
+            updateBoard(int(math.pow(2,7)),int(math.pow(2,5)),colour)
+        elif placementForRook == 62:
+            updateBoard(int(math.pow(2,63)),int(math.pow(2,61)),colour)
+        elif placementForRook == 2:
+            updateBoard(1,8,colour)
+        elif placementForRook == 58:
+            updateBoard(int(math.pow(2,56)),int(math.pow(2,59)),colour)
+    
+    if colour == "WHITE":
+        for i in range(6):
+
+            if square & w[i] != 0:
+                # this is the set its in
+                w[i] = w[i] ^ square
+                w[i] = w[i] | chosenLegalMove
+                whiteAssignment(i,w[i])
+
+            elif chosenLegalMove & b[i] != 0:
+
+                b[i] = b[i] ^ chosenLegalMove
+                blackAssignment(i,b[i])
+    else:
+        for i in range(6):
+
+            if square & b[i] != 0:
                     # this is the set its in
-                    b[i] = b[i] ^ square
-                    b[i] = b[i] | chosenLegalMove
-                    blackAssignment(i,b[i])
+                b[i] = b[i] ^ square
+                b[i] = b[i] | chosenLegalMove
+                blackAssignment(i,b[i])
 
-                elif chosenLegalMove & w[i] != 0:
+            elif chosenLegalMove & w[i] != 0:
 
-                    w[i] = w[i] ^ chosenLegalMove
-                    whiteAssignment(i,w[i])
+                w[i] = w[i] ^ chosenLegalMove
+                whiteAssignment(i,w[i])
         
-    lastMove = [int(math.log(square,2)),int(math.log(chosenLegalMove,2))]
+    lastMove = [nonBinSquare,nonBinMove]
     whitePieces = whitePawns | whiteBishops | whiteHorses | whiteRooks | whiteQueens | whiteKing
     blackPieces = blackPawns | blackBishops | blackHorses | blackRooks | blackQueens | blackKing
     bitWordBoard = whitePieces | blackPieces
@@ -407,8 +438,6 @@ def generateKingMoves(startSquare,colour):
         if getPieceTypeFromSquare(int(math.pow(2,startSquare - 1))) == "NONE" and getPieceTypeFromSquare(int(math.pow(2,startSquare - 2))) == "NONE" and getPieceTypeFromSquare(int(math.pow(2,startSquare - 3))) == "NONE":
             moves = moves + [[startSquare, startSquare - 2]]
 
-
-
     return moves
             
 
@@ -453,13 +482,20 @@ def filterMovesBySquare(square, colour):
 
     return squaresMoves
 
-def isEnPassant(square,chosenLegalMove):
+def isEnPassant(square,binary,chosenLegalMove):
+    if (chosenLegalMove - square) % 8 != 0 and getPieceTypeFromSquare(binary) == "PAWN":
+        return True
     return False
     
-def isCastling(square,chosenLegalMove):
+def isCastling(square,binary, chosenLegalMove):
+    legalMoves = [6,2,58,62]
+    if (square == 4 or square == 60) and (chosenLegalMove in legalMoves) and getPieceTypeFromSquare(binary) == "KING":
+        return True
     return False
 
 def isPromoting(square,chosenLegalMove):
+    if (chosenLegalMove >= 0 and chosenLegalMove <= 7) or (chosenLegalMove >= 56 and chosenLegalMove <= 63) and getPieceTypeFromSquare(square) == "PAWN":
+        return True
     return False
 
 def canCastle(colour):
