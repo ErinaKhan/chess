@@ -460,9 +460,17 @@ def generateSlidingPieceMoves(startSquare, piece,colour):
 
 def filterMovesBySquare(square, colour):
     squaresMoves = []
-    allMoves = generateAllMoves(colour)
+    pseudoLegalMoves = generateAllMoves(colour)
+    responses = None
+
+    if colour == "WHITE":
+        responses = generateAllMoves("BLACK")
+    else:
+        responses = generateAllMoves("WHITE")
+
+    
    
-    for move in allMoves:
+    for move in pseudoLegalMoves:
         if move[0] == square:
             squaresMoves = squaresMoves + [move]
 
