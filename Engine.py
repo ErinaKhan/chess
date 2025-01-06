@@ -578,6 +578,20 @@ def canCastle(colour):
                     bqueenSide = False
         return bkingSide,bqueenSide
 
+def inCheck(colour,moves):
+    if colour == "WHITE":
+        kingPos = int(math.log(1,whiteKing))
+        for i in moves:
+            if i[1] == kingPos:
+                return True
+
+    else:
+        kingPos = int(math.log(1,blackKing))
+        for i in moves:
+            if i[1] == kingPos:
+                return True
+
+
 def evaluate():
     pass
 
