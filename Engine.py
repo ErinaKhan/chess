@@ -366,14 +366,13 @@ def generatePawnMoves(startSquare,colour):
 
         if (startSquare >= 32 and startSquare <= 39 and enemyColour == colour) or (startSquare >= 24 and startSquare <= 31 and playerColour == colour):
             
-            if squaresToEdge[startSquare][2] >= 1 and lastMove != None:
-
-                if (lastMove[0] >= 8 and lastMove[0] <= 15) and (lastMove[1] == lastMove[0] + 16) and playerColour == colour and getPieceTypeFromSquare(int(math.pow(2,lastMove[1]))) == "PAWN":
-                    moves = moves + [[startSquare, lastMove[1] - 8]] 
-                if (lastMove[0] >= 48 and lastMove[0] <= 55) and (lastMove[1] == lastMove[0] - 16) and enemyColour == colour and getPieceTypeFromSquare(int(math.pow(2,lastMove[1]))) == "PAWN":
-                    moves = moves + [[startSquare, lastMove[1] + 8]] 
-            if squaresToEdge[startSquare][3] >= 1:
-                pass
+            if lastMove != None:
+                
+                if abs(lastMove[1] - startSquare) == 1:
+                    if (lastMove[0] >= 8 and lastMove[0] <= 15) and (lastMove[1] == lastMove[0] + 16) and playerColour == colour and getPieceTypeFromSquare(int(math.pow(2,lastMove[1]))) == "PAWN":
+                        moves = moves + [[startSquare, lastMove[1] - 8]] 
+                    if (lastMove[0] >= 48 and lastMove[0] <= 55) and (lastMove[1] == lastMove[0] - 16) and enemyColour == colour and getPieceTypeFromSquare(int(math.pow(2,lastMove[1]))) == "PAWN":
+                        moves = moves + [[startSquare, lastMove[1] + 8]] 
     else: 
         print("ERROR")
 
