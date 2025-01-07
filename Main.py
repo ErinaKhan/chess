@@ -16,9 +16,6 @@ def startGame():
     Engine.precomputeSquaresToEdge()
     colour,playerTurn,newBoard = FileHandler.load(FileHandler.gameConfig()) # loads new game or previous game
     enemyColour = Engine.assignColours(colour)
-
-
-
     Engine.convertToBitBoard(newBoard)
 
     print(f"\nYour colour is {colour}!\n")
@@ -84,7 +81,7 @@ def AITurn(colour):
     chosenMove = moves[index]
     print(chosenMove)
     UI.sleep(10)
-    Engine.updateBoard(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour)
+    Engine.makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,False)
     pass
 
 def hasWon(): # code stub

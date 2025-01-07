@@ -56,7 +56,6 @@
 ######################################################################################################
 ######################################################################################################
 import math
-import UI_Handler as UI
 
 global bitWordBoard
 global whitePieces
@@ -100,13 +99,14 @@ directionOffsets = [-8,8,1,-1,-9,9,-7,7]
 
 # 2d array that stores squares to edge for every square on the board and is pre computed to allow quicker lookup times
 global squaresToEdge
-global lastMove
-lastMove = [0,0]
-global whosTurn 
-whosTurn = "White"
 
-castlingRights = False
-enPassantSquare = False
+global lastMove
+global whosTurn 
+
+global responses
+
+lastMove = [0,0]
+whosTurn = "White"
 
 pieceLookup = {
     "BLACKROOK": "♖",
@@ -197,6 +197,12 @@ def blackAssignment(i,value):
         blackQueens = value
     elif i == 5:
         blackKing = value    
+
+def makeMove(square,chosenLegalMove,colour, isFake):
+    if isFake == False:
+        updateBoard(square,chosenLegalMove,colour)
+    else:
+        pass
 
 def updateBoard(square,chosenLegalMove,colour):
     global bitWordBoard
@@ -461,15 +467,7 @@ def generateSlidingPieceMoves(startSquare, piece,colour):
 def filterMovesBySquare(square, colour):
     squaresMoves = []
     pseudoLegalMoves = generateAllMoves(colour)
-    responses = None
-
-    if colour == "WHITE":
-        responses = generateAllMoves("BLACK")
-    else:
-        responses = generateAllMoves("WHITE")
-
-    
-   
+  
     for move in pseudoLegalMoves:
         if move[0] == square:
             squaresMoves = squaresMoves + [move]
@@ -583,14 +581,15 @@ def inCheck(colour,moves):
         kingPos = int(math.log(1,whiteKing))
         for i in moves:
             if i[1] == kingPos:
-                return True
+                return True, i
 
     else:
         kingPos = int(math.log(1,blackKing))
         for i in moves:
             if i[1] == kingPos:
-                return True
-
+                return True, i
+            
+    return False, [0,0]
 
 def evaluate():
     pass
