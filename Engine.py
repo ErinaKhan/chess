@@ -125,6 +125,15 @@ pieceLookup = {
     "MOVEOVERLAY": "X"
 }
 
+pieceValue = {
+    "PAWN": 1,
+    "HORSE": 3,
+    "BISHOP": 3,
+    "ROOK": 5,
+    "QUEEN": 9, 
+    "KING": 0
+}
+
 def assignColours(plrColour):
     global playerColour
     global enemyColour
@@ -592,7 +601,25 @@ def inCheck(colour,moves):
     return False, [0,0]
 
 def evaluate():
-    pass
+    evaluationScore = 0
+    for file in range(8):
+        
+        for rank in range(8):
+
+            currentSquareIndex = (rank * 8) + file
+            squareBinary = int(math.pow(2,currentSquareIndex))
+            pieceType = getPieceTypeFromSquare(squareBinary)
+            colour = getColour(squareBinary) 
+
+            if not pieceType in ["KING","NONE"]:
+
+                if colour == "WHITE":
+                    evaluationScore = evaluationScore + pieceValue[pieceType]
+                else:
+                    evaluationScore = evaluationScore - pieceValue[pieceType]
+
+    print(evaluationScore)
+    return evaluationScore
 
 def search():
     pass

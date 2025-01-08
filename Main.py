@@ -66,6 +66,8 @@ def playersTurn(colour):
             if valid:
                 chosenLegalMove = selectDestination(square,legalMoves,UI.createOverlay(legalMoves))
                 Engine.updateBoard(square,int(math.pow(2,chosenLegalMove)),colour)
+                Engine.evaluate()
+                UI.sleep(10)
                 return False
             else:
                 print("\nThis piece cant move, try again")
@@ -79,8 +81,6 @@ def AITurn(colour):
     print(moves)
     index = random.randint(0, len(moves) - 1)
     chosenMove = moves[index]
-    print(chosenMove)
-    UI.sleep(10)
     Engine.makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,False)
     pass
 
