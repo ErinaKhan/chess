@@ -191,27 +191,10 @@ def updateBoard(square,chosenLegalMove,colour):
     nonBinMove = int(math.log(chosenLegalMove,2))
 
     if isEnPassant(nonBinSquare,square,nonBinMove):
-        direction = 0
-        if nonBinMove - nonBinSquare > 0:
-            direction = -1
-        else: 
-            direction = 1
-        if colour == "WHITE":
-            blackPawns = blackPawns ^ int(math.pow(2, nonBinMove + (direction * 8)))
-        else:
-            whitePawns = whitePawns ^ int(math.pow(2, nonBinMove + (direction * 8)))
+        enPassant(nonBinMove,nonBinSquare,colour)
 
     if isCastling(nonBinSquare,square, nonBinMove):
-        placementForRook = int(math.log(chosenLegalMove,2))
-
-        if placementForRook == 6:
-            updateBoard(int(math.pow(2,7)),int(math.pow(2,5)),colour)
-        elif placementForRook == 62:
-            updateBoard(int(math.pow(2,63)),int(math.pow(2,61)),colour)
-        elif placementForRook == 2:
-            updateBoard(1,8,colour)
-        elif placementForRook == 58:
-            updateBoard(int(math.pow(2,56)),int(math.pow(2,59)),colour)
+        castle(chosenLegalMove,colour)
     
     if colour == "WHITE":
         for i in range(6):
@@ -450,12 +433,38 @@ def isEnPassant(square,binary,chosenLegalMove):
     if (chosenLegalMove - square) % 8 != 0 and getPieceTypeFromSquare(binary) == "PAWN":
         return True
     return False
+
+def enPassant(nonBinMove,nonBinSquare,colour):
+    global whitePawns
+    global blackPawns
+
+    direction = 0
+    if nonBinMove - nonBinSquare > 0:
+        direction = -1
+    else: 
+        direction = 1
+    if colour == "WHITE":
+        blackPawns = blackPawns ^ int(math.pow(2, nonBinMove + (direction * 8)))
+    else:
+        whitePawns = whitePawns ^ int(math.pow(2, nonBinMove + (direction * 8)))
     
 def isCastling(square,binary, chosenLegalMove):
     legalMoves = [6,2,58,62]
     if (square == 4 or square == 60) and (chosenLegalMove in legalMoves) and getPieceTypeFromSquare(binary) == "KING":
         return True
     return False
+
+def castle(chosenLegalMove,colour):
+    placementForRook = int(math.log(chosenLegalMove,2))
+
+    if placementForRook == 6:
+        updateBoard(int(math.pow(2,7)),int(math.pow(2,5)),colour)    
+    elif placementForRook == 62:
+        updateBoard(int(math.pow(2,63)),int(math.pow(2,61)),colour)
+    elif placementForRook == 2:
+        updateBoard(1,8,colour)
+    elif placementForRook == 58:
+        updateBoard(int(math.pow(2,56)),int(math.pow(2,59)),colour)
 
 def isPromoting(binary,chosenLegalMove):
     if ((chosenLegalMove >= 0 and chosenLegalMove <= 7) or (chosenLegalMove >= 56 and chosenLegalMove <= 63)) and getPieceTypeFromSquare(binary) == "PAWN":
