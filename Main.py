@@ -84,11 +84,11 @@ def AITurn(colour):
     Engine.makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,False)
     pass
 
-def hasWon(): # code stub
-    # someone wins if isInCheck() == True and kingMoves() == []
+def hasWon(): # placeholder
     return False
                 
 def mainMenu():
+    UI.mainMenuUI()
     pass
 
 def validCoordinates(coordinates):
