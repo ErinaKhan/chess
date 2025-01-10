@@ -551,9 +551,9 @@ def canCastle(colour):
                 bkingSide = False 
                 bqueenSide = False
             if bRooksMoved & blackRooks != blackRooks:
-                if bRooksMoved > blackRooks:
-                    bkingSide = False
                 if bRooksMoved < blackRooks:
+                    bkingSide = False
+                if bRooksMoved > blackRooks:
                     bqueenSide = False
         return bkingSide,bqueenSide
 

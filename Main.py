@@ -67,7 +67,7 @@ def playersTurn(colour):
                 chosenLegalMove = selectDestination(square,legalMoves,UI.createOverlay(legalMoves))
                 Engine.updateBoard(square,int(math.pow(2,chosenLegalMove)),colour)
                 Engine.evaluate()
-                UI.sleep(10)
+                UI.sleep(1.2)
                 return False
             else:
                 print("\nThis piece cant move, try again")
