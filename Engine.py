@@ -19,6 +19,7 @@
 ######################################################################################################
 ######################################################################################################
 import math
+import UI_Handler as UI
 
 global bitWordBoard
 global whitePieces
@@ -172,11 +173,12 @@ def blackAssignment(i,value):
 
 def makeMove(square,chosenLegalMove,colour, isFake):
     if isFake == False:
-        updateBoard(square,chosenLegalMove,colour)
+        updateBoard(square,chosenLegalMove,colour,isFake)
     else:
-        pass
+        # w and b are arrays of piece bitboards [Pawns,Bishops,Horses,Rooks,Queens,King]
+        w,wPieces,b,bPieces,fullBoard = updateBoard(square,chosenLegalMove,colour,isFake)
 
-def updateBoard(square,chosenLegalMove,colour):
+def updateBoard(square,chosenLegalMove,colour,isFake):
     global bitWordBoard
     global whitePieces
     global blackPieces
@@ -190,11 +192,18 @@ def updateBoard(square,chosenLegalMove,colour):
     nonBinSquare = int(math.log(square,2))
     nonBinMove = int(math.log(chosenLegalMove,2))
 
-    if isEnPassant(nonBinSquare,square,nonBinMove):
+    if isEnPassant(nonBinSquare,square,nonBinMove,isFake):
         enPassant(nonBinMove,nonBinSquare,colour)
 
-    if isCastling(nonBinSquare,square, nonBinMove):
+    if isCastling(nonBinSquare,square, nonBinMove,isFake):
         castle(chosenLegalMove,colour)
+    
+    '''print(bin(b[0]))
+    print(bin(b[1]))
+    print(bin(b[2]))
+    print(bin(b[3]))
+    print(bin(b[4]))
+    print(bin(b[5]))'''
     
     if colour == "WHITE":
         for i in range(6):
@@ -203,34 +212,45 @@ def updateBoard(square,chosenLegalMove,colour):
                 # this is the set its in
                 w[i] = w[i] ^ square
                 w[i] = w[i] | chosenLegalMove
-                whiteAssignment(i,w[i])
+                if not isFake:
+                    whiteAssignment(i,w[i])
 
             if chosenLegalMove & b[i] != 0:
 
                 b[i] = b[i] ^ chosenLegalMove
-                blackAssignment(i,b[i])
+                if not isFake:
+                    blackAssignment(i,b[i])
     else:
         for i in range(6):
 
             if square & b[i] != 0:
-                    # this is the set its in
+                # this is the set its in
                 b[i] = b[i] ^ square
                 b[i] = b[i] | chosenLegalMove
-                blackAssignment(i,b[i])
+                if not isFake:
+                    blackAssignment(i,b[i])
 
             if chosenLegalMove & w[i] != 0:
 
                 w[i] = w[i] ^ chosenLegalMove
-                whiteAssignment(i,w[i])
+                if not isFake:
+                    whiteAssignment(i,w[i])
 
-    if isPromoting(chosenLegalMove,nonBinMove): 
+    if isPromoting(chosenLegalMove,nonBinMove,isFake): 
         promote(chosenLegalMove,colour)
-        
-    lastMove = [nonBinSquare,nonBinMove]
-    whitePieces = whitePawns | whiteBishops | whiteHorses | whiteRooks | whiteQueens | whiteKing
-    blackPieces = blackPawns | blackBishops | blackHorses | blackRooks | blackQueens | blackKing
-    bitWordBoard = whitePieces | blackPieces
-    
+
+    if not isFake:  
+        lastMove = [nonBinSquare,nonBinMove]
+        whitePieces = whitePawns | whiteBishops | whiteHorses | whiteRooks | whiteQueens | whiteKing
+        blackPieces = blackPawns | blackBishops | blackHorses | blackRooks | blackQueens | blackKing
+        bitWordBoard = whitePieces | blackPieces
+    else:
+        wPieces = w[0] | w[1] | w[2] | w[3] | w[4] | w[5] 
+        bPieces = b[0] | b[1] | b[2] | b[3] | b[4] | b[5] 
+        fullBoard = wPieces | bPieces
+        return w,wPieces,b,bPieces,fullBoard
+
+    UI.sleep(5)
     canCastle(colour)
 
 def precomputeSquaresToEdge():
@@ -429,7 +449,7 @@ def filterMovesBySquare(square, colour):
 
     return squaresMoves
 
-def isEnPassant(square,binary,chosenLegalMove):
+def isEnPassant(square,binary,chosenLegalMove,isFake):
     if (chosenLegalMove - square) % 8 != 0 and getPieceTypeFromSquare(binary) == "PAWN":
         return True
     return False
@@ -448,7 +468,7 @@ def enPassant(nonBinMove,nonBinSquare,colour):
     else:
         whitePawns = whitePawns ^ int(math.pow(2, nonBinMove + (direction * 8)))
     
-def isCastling(square,binary, chosenLegalMove):
+def isCastling(square,binary, chosenLegalMove,isFake):
     legalMoves = [6,2,58,62]
     if (square == 4 or square == 60) and (chosenLegalMove in legalMoves) and getPieceTypeFromSquare(binary) == "KING":
         return True
@@ -466,7 +486,7 @@ def castle(chosenLegalMove,colour):
     elif placementForRook == 58:
         updateBoard(int(math.pow(2,56)),int(math.pow(2,59)),colour)
 
-def isPromoting(binary,chosenLegalMove):
+def isPromoting(binary,chosenLegalMove,isFake):
     if ((chosenLegalMove >= 0 and chosenLegalMove <= 7) or (chosenLegalMove >= 56 and chosenLegalMove <= 63)) and getPieceTypeFromSquare(binary) == "PAWN":
         return True
     return False
