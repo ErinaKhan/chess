@@ -31,8 +31,7 @@ def startGame():
             resigning = playersTurn(colour)
         else:
             AITurn(enemyColour)
-        
-        Engine.resetData()  
+    
         UI.drawBoard(None)
         
         if hasWon():
@@ -67,8 +66,6 @@ def playersTurn(colour):
             if valid:
                 chosenLegalMove = selectDestination(square,legalMoves,UI.createOverlay(legalMoves))
                 Engine.makeMove(square,int(math.pow(2,chosenLegalMove)),colour,False)
-                Engine.evaluate()
-                UI.sleep(1.2)
                 return False
             else:
                 print("\nThis piece cant move, try again")
@@ -82,8 +79,8 @@ def AITurn(colour):
     #print(moves)
     index = random.randint(0, len(moves) - 1)
     chosenMove = moves[index]
-    Engine.makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,True)
-    pass
+    Engine.makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,False)
+
 
 def hasWon(): # placeholder
     return False

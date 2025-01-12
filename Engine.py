@@ -67,9 +67,6 @@ directionOffsets = [-8,8,1,-1,-9,9,-7,7]
 global squaresToEdge
 
 global lastMove
-global whosTurn 
-
-global responses
 
 lastMove = [0,0]
 whosTurn = "White"
