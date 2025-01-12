@@ -75,12 +75,43 @@ def playersTurn(colour):
             return True
     
 def AITurn(colour):
-    moves = Engine.generateAllMoves(colour)
+    '''moves = Engine.generateAllMoves(colour)
     #print(moves)
     index = random.randint(0, len(moves) - 1)
     chosenMove = moves[index]
-    Engine.makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,False)
+    Engine.makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,False)'''
+    moves = Engine.generateAllMoves(colour)
+    currentEvaluation = Engine.evaluate()
+    newEvaluation = currentEvaluation
+    bestMove = None
 
+    for i in moves:
+        Engine.resetData()
+        Engine.makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True)
+        eval = Engine.evaluate()
+
+        if bestMove != None:
+            if colour == "WHITE":
+                if eval > newEvaluation:
+                    bestMove = i
+                    newEvaluation = eval
+            else:
+                if eval < newEvaluation:
+                    bestMove = i
+                    newEvaluation = eval
+        else:
+            bestMove = i
+
+    UI.sleep(2)
+    Engine.resetData()
+
+    if newEvaluation == currentEvaluation:
+        index = random.randint(0, len(moves) - 1)
+        chosenMove = moves[index]
+        Engine.makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,False)
+    else:
+        Engine.makeMove(int(math.pow(2,bestMove[0])),int(math.pow(2,bestMove[1])),colour,False)
+    
 
 def hasWon(): # placeholder
     return False

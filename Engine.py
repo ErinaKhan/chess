@@ -235,8 +235,6 @@ def updateBoard(square,chosenLegalMove,colour):
     whitePieces = whitePawns | whiteBishops | whiteHorses | whiteRooks | whiteQueens | whiteKing
     blackPieces = blackPawns | blackBishops | blackHorses | blackRooks | blackQueens | blackKing
     bitWordBoard = whitePieces | blackPieces
-
-    UI.sleep(5)
     canCastle(colour)
 
 def precomputeSquaresToEdge():
@@ -593,7 +591,6 @@ def evaluate():
                 else:
                     evaluationScore = evaluationScore - pieceValue[pieceType]
 
-    print(evaluationScore)
     return evaluationScore
 
 def search():
