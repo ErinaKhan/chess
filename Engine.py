@@ -740,6 +740,9 @@ def convertToBitBoard(board):
     blackPiecesData = [blackPawns, blackBishops, blackHorses, blackRooks, blackQueens, blackKing]
     currentBoardFullData = [whitePiecesData,blackPiecesData,castlingData]
 
+def retrieveCurrentData():
+    return currentBoardFullData
+
 def resetData():
     global currentBoardFullData
     global bitWordBoard
