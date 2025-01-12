@@ -21,6 +21,8 @@
 import math
 import UI_Handler as UI
 
+global currentBoardFullData
+
 global bitWordBoard
 global whitePieces
 global blackPieces
@@ -171,14 +173,17 @@ def blackAssignment(i,value):
     elif i == 5:
         blackKing = value    
 
-def makeMove(square,chosenLegalMove,colour, isFake):
-    if isFake == False:
-        updateBoard(square,chosenLegalMove,colour,isFake)
-    else:
-        # w and b are arrays of piece bitboards [Pawns,Bishops,Horses,Rooks,Queens,King]
-        w,wPieces,b,bPieces,fullBoard = updateBoard(square,chosenLegalMove,colour,isFake)
+def makeMove(square,chosenLegalMove,colour,isFake):
+    updateBoard(square,chosenLegalMove,colour) # w and b are arrays of piece bitboards [Pawns,Bishops,Horses,Rooks,Queens,King]
 
-def updateBoard(square,chosenLegalMove,colour,isFake):
+    if not isFake:
+        global currentBoardFullData
+        castlingData = [wkingSide,wqueenSide,wKingMoved,wRooksMoved,bkingSide,bqueenSide,bKingMoved,bRooksMoved]
+        whitePiecesData = [whitePawns, whiteBishops, whiteHorses, whiteRooks, whiteQueens, whiteKing]
+        blackPiecesData = [blackPawns, blackBishops, blackHorses, blackRooks, blackQueens, blackKing]
+        currentBoardFullData = [whitePiecesData,blackPiecesData,castlingData]
+
+def updateBoard(square,chosenLegalMove,colour):
     global bitWordBoard
     global whitePieces
     global blackPieces
@@ -193,18 +198,11 @@ def updateBoard(square,chosenLegalMove,colour,isFake):
     nonBinMove = int(math.log(chosenLegalMove,2))
 
     if isEnPassant(nonBinSquare,square,nonBinMove):
-        enPassant(nonBinMove,nonBinSquare,colour,isFake)
+        enPassant(nonBinMove,nonBinSquare,colour)
 
     if isCastling(nonBinSquare,square, nonBinMove):
-        castle(chosenLegalMove,colour,isFake)
-    
-    '''print(bin(b[0]))
-    print(bin(b[1]))
-    print(bin(b[2]))
-    print(bin(b[3]))
-    print(bin(b[4]))
-    print(bin(b[5]))'''
-    
+        castle(chosenLegalMove,colour)
+
     if colour == "WHITE":
         for i in range(6):
 
@@ -212,14 +210,12 @@ def updateBoard(square,chosenLegalMove,colour,isFake):
                 # this is the set its in
                 w[i] = w[i] ^ square
                 w[i] = w[i] | chosenLegalMove
-                if not isFake:
-                    whiteAssignment(i,w[i])
+                whiteAssignment(i,w[i])
 
             if chosenLegalMove & b[i] != 0:
 
                 b[i] = b[i] ^ chosenLegalMove
-                if not isFake:
-                    blackAssignment(i,b[i])
+                blackAssignment(i,b[i])
     else:
         for i in range(6):
 
@@ -227,28 +223,21 @@ def updateBoard(square,chosenLegalMove,colour,isFake):
                 # this is the set its in
                 b[i] = b[i] ^ square
                 b[i] = b[i] | chosenLegalMove
-                if not isFake:
-                    blackAssignment(i,b[i])
+                blackAssignment(i,b[i])
 
             if chosenLegalMove & w[i] != 0:
 
                 w[i] = w[i] ^ chosenLegalMove
-                if not isFake:
-                    whiteAssignment(i,w[i])
+                whiteAssignment(i,w[i])
 
     if isPromoting(chosenLegalMove,nonBinMove): 
-        promote(chosenLegalMove,colour,isFake)
+        promote(chosenLegalMove,colour)
 
-    if not isFake:  
-        lastMove = [nonBinSquare,nonBinMove]
-        whitePieces = whitePawns | whiteBishops | whiteHorses | whiteRooks | whiteQueens | whiteKing
-        blackPieces = blackPawns | blackBishops | blackHorses | blackRooks | blackQueens | blackKing
-        bitWordBoard = whitePieces | blackPieces
-    else:
-        wPieces = w[0] | w[1] | w[2] | w[3] | w[4] | w[5] 
-        bPieces = b[0] | b[1] | b[2] | b[3] | b[4] | b[5] 
-        fullBoard = wPieces | bPieces
-        return w,wPieces,b,bPieces,fullBoard
+      
+    lastMove = [nonBinSquare,nonBinMove]
+    whitePieces = whitePawns | whiteBishops | whiteHorses | whiteRooks | whiteQueens | whiteKing
+    blackPieces = blackPawns | blackBishops | blackHorses | blackRooks | blackQueens | blackKing
+    bitWordBoard = whitePieces | blackPieces
 
     UI.sleep(5)
     canCastle(colour)
@@ -452,7 +441,7 @@ def isEnPassant(square,binary,chosenLegalMove):
         return True
     return False
 
-def enPassant(nonBinMove,nonBinSquare,colour,isFake):
+def enPassant(nonBinMove,nonBinSquare,colour):
     global whitePawns
     global blackPawns
 
@@ -462,11 +451,9 @@ def enPassant(nonBinMove,nonBinSquare,colour,isFake):
     else: 
         direction = 1
     if colour == "WHITE":
-        if not isFake:
-            blackPawns = blackPawns ^ int(math.pow(2, nonBinMove + (direction * 8)))
+        blackPawns = blackPawns ^ int(math.pow(2, nonBinMove + (direction * 8)))
     else:
-        if not isFake:
-            whitePawns = whitePawns ^ int(math.pow(2, nonBinMove + (direction * 8)))
+        whitePawns = whitePawns ^ int(math.pow(2, nonBinMove + (direction * 8)))
     
 def isCastling(square,binary, chosenLegalMove):
     legalMoves = [6,2,58,62]
@@ -474,24 +461,24 @@ def isCastling(square,binary, chosenLegalMove):
         return True
     return False
 
-def castle(chosenLegalMove,colour,isFake):
+def castle(chosenLegalMove,colour):
     placementForRook = int(math.log(chosenLegalMove,2))
 
     if placementForRook == 6:
-        updateBoard(int(math.pow(2,7)),int(math.pow(2,5)),colour,isFake)    
+        updateBoard(int(math.pow(2,7)),int(math.pow(2,5)),colour)    
     elif placementForRook == 62:
-        updateBoard(int(math.pow(2,63)),int(math.pow(2,61)),colour,isFake)
+        updateBoard(int(math.pow(2,63)),int(math.pow(2,61)),colour)
     elif placementForRook == 2:
-        updateBoard(1,8,colour,isFake)
+        updateBoard(1,8,colour)
     elif placementForRook == 58:
-        updateBoard(int(math.pow(2,56)),int(math.pow(2,59)),colour,isFake)
+        updateBoard(int(math.pow(2,56)),int(math.pow(2,59)),colour)
 
 def isPromoting(binary,chosenLegalMove):
     if ((chosenLegalMove >= 0 and chosenLegalMove <= 7) or (chosenLegalMove >= 56 and chosenLegalMove <= 63)) and getPieceTypeFromSquare(binary) == "PAWN":
         return True
     return False
 
-def promote(chosenLegalMove,colour,isFake):
+def promote(chosenLegalMove,colour):
     global whiteHorses
     global whiteBishops
     global whiteRooks
@@ -749,3 +736,70 @@ def convertToBitBoard(board):
 
     bKingMoved = blackKing
     bRooksMoved = blackRooks
+
+    global currentBoardFullData
+    castlingData = [wkingSide,wqueenSide,wKingMoved,wRooksMoved,bkingSide,bqueenSide,bKingMoved,bRooksMoved]
+    whitePiecesData = [whitePawns, whiteBishops, whiteHorses, whiteRooks, whiteQueens, whiteKing]
+    blackPiecesData = [blackPawns, blackBishops, blackHorses, blackRooks, blackQueens, blackKing]
+    currentBoardFullData = [whitePiecesData,blackPiecesData,castlingData]
+
+def resetData():
+    global currentBoardFullData
+    global bitWordBoard
+    global whitePieces
+    global blackPieces
+     
+    global whitePawns
+    global whiteHorses
+    global whiteBishops
+    global whiteRooks
+    global whiteQueens
+    global whiteKing
+
+    global blackPawns
+    global blackHorses
+    global blackBishops
+    global blackRooks
+    global blackQueens
+    global blackKing
+
+    global wKingMoved
+    global wRooksMoved
+
+    global bKingMoved
+    global bRooksMoved
+
+    global wqueenSide
+    global wkingSide
+    global bqueenSide
+    global bkingSide
+
+    global whitePieces
+    global blackPieces
+
+    whitePawns = currentBoardFullData[0][0]
+    whiteBishops = currentBoardFullData[0][1]
+    whiteHorses = currentBoardFullData[0][2]
+    whiteRooks = currentBoardFullData[0][3]
+    whiteQueens = currentBoardFullData[0][4]
+    whiteKing = currentBoardFullData[0][5]
+
+    blackPawns = currentBoardFullData[1][0] 
+    blackBishops = currentBoardFullData[1][1]
+    blackHorses = currentBoardFullData[1][2]
+    blackRooks = currentBoardFullData[1][3]
+    blackQueens = currentBoardFullData[1][4]
+    blackKing = currentBoardFullData[1][5]
+    
+    wkingSide = currentBoardFullData[2][0] 
+    wqueenSide = currentBoardFullData[2][1] 
+    wKingMoved = currentBoardFullData[2][2] 
+    wRooksMoved = currentBoardFullData[2][3] 
+    bkingSide = currentBoardFullData[2][4] 
+    bqueenSide = currentBoardFullData[2][5] 
+    bKingMoved = currentBoardFullData[2][6] 
+    bRooksMoved = currentBoardFullData[2][7] 
+    
+    whitePieces = whitePawns | whiteBishops | whiteHorses | whiteRooks | whiteQueens | whiteKing
+    blackPieces = blackPawns | blackBishops | blackHorses | blackRooks | blackQueens | blackKing
+    bitWordBoard = whitePieces | blackPieces

@@ -32,6 +32,7 @@ def startGame():
         else:
             AITurn(enemyColour)
         
+        Engine.resetData()  
         UI.drawBoard(None)
         
         if hasWon():
@@ -78,10 +79,10 @@ def playersTurn(colour):
     
 def AITurn(colour):
     moves = Engine.generateAllMoves(colour)
-    print(moves)
+    #print(moves)
     index = random.randint(0, len(moves) - 1)
     chosenMove = moves[index]
-    Engine.makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,False)
+    Engine.makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,True)
     pass
 
 def hasWon(): # placeholder
