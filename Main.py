@@ -26,23 +26,15 @@ def startGame():
     resigning = False
 
     while True:
-
-        if playerTurn:
-            resigning = playersTurn(colour)
-        else:
-            AITurn(enemyColour)
-    
-        UI.drawBoard(None)
-        
-        if hasWon():
+        if Engine.CHECKMATE:
+            UI.clear()
             if playerTurn:
                 print("You Won")
             else:
                 print("You Lost, Better luck next time!")
                 
             print("\n\nReturning To Menu...")
-            UI.clear()
-            startGame()
+            break
         else:
             if resigning:
                 UI.clear()
@@ -54,6 +46,14 @@ def startGame():
             else:
                 print("Player Turn")
                 playerTurn = True
+                
+            if playerTurn:
+                resigning = playersTurn(colour)
+            else:
+                AITurn(enemyColour)
+    
+        UI.drawBoard(None)
+
 
 def playersTurn(colour):
     valid = False
@@ -75,32 +75,29 @@ def playersTurn(colour):
             return True
     
 def AITurn(colour):
-    '''moves = Engine.generateAllMoves(colour)
-    #print(moves)
-    index = random.randint(0, len(moves) - 1)
-    chosenMove = moves[index]
-    Engine.makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,False)'''
+   
     moves = Engine.generateAllMoves(colour,False)
     currentEvaluation = Engine.evaluate()
     newEvaluation = currentEvaluation
     bestMove = None
 
-    for i in moves:
-        Engine.resetData()
-        Engine.makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True)
-        eval = Engine.evaluate()
+    if len(moves) != 0:
+        for i in moves:
+            Engine.resetData()
+            Engine.makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True)
+            eval = Engine.evaluate()
 
-        if bestMove != None:
-            if colour == "WHITE":
-                if eval > newEvaluation:
-                    bestMove = i
-                    newEvaluation = eval
+            if bestMove != None:
+                if colour == "WHITE":
+                    if eval > newEvaluation:
+                        bestMove = i
+                        newEvaluation = eval
+                else:
+                    if eval < newEvaluation:
+                        bestMove = i
+                        newEvaluation = eval
             else:
-                if eval < newEvaluation:
-                    bestMove = i
-                    newEvaluation = eval
-        else:
-            bestMove = i
+                bestMove = i
 
     UI.sleep(2)
     Engine.resetData()
@@ -112,10 +109,6 @@ def AITurn(colour):
     else:
         Engine.makeMove(int(math.pow(2,bestMove[0])),int(math.pow(2,bestMove[1])),colour,False)
     
-
-def hasWon(): # placeholder
-    return False
-                
 def mainMenu():
     UI.mainMenuUI()
 

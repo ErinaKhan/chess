@@ -19,6 +19,7 @@
 ######################################################################################################
 ######################################################################################################
 import math
+import UI_Handler as UI
 
 global currentBoardFullData
 
@@ -66,6 +67,10 @@ directionOffsets = [-8,8,1,-1,-9,9,-7,7]
 global squaresToEdge
 
 global lastMove
+
+global CHECKMATE
+
+CHECKMATE = False
 
 lastMove = [0,0]
 whosTurn = "White"
@@ -305,13 +310,21 @@ def generateAllMoves(turn,isResponses):
                     moves = moves + generateKingMoves(currentSquareIndex,turn)
 
     if not isResponses:
-        for move in moves:
-            resetData()
+        for move in moves:            
             makeMove(int(math.pow(2,move[0])),int(math.pow(2,move[1])),turn,True)
-            if not inCheck(turn, generateAllMoves(switchColours(turn),True)):
+            if not inCheck(turn,generateAllMoves(switchColours(turn),True)):
                 legalMoves = legalMoves + [move]
+            resetData()
 
-    return legalMoves
+        if len(legalMoves) == 0:
+            print("CHECKMATE")
+            UI.sleep(20)
+            global CHECKMATE
+            CHECKMATE = True
+
+        return legalMoves
+            
+    return moves
 
 def generatePawnMoves(startSquare,colour):
     moves = []
@@ -323,9 +336,9 @@ def generatePawnMoves(startSquare,colour):
     enemyOnStartingRank = startSquare >= 8 and startSquare <= 15 and enemyColour
     onLeftEdge = startSquare in [0,8,16,24,32,40,48,56]
     onRightEdge = startSquare in [7,15,23,31,39,47,55,63]
-    enemyLeft = getColour(binarySquare << 9) == enemyColour
+    enemyLeft = getColour(binarySquare >> 9) == enemyColour
     enemyRight = getColour(binarySquare >> 7) == enemyColour
-    playerLeft = getColour(binarySquare >> 7) == playerColour
+    playerLeft = getColour(binarySquare << 7) == playerColour
     playerRight = getColour(binarySquare << 9) == playerColour
     canTakePieceLeft = (enemyLeft and colour == playerColour) or (playerLeft and colour == enemyColour)
     canTakePieceRight = (enemyRight and colour == playerColour) or (playerRight and colour == enemyColour)
@@ -466,7 +479,7 @@ def filterMovesBySquare(square, colour):
     return squaresMoves
 
 def isEnPassant(square,binary,chosenLegalMove):
-    if (chosenLegalMove - square) % 8 != 0 and getPieceTypeFromSquare(binary) == "PAWN":
+    if (chosenLegalMove - square) % 8 != 0 and getPieceTypeFromSquare(binary) == "PAWN" and getPieceTypeFromSquare(int(math.pow(2,chosenLegalMove))) == "NONE":
         return True
     return False
 
@@ -594,19 +607,42 @@ def canCastle(colour):
         return bkingSide,bqueenSide
 
 def inCheck(colour,moves):
+    global blackKing
+    global whiteKing
+
+    #print(bin(whiteKing))
+    #print(bin(blackKing))
+    #UI.sleep(0.5)
+
     if colour == "WHITE":
-        kingPos = int(math.log(1,whiteKing))
+        if whiteKing == 0:
+            return True
+        
+        try:
+            kingPos = int(math.log(whiteKing,2))
+        except:
+            print("not worked")
+            print(bin(whiteKing))
+            UI.sleep(20)
         for i in moves:
             if i[1] == kingPos:
-                return True, i
+                return True
 
     else:
-        kingPos = int(math.log(1,blackKing))
+        if blackKing == 0:
+            return True
+        
+        try:
+            kingPos = int(math.log(blackKing,2))
+        except:
+            print("not worked")
+            print(bin(blackKing))
+            UI.sleep(20)
         for i in moves:
             if i[1] == kingPos:
-                return True, i
+                return True
             
-    return False, [0,0]
+    return False
 
 def evaluate():
     evaluationScore = 0
@@ -629,9 +665,6 @@ def evaluate():
 
 def search():
     pass
-
-def hasWon(colour, moves):
-    return inCheck(colour,moves) and moves == []
 
 ##################################################################################################################################################################################
 ##################################################################################################################################################################################
