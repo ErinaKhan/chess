@@ -109,6 +109,12 @@ def assignColours(plrColour):
 
     return enemyColour
 
+def switchColours(colour):
+    if colour == "WHITE":
+        return "BLACK"
+    else:
+        return "WHITE"
+
 def getColour(square):
     if square == None:
         return None
@@ -274,8 +280,9 @@ def getPieceTypeFromSquare(square):
     else:
         return "NONE"
     
-def generateAllMoves(turn):
-    moves = []
+def generateAllMoves(turn,isResponses):
+    legalMoves = []
+    moves = [] 
 
     for file in range(8):
         
@@ -296,7 +303,15 @@ def generateAllMoves(turn):
                     moves = moves + generateHorseMoves(currentSquareIndex,turn)
                 elif pieceType == "KING":
                     moves = moves + generateKingMoves(currentSquareIndex,turn)
-    return moves
+
+    if not isResponses:
+        for move in moves:
+            resetData()
+            makeMove(int(math.pow(2,move[0])),int(math.pow(2,move[1])),turn,True)
+            if not inCheck(turn, generateAllMoves(switchColours(turn),True)):
+                legalMoves = legalMoves + [move]
+
+    return legalMoves
 
 def generatePawnMoves(startSquare,colour):
     moves = []
@@ -442,7 +457,7 @@ def generateSlidingPieceMoves(startSquare, piece,colour):
 
 def filterMovesBySquare(square, colour):
     squaresMoves = []
-    pseudoLegalMoves = generateAllMoves(colour)
+    pseudoLegalMoves = generateAllMoves(colour,False)
   
     for move in pseudoLegalMoves:
         if move[0] == square:
