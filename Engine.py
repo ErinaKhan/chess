@@ -19,7 +19,6 @@
 ######################################################################################################
 ######################################################################################################
 import math
-import UI_Handler as UI
 
 global currentBoardFullData
 
@@ -304,17 +303,37 @@ def generatePawnMoves(startSquare,colour):
     directionEnd = 1
     direction = -1
 
+    binarySquare = int(math.pow(2,startSquare))
     playerOnStartingRank = startSquare >= 48 and startSquare <= 55 and playerColour
     enemyOnStartingRank = startSquare >= 8 and startSquare <= 15 and enemyColour
+    onLeftEdge = startSquare in [0,8,16,24,32,40,48,56]
+    onRightEdge = startSquare in [7,15,23,31,39,47,55,63]
+    enemyLeft = getColour(binarySquare << 9) == enemyColour
+    enemyRight = getColour(binarySquare >> 7) == enemyColour
+    playerLeft = getColour(binarySquare >> 7) == playerColour
+    playerRight = getColour(binarySquare << 9) == playerColour
+    canTakePieceLeft = (enemyLeft and colour == playerColour) or (playerLeft and colour == enemyColour)
+    canTakePieceRight = (enemyRight and colour == playerColour) or (playerRight and colour == enemyColour)
 
     if (playerOnStartingRank) or (enemyOnStartingRank):
         directionEnd = 2
-
     if playerColour == colour:
         direction = 0
     elif enemyColour == colour:
         direction = 1
-    
+
+    if canTakePieceLeft and not onLeftEdge:
+        if playerColour == colour:
+            moves = moves + [[startSquare, startSquare - 9]]
+        else: 
+            moves = moves + [[startSquare, startSquare + 7]]
+
+    if canTakePieceRight and not onRightEdge:
+        if playerColour == colour:
+            moves = moves + [[startSquare, startSquare - 7]]
+        else: 
+            moves = moves + [[startSquare, startSquare + 9]]
+
     if direction != -1:
         for squares in range(directionEnd):
             targetSquare = startSquare + (directionOffsets[direction] * (squares + 1))
