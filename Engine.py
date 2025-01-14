@@ -68,9 +68,7 @@ global squaresToEdge
 
 global lastMove
 
-global CHECKMATE
-
-CHECKMATE = False
+global Checkmate
 
 lastMove = [0,0]
 whosTurn = "White"
@@ -319,8 +317,8 @@ def generateAllMoves(turn,isResponses):
         if len(legalMoves) == 0:
             print("CHECKMATE")
             UI.sleep(20)
-            global CHECKMATE
-            CHECKMATE = True
+            global Checkmate
+            Checkmate = True
 
         return legalMoves
             
@@ -387,6 +385,7 @@ def generatePawnMoves(startSquare,colour):
         print("ERROR")
 
     return moves
+
 
 def generateHorseMoves(startSquare,colour):
     moves = []
@@ -562,6 +561,9 @@ def promote(chosenLegalMove,colour):
                         blackQueens = blackQueens | chosenLegalMove
                     
                 valid = True
+
+def gameOver():
+    return gameOver
 
 def canCastle(colour):
     global wKingMoved
@@ -797,6 +799,9 @@ def convertToBitBoard(board):
 
     bKingMoved = blackKing
     bRooksMoved = blackRooks
+
+    global Checkmate
+    Checkmate = False
 
     global currentBoardFullData
     castlingData = [wkingSide,wqueenSide,wKingMoved,wRooksMoved,bkingSide,bqueenSide,bKingMoved,bRooksMoved]

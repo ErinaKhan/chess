@@ -26,9 +26,9 @@ def startGame():
     resigning = False
 
     while True:
-        if Engine.CHECKMATE:
+        if Engine.Checkmate:
             UI.clear()
-            if playerTurn:
+            if not playerTurn:
                 print("You Won")
             else:
                 print("You Lost, Better luck next time!")
@@ -99,15 +99,15 @@ def AITurn(colour):
             else:
                 bestMove = i
 
-    UI.sleep(2)
-    Engine.resetData()
+        UI.sleep(2)
+        Engine.resetData()
 
-    if newEvaluation == currentEvaluation:
-        index = random.randint(0, len(moves) - 1)
-        chosenMove = moves[index]
-        Engine.makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,False)
-    else:
-        Engine.makeMove(int(math.pow(2,bestMove[0])),int(math.pow(2,bestMove[1])),colour,False)
+        if newEvaluation == currentEvaluation:
+            index = random.randint(0, len(moves) - 1)
+            chosenMove = moves[index]
+            Engine.makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,False)
+        else:
+            Engine.makeMove(int(math.pow(2,bestMove[0])),int(math.pow(2,bestMove[1])),colour,False)
     
 def mainMenu():
     UI.mainMenuUI()
