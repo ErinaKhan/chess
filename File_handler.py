@@ -3,6 +3,21 @@ import random
 from os import system, name
 from time import sleep
 
+FENlookup = {
+    "r": "♖",
+    "n": "♘",
+    "b": "♗",
+    "q": "♕",
+    "k": "♔",
+    "p": "♙",
+    "R": "♜",
+    "N": "♞",
+    "B": "♝",
+    "Q": "♛",
+    "K": "♚",
+    "P": "♟",
+}
+
 def clear():
    # for windows
    if name == 'nt':
@@ -89,22 +104,7 @@ def boardSetup(playerColour):
         return data[0],"WHITE",True
     else:
         data = FENBoard("RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr w KQkq - 0 1")
-        return data[0],"BLACK",True
-
-FENlookup = {
-    "r": "♖",
-    "n": "♘",
-    "b": "♗",
-    "q": "♕",
-    "k": "♔",
-    "p": "♙",
-    "R": "♜",
-    "N": "♞",
-    "B": "♝",
-    "Q": "♛",
-    "K": "♚",
-    "P": "♟",
-}
+        return data[0],"BLACK",False
 
 def validFEN(fen):
     return fen.count('/') == 7

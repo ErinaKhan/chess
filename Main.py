@@ -11,7 +11,6 @@ import math
 #------------------------------------ FUNCTIONS ------------------------------------
 
 def startGame():
-    
     # main loop of program
     Engine.precomputeSquaresToEdge()
     colour,playerTurn,newBoard = FileHandler.load(FileHandler.gameConfig()) # loads new game or previous game
@@ -28,11 +27,10 @@ def startGame():
     while True:
         if Engine.Checkmate:
             UI.clear()
-            if not playerTurn:
+            if playerTurn:
                 print("You Won")
             else:
                 print("You Lost, Better luck next time!")
-                
             print("\n\nReturning To Menu...")
             break
         else:
@@ -41,16 +39,11 @@ def startGame():
                 print("thanks for playing!!")
                 break
             elif playerTurn:
-                print("AI turn")
+                resigning = playersTurn(colour)
                 playerTurn = False
             else:
-                print("Player Turn")
-                playerTurn = True
-                
-            if playerTurn:
-                resigning = playersTurn(colour)
-            else:
                 AITurn(enemyColour)
+                playerTurn = True
     
         UI.drawBoard(None)
 
@@ -75,7 +68,6 @@ def playersTurn(colour):
             return True
     
 def AITurn(colour):
-   
     moves = Engine.generateAllMoves(colour,False)
     currentEvaluation = Engine.evaluate()
     newEvaluation = currentEvaluation

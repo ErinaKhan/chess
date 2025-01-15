@@ -23,6 +23,10 @@ import UI_Handler as UI
 
 global currentBoardFullData
 
+#------------------------------------------------------------------------------------------------------------------------
+
+# bitboards
+
 global bitWordBoard
 global whitePieces
 global blackPieces
@@ -59,6 +63,8 @@ global wkingSide
 global bqueenSide
 global bkingSide
 
+#------------------------------------------------------------------------------------------------------------------------
+
 # offsets needed for all horizonatal and diagonal moves shown visually in the diagram at the top of the code
 # use first 4 indexes for straight line moves like the rook and the last 4 for diagonal moves or all indexes for the queen
 directionOffsets = [-8,8,1,-1,-9,9,-7,7]    
@@ -67,11 +73,8 @@ directionOffsets = [-8,8,1,-1,-9,9,-7,7]
 global squaresToEdge
 
 global lastMove
-
 global Checkmate
-
 lastMove = [0,0]
-whosTurn = "White"
 
 pieceLookup = {
     "BLACKROOK": "♖",
@@ -128,14 +131,6 @@ def getColour(square):
         return "BLACK"
     else:
         return "NONE"
-
-def inCheck(colour):
-    if colour == "WHITE":
-        pass
-    elif colour == "BLACK":
-        pass
-    else:
-        return "ERROR"
 
 def whiteAssignment(i,value):
     global whitePawns
@@ -315,10 +310,14 @@ def generateAllMoves(turn,isResponses):
             resetData()
 
         if len(legalMoves) == 0:
-            print("CHECKMATE")
-            UI.sleep(20)
-            global Checkmate
-            Checkmate = True
+            if inCheck(turn,generateAllMoves(switchColours(turn),True)):
+                print("CHECKMATE")
+                UI.sleep(20)
+                global Checkmate
+                Checkmate = True
+            else:
+                print("STALEMATE")
+                UI.sleep(20)
 
         return legalMoves
             
@@ -612,20 +611,12 @@ def inCheck(colour,moves):
     global blackKing
     global whiteKing
 
-    #print(bin(whiteKing))
-    #print(bin(blackKing))
-    #UI.sleep(0.5)
-
     if colour == "WHITE":
         if whiteKing == 0:
             return True
         
-        try:
-            kingPos = int(math.log(whiteKing,2))
-        except:
-            print("not worked")
-            print(bin(whiteKing))
-            UI.sleep(20)
+        kingPos = int(math.log(whiteKing,2))
+        
         for i in moves:
             if i[1] == kingPos:
                 return True
@@ -633,13 +624,9 @@ def inCheck(colour,moves):
     else:
         if blackKing == 0:
             return True
-        
-        try:
-            kingPos = int(math.log(blackKing,2))
-        except:
-            print("not worked")
-            print(bin(blackKing))
-            UI.sleep(20)
+       
+        kingPos = int(math.log(blackKing,2))
+
         for i in moves:
             if i[1] == kingPos:
                 return True
@@ -670,6 +657,7 @@ def search():
 
 ##################################################################################################################################################################################
 ##################################################################################################################################################################################
+################################################################ Used to create bitboards from 2d array ##########################################################################
 ##################################################################################################################################################################################
 ##################################################################################################################################################################################
 
@@ -720,6 +708,9 @@ def convertToBitBoard(board):
     global blackRooks
     global blackQueens
     global blackKing
+
+    global Checkmate
+    Checkmate = False
 
     blackPieces = 0
     whitePieces = 0
@@ -800,17 +791,11 @@ def convertToBitBoard(board):
     bKingMoved = blackKing
     bRooksMoved = blackRooks
 
-    global Checkmate
-    Checkmate = False
-
     global currentBoardFullData
     castlingData = [wkingSide,wqueenSide,wKingMoved,wRooksMoved,bkingSide,bqueenSide,bKingMoved,bRooksMoved]
     whitePiecesData = [whitePawns, whiteBishops, whiteHorses, whiteRooks, whiteQueens, whiteKing]
     blackPiecesData = [blackPawns, blackBishops, blackHorses, blackRooks, blackQueens, blackKing]
     currentBoardFullData = [whitePiecesData,blackPiecesData,castlingData]
-
-def retrieveCurrentData():
-    return currentBoardFullData
 
 def resetData():
     global currentBoardFullData
