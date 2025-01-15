@@ -44,7 +44,8 @@ def startGame():
             else:
                 AITurn(enemyColour)
                 playerTurn = True
-    
+
+        UI.clear()
         UI.drawBoard(None)
 
 
@@ -119,9 +120,9 @@ def selectPiece(colour):
     currentSquareInBinary = None
     while Engine.getColour(currentSquareInBinary) != colour:
         chosenCoordinates = "XX"
-        UI.clear()
-        UI.drawBoard(None)
         while not validCoordinates(chosenCoordinates):
+            UI.clear()
+            UI.drawBoard(None)
             chosenCoordinates = input("\n\nEnter the coordinates on the chess board (such as A8,a8,b5 etc...) of the piece you would like to move or type 'resign' to resign\n\nInput: ")
             if chosenCoordinates == "resign":
                 return None, True

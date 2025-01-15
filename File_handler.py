@@ -1,7 +1,6 @@
-import keyboard
 import random
-from os import system, name
-from time import sleep
+import UI_Handler as UI
+
 
 FENlookup = {
     "r": "♖",
@@ -18,14 +17,6 @@ FENlookup = {
     "P": "♟",
 }
 
-def clear():
-   # for windows
-   if name == 'nt':
-      _ = system('cls')
-
-   # for mac and linux
-   else:
-      _ = system('clear')
 
 def load(gameType):
     # returns all variables needed by main to run the game
@@ -37,9 +28,7 @@ def load(gameType):
     colour = None
     playerTurn = None
     board = None
-
     if gameType == "new":
-        
         board,colour,playerTurn = boardSetup(giveRandomColour())
     elif gameType == "old": # loading a previously played unfinished game or a game from FEN notation
         pass
@@ -50,55 +39,23 @@ def load(gameType):
 
 def gameConfig():
     # returns the settings for the game as a string
+    UI.sleep(1)
+    option = UI.generateMenu(["New Game","Load Game"])
+
+    if option == 0:
+        UI.sleep(1)
+        option = UI.generateMenu(["New Game", "Load game from FEN"])
+        if option == 0: 
+            return "new"
+        else:
+            return "FEN"
+    else:
+        return "old"
     
-    index = 0
-    b1 = "<"
-    b2 = " "
-    sleep(1)
-    while True:
-        print(f"New Game {b1}")
-        print(f"Load Game ({gamesAvailable()}) {b2}")
-        
-        if keyboard.read_key() == "enter":
-            clear()
-            if index == 0:
-                b1 = "<"
-                b2 = " "
-                sleep(1)
-                while True:
-                    clear()
-                    print(f"New Game {b1}")
-                    print(f"Load Game from FEN {b2}")
-                    if keyboard.read_key() == "enter":
-                        clear()
-                        if index == 0:
-                            return "new"
-                        else:
-                            return "FEN"
-                    elif keyboard.read_key() == "up" and index == 1:
-                        index = 0
-                        b1 = "<"
-                        b2 = " " 
-                    elif keyboard.read_key() == "down" and index == 0:
-                        index = 1
-                        b1 = " "
-                        b2 = "<"
-            else:
-                return "old"
-        elif keyboard.read_key() == "up" and index == 1:
-            index = 0
-            b1 = "<"
-            b2 = " " 
-        elif keyboard.read_key() == "down" and index == 0:
-            index = 1
-            b1 = " "
-            b2 = "<"
-        clear()
 
 def boardSetup(playerColour): 
     # returns a 2d array 
     # flips the board depending on what pieces the player has
-    board = None
     if playerColour == "WHITE":
         data = FENBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
         return data[0],"WHITE",True
@@ -110,10 +67,10 @@ def validFEN(fen):
     return fen.count('/') == 7
 
 def getFEN():
-    sleep(2)
+    UI.sleep(2)
     fen = ""
     while not validFEN(fen):
-        clear()
+        UI.clear()
         fen = input("Enter a valid FEN string in the space below\n\ninput: ")
     return fen
 
