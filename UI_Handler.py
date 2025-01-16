@@ -106,7 +106,16 @@ def generateMenu(textOptions):
             currentIndex = currentIndex + 1
     
     return currentIndex
-        
+
+def askForPromotePiece():
+    valid = False
+    pieces = ["BISHOP","HORSE","ROOK","QUEEN"]
+    while not valid:
+        pieceToBecome = input("\n\nPick a piece for your PAWN to promote too (type: rook,horse,bishop or queen): ").upper()    
+        for i in range(len(pieces)):
+            if pieceToBecome == pieces[i]:
+                valid = True
+                return pieceToBecome
 
 def mainMenuUI():
     print("----------------------------------------------------------------")

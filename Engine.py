@@ -231,7 +231,11 @@ def updateBoard(square,chosenLegalMove,colour):
                 whiteAssignment(i,w[i])
 
     if isPromoting(chosenLegalMove,nonBinMove): 
-        promote(chosenLegalMove,colour)
+        if colour == playerColour:
+            piece = UI.askForPromotePiece()
+            promote(chosenLegalMove,colour,piece)
+        else:
+            promote(chosenLegalMove,colour,"QUEEN")
 
     lastMove = [nonBinSquare,nonBinMove]
     whitePieces = whitePawns | whiteBishops | whiteHorses | whiteRooks | whiteQueens | whiteKing
@@ -514,7 +518,7 @@ def isPromoting(binary,chosenLegalMove):
         return True
     return False
 
-def promote(chosenLegalMove,colour):
+def promote(chosenLegalMove,colour,piece):
     global whiteHorses
     global whiteBishops
     global whiteRooks
@@ -527,35 +531,27 @@ def promote(chosenLegalMove,colour):
     global blackRooks
     global blackQueens
 
-    valid = False
-    pieces = ["BISHOP","HORSE","ROOK","QUEEN"]
-
-    while not valid: 
-        pieceToBecome = input("\n\nPick a piece for your PAWN to promote too (type: rook,horse,bishop or queen): ").upper()
-        for i in range(len(pieces)):
-            if pieceToBecome == pieces[i]:
-                if colour == "WHITE":
-                    whitePawns = whitePawns ^ chosenLegalMove
-                    if i == 0:
-                        whiteBishops = whiteBishops | chosenLegalMove
-                    elif i == 1:
-                        whiteHorses = whiteHorses | chosenLegalMove
-                    elif i == 2:
-                        whiteRooks = whiteRooks | chosenLegalMove
-                    elif i == 3:
-                        whiteQueens = whiteQueens | chosenLegalMove
-                else:
-                    blackPawns = blackPawns ^ chosenLegalMove
-                    if i == 0:
-                        blackBishops = blackBishops | chosenLegalMove
-                    elif i == 1:
-                        blackHorses = blackHorses | chosenLegalMove
-                    elif i == 2:
-                        blackRooks = blackRooks | chosenLegalMove
-                    elif i == 3:
-                        blackQueens = blackQueens | chosenLegalMove
-                    
-                valid = True
+    if colour == "WHITE":
+        whitePawns = whitePawns ^ chosenLegalMove
+        if piece == "BISHOP":
+            whiteBishops = whiteBishops | chosenLegalMove
+        elif piece == "HORSE":
+            whiteHorses = whiteHorses | chosenLegalMove
+        elif piece == "ROOK":
+            whiteRooks = whiteRooks | chosenLegalMove
+        elif piece == "QUEEN":
+            whiteQueens = whiteQueens | chosenLegalMove
+    else:
+        blackPawns = blackPawns ^ chosenLegalMove
+        if piece == "BISHOP":
+            blackBishops = blackBishops | chosenLegalMove
+        elif piece == "HORSE":
+            blackHorses = blackHorses | chosenLegalMove
+        elif piece == "ROOK":
+            blackRooks = blackRooks | chosenLegalMove
+        elif piece == "QUEEN":
+            blackQueens = blackQueens | chosenLegalMove
+                
 
 def gameOver():
     return gameOver

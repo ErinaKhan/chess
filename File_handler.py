@@ -32,8 +32,6 @@ def load(gameType):
         pass
     elif gameType == "FEN":
         board,colour,playerTurn = FENBoard(getFEN())
-        print(board)
-        UI.sleep(8)
     
     return colour,playerTurn,board
 
@@ -48,8 +46,6 @@ def gameConfig():
         if option == 0: 
             return "new"
         else:
-            print("FEN")
-            UI.sleep(3)
             return "FEN"
     else:
         return "old"
