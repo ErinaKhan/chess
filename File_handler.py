@@ -1,7 +1,6 @@
 import random
 import UI_Handler as UI
 
-
 FENlookup = {
     "r": "♖",
     "n": "♘",
@@ -16,7 +15,6 @@ FENlookup = {
     "K": "♚",
     "P": "♟",
 }
-
 
 def load(gameType):
     # returns all variables needed by main to run the game
@@ -34,6 +32,8 @@ def load(gameType):
         pass
     elif gameType == "FEN":
         board,colour,playerTurn = FENBoard(getFEN())
+        print(board)
+        UI.sleep(8)
     
     return colour,playerTurn,board
 
@@ -48,11 +48,12 @@ def gameConfig():
         if option == 0: 
             return "new"
         else:
+            print("FEN")
+            UI.sleep(3)
             return "FEN"
     else:
         return "old"
     
-
 def boardSetup(playerColour): 
     # returns a 2d array 
     # flips the board depending on what pieces the player has
@@ -60,7 +61,7 @@ def boardSetup(playerColour):
         data = FENBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
         return data[0],"WHITE",True
     else:
-        data = FENBoard("RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr w KQkq - 0 1")
+        data = FENBoard("RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr b KQkq - 0 1")
         return data[0],"BLACK",False
 
 def validFEN(fen):
@@ -84,11 +85,14 @@ def FENBoard(fenString):
     enPassant = allInfo[3]
     halfMoves = allInfo[4]
     fullMoves = allInfo[5]
+    playerTurn = False
 
     if whosTurn == "w":
         whosTurn = "WHITE"
+        playerTurn = True
     else:
         whosTurn = "BLACK"
+        playerTurn = False
 
     board = [[' ',' ',' ',' ',' ',' ',' ',' '],
              [' ',' ',' ',' ',' ',' ',' ',' '],
@@ -113,8 +117,8 @@ def FENBoard(fenString):
                 board[i][actualIndex] = piece
             
             actualIndex = actualIndex + 1
-
-    return board,whosTurn,True
+    
+    return board,whosTurn,playerTurn
 
 def giveRandomColour():
     if random.randint(0,1) == 0:

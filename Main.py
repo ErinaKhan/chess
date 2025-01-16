@@ -59,6 +59,9 @@ def playersTurn(colour):
             valid = len(legalMoves) > 0
             if valid:
                 chosenLegalMove = selectDestination(square,legalMoves,UI.createOverlay(legalMoves))
+                print(math.log(square,2))
+                print(chosenLegalMove)
+                UI.sleep(5)
                 Engine.makeMove(square,int(math.pow(2,chosenLegalMove)),colour,False)
                 return False
             else:

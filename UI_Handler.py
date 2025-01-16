@@ -95,9 +95,9 @@ def generateMenu(textOptions):
         clear()
         for option in range(maxIndex):
             if option == currentIndex:
-                print(f"{option} {textOptions[option]} <")
+                print(f"{textOptions[option]} <")
             else:
-                print(f"{option} {textOptions[option]}")
+                print(f"{textOptions[option]}")
         if keyboard.read_key() == "enter":
             break
         if keyboard.read_key() == "up" and currentIndex > 0:

@@ -199,7 +199,7 @@ def updateBoard(square,chosenLegalMove,colour):
 
     if isEnPassant(nonBinSquare,square,nonBinMove):
         enPassant(nonBinMove,nonBinSquare,colour)
-
+    
     if isCastling(nonBinSquare,square, nonBinMove):
         castle(chosenLegalMove,colour)
 
@@ -233,7 +233,6 @@ def updateBoard(square,chosenLegalMove,colour):
     if isPromoting(chosenLegalMove,nonBinMove): 
         promote(chosenLegalMove,colour)
 
-      
     lastMove = [nonBinSquare,nonBinMove]
     whitePieces = whitePawns | whiteBishops | whiteHorses | whiteRooks | whiteQueens | whiteKing
     blackPieces = blackPawns | blackBishops | blackHorses | blackRooks | blackQueens | blackKing
@@ -329,8 +328,8 @@ def generatePawnMoves(startSquare,colour):
     direction = -1
 
     binarySquare = int(math.pow(2,startSquare))
-    playerOnStartingRank = startSquare >= 48 and startSquare <= 55 and playerColour
-    enemyOnStartingRank = startSquare >= 8 and startSquare <= 15 and enemyColour
+    playerOnStartingRank = startSquare >= 48 and startSquare <= 55 and (playerColour == colour)
+    enemyOnStartingRank = startSquare >= 8 and startSquare <= 15 and (enemyColour == colour)
     onLeftEdge = startSquare in [0,8,16,24,32,40,48,56]
     onRightEdge = startSquare in [7,15,23,31,39,47,55,63]
     enemyLeft = getColour(binarySquare >> 9) == enemyColour
@@ -390,7 +389,6 @@ def generateHorseMoves(startSquare,colour):
     moves = []
 
     for i in range(4):
-    
         squareBetween = startSquare + (directionOffsets[i] * 2)
         targetSquareLeft = None
         targetSquareRight = None
@@ -412,7 +410,6 @@ def generateHorseMoves(startSquare,colour):
         if targetSquareRight != None:
             if (getColour(int(math.pow(2,targetSquareRight))) != colour) and targetSquareRight >= 0:
                 moves = moves + [[startSquare,targetSquareRight]]
-
     return moves
 
 def generateKingMoves(startSquare,colour):
@@ -432,7 +429,6 @@ def generateKingMoves(startSquare,colour):
     if queenSide:
         if getPieceTypeFromSquare(int(math.pow(2,startSquare - 1))) == "NONE" and getPieceTypeFromSquare(int(math.pow(2,startSquare - 2))) == "NONE" and getPieceTypeFromSquare(int(math.pow(2,startSquare - 3))) == "NONE":
             moves = moves + [[startSquare, startSquare - 2]]
-
     return moves
             
 def generateSlidingPieceMoves(startSquare, piece,colour):
@@ -469,7 +465,6 @@ def generateSlidingPieceMoves(startSquare, piece,colour):
 def filterMovesBySquare(square, colour):
     squaresMoves = []
     pseudoLegalMoves = generateAllMoves(colour,False)
-  
     for move in pseudoLegalMoves:
         if move[0] == square:
             squaresMoves = squaresMoves + [move]
@@ -512,6 +507,7 @@ def castle(chosenLegalMove,colour):
         updateBoard(1,8,colour)
     elif placementForRook == 58:
         updateBoard(int(math.pow(2,56)),int(math.pow(2,59)),colour)
+
 
 def isPromoting(binary,chosenLegalMove):
     if ((chosenLegalMove >= 0 and chosenLegalMove <= 7) or (chosenLegalMove >= 56 and chosenLegalMove <= 63)) and getPieceTypeFromSquare(binary) == "PAWN":
