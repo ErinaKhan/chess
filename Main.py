@@ -59,10 +59,7 @@ def playersTurn(colour):
             valid = len(legalMoves) > 0
             if valid:
                 chosenLegalMove = selectDestination(square,legalMoves,UI.createOverlay(legalMoves))
-                print(math.log(square,2))
-                print(chosenLegalMove)
-                UI.sleep(5)
-                Engine.makeMove(square,int(math.pow(2,chosenLegalMove)),colour,False)
+                Engine.makeMove(square,int(math.pow(2,chosenLegalMove)),colour,False,None)
                 return False
             else:
                 print("\nThis piece cant move, try again")
@@ -75,25 +72,26 @@ def AITurn(colour):
     moves = Engine.generateAllMoves(colour,False)
     currentEvaluation = Engine.evaluate()
     newEvaluation = currentEvaluation
+    extraInfo = None # may contain promotion piece
     bestMove = None
 
     if len(moves) != 0:
         for i in moves:
             Engine.resetData()
-            Engine.makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True)
-            eval = Engine.evaluate()
-
-            if bestMove != None:
-                if colour == "WHITE":
-                    if eval > newEvaluation:
-                        bestMove = i
-                        newEvaluation = eval
-                else:
-                    if eval < newEvaluation:
-                        bestMove = i
-                        newEvaluation = eval
+        
+            if Engine.isPromoting(int(math.pow(2,i[0])),i[1]):
+                for piece in ["BISHOP","ROOK","HORSE","QUEEN"]:
+                    Engine.resetData()
+                    Engine.makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True,piece)
+                    bestMove, newEvaluation = Engine.getBestEvalMove(colour,bestMove,newEvaluation,i)
+                    if piece == "ROOK":
+                        bestMove, newEvaluation = Engine.getBestEvalMove(colour,bestMove,newEvaluation - 8,i)
+                    if bestMove == i:
+                        extraInfo = piece
             else:
-                bestMove = i
+                Engine.makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True,None)
+            
+            bestMove, newEvaluation = Engine.getBestEvalMove(colour,bestMove,newEvaluation,i)
 
         UI.sleep(2)
         Engine.resetData()
@@ -101,11 +99,13 @@ def AITurn(colour):
         if newEvaluation == currentEvaluation:
             index = random.randint(0, len(moves) - 1)
             chosenMove = moves[index]
-            Engine.makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,False)
+            Engine.makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,False,extraInfo)
         else:
-            Engine.makeMove(int(math.pow(2,bestMove[0])),int(math.pow(2,bestMove[1])),colour,False)
+            Engine.makeMove(int(math.pow(2,bestMove[0])),int(math.pow(2,bestMove[1])),colour,False,extraInfo)
     
+
 def mainMenu():
+
     UI.mainMenuUI()
 
 def validCoordinates(coordinates):

@@ -173,8 +173,8 @@ def blackAssignment(i,value):
     elif i == 5:
         blackKing = value    
 
-def makeMove(square,chosenLegalMove,colour,isFake):
-    updateBoard(square,chosenLegalMove,colour) # w and b are arrays of piece bitboards [Pawns,Bishops,Horses,Rooks,Queens,King]
+def makeMove(square,chosenLegalMove,colour,isFake,extraInfo):
+    updateBoard(square,chosenLegalMove,colour,isFake,extraInfo) # w and b are arrays of piece bitboards [Pawns,Bishops,Horses,Rooks,Queens,King]
 
     if not isFake:
         global currentBoardFullData
@@ -183,7 +183,7 @@ def makeMove(square,chosenLegalMove,colour,isFake):
         blackPiecesData = [blackPawns, blackBishops, blackHorses, blackRooks, blackQueens, blackKing]
         currentBoardFullData = [whitePiecesData,blackPiecesData,castlingData]
 
-def updateBoard(square,chosenLegalMove,colour):
+def updateBoard(square,chosenLegalMove,colour,isFake,extraInfo):
     global bitWordBoard
     global whitePieces
     global blackPieces
@@ -199,7 +199,7 @@ def updateBoard(square,chosenLegalMove,colour):
 
     if isEnPassant(nonBinSquare,square,nonBinMove):
         enPassant(nonBinMove,nonBinSquare,colour)
-    
+     
     if isCastling(nonBinSquare,square, nonBinMove):
         castle(chosenLegalMove,colour)
 
@@ -231,11 +231,13 @@ def updateBoard(square,chosenLegalMove,colour):
                 whiteAssignment(i,w[i])
 
     if isPromoting(chosenLegalMove,nonBinMove): 
-        if colour == playerColour:
-            piece = UI.askForPromotePiece()
+        piece = None
+        if playerColour == colour:
+            if not isFake:
+                piece = UI.askForPromotePiece()
             promote(chosenLegalMove,colour,piece)
         else:
-            promote(chosenLegalMove,colour,"QUEEN")
+            promote(chosenLegalMove,colour,extraInfo)
 
     lastMove = [nonBinSquare,nonBinMove]
     whitePieces = whitePawns | whiteBishops | whiteHorses | whiteRooks | whiteQueens | whiteKing
@@ -307,7 +309,7 @@ def generateAllMoves(turn,isResponses):
 
     if not isResponses:
         for move in moves:            
-            makeMove(int(math.pow(2,move[0])),int(math.pow(2,move[1])),turn,True)
+            makeMove(int(math.pow(2,move[0])),int(math.pow(2,move[1])),turn,True,None)
             if not inCheck(turn,generateAllMoves(switchColours(turn),True)):
                 legalMoves = legalMoves + [move]
             resetData()
@@ -504,13 +506,13 @@ def castle(chosenLegalMove,colour):
     placementForRook = int(math.log(chosenLegalMove,2))
 
     if placementForRook == 6:
-        updateBoard(int(math.pow(2,7)),int(math.pow(2,5)),colour)    
+        updateBoard(int(math.pow(2,7)),int(math.pow(2,5)),colour,False,None)    
     elif placementForRook == 62:
-        updateBoard(int(math.pow(2,63)),int(math.pow(2,61)),colour)
+        updateBoard(int(math.pow(2,63)),int(math.pow(2,61)),colour,False,None)
     elif placementForRook == 2:
         updateBoard(1,8,colour)
     elif placementForRook == 58:
-        updateBoard(int(math.pow(2,56)),int(math.pow(2,59)),colour)
+        updateBoard(int(math.pow(2,56)),int(math.pow(2,59)),colour,False,None)
 
 
 def isPromoting(binary,chosenLegalMove):
@@ -643,6 +645,23 @@ def evaluate():
                     evaluationScore = evaluationScore - pieceValue[pieceType]
 
     return evaluationScore
+
+def getBestEvalMove(colour,currentBestMove,newEvaluation,move):
+    
+    eval = evaluate()
+    if currentBestMove != None:
+        if colour == "WHITE":
+            if eval > newEvaluation:
+                currentBestMove = move
+                newEvaluation = eval
+        else:
+            if eval < newEvaluation:
+                currentBestMove = move
+                newEvaluation = eval
+    else:
+        currentBestMove = move
+
+    return currentBestMove,newEvaluation
 
 def search():
     pass
