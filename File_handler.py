@@ -26,19 +26,20 @@ def load(gameType):
     colour = None
     playerTurn = None
     board = None
+    castlingData = None
     if gameType == "new":
-        board,colour,playerTurn = boardSetup(giveRandomColour())
+        board,colour,playerTurn,castlingData = boardSetup(giveRandomColour())
     elif gameType == "old": # loading a previously played unfinished game
         numOfGames,games,gameNames = gamesAvailable()
         if numOfGames != 0:
             UI.sleep(1)
-            board,colour,playerTurn = FENBoard(games[UI.generateMenu(gameNames)])
+            board,colour,playerTurn,castlingData = FENBoard(games[UI.generateMenu(gameNames)])
             print("\nLoading game...")
             UI.sleep(1)
     elif gameType == "FEN":
-        board,colour,playerTurn = FENBoard(getFEN())
+        board,colour,playerTurn,castlingData = FENBoard(getFEN())
     
-    return colour,playerTurn,board
+    return colour,playerTurn,board,castlingData
 
 def gameConfig():
     # returns the settings for the game as a string
@@ -60,10 +61,10 @@ def boardSetup(playerColour):
     # flips the board depending on what pieces the player has
     if playerColour == "WHITE":
         data = FENBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
-        return data[0],"WHITE",True
+        return data[0],"WHITE",True,data[3]
     else:
         data = FENBoard("RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr b KQkq - 0 1")
-        return data[0],"BLACK",False
+        return data[0],"BLACK",False,data[3]
 
 def validFEN(fen):
     return fen.count('/') == 7
@@ -119,7 +120,7 @@ def FENBoard(fenString):
             
             actualIndex = actualIndex + 1
     
-    return board,whosTurn,playerTurn
+    return board,whosTurn,playerTurn,canCastle
 
 def giveRandomColour():
     if random.randint(0,1) == 0:
@@ -146,6 +147,9 @@ def gamesAvailable():
         saveFile.close()
     except:
         print("File doesnt exist")
+
+    if numOfGames == 0:
+        numOfGames = "No games"
 
     return numOfGames,games,gameNames
 

@@ -700,7 +700,7 @@ def getPieceType(pieceSelected):
     else:
         return "NONE",None
 
-def convertToBitBoard(board):
+def convertToBitBoard(board,castlingData):
 
     global bitWordBoard
     global whitePieces
@@ -791,10 +791,10 @@ def convertToBitBoard(board):
     global bqueenSide
     global bkingSide
 
-    wkingSide = True
-    wqueenSide = True
-    bkingSide = True
-    bqueenSide = True
+    wkingSide = "K" in castlingData
+    wqueenSide = "Q" in castlingData
+    bkingSide = "k" in castlingData
+    bqueenSide = "q" in castlingData
 
     wKingMoved = whiteKing
     wRooksMoved = whiteRooks
