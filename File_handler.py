@@ -28,8 +28,13 @@ def load(gameType):
     board = None
     if gameType == "new":
         board,colour,playerTurn = boardSetup(giveRandomColour())
-    elif gameType == "old": # loading a previously played unfinished game or a game from FEN notation
-        pass
+    elif gameType == "old": # loading a previously played unfinished game
+        numOfGames,games,gameNames = gamesAvailable()
+        if numOfGames != 0:
+            UI.sleep(1)
+            board,colour,playerTurn = FENBoard(games[UI.generateMenu(gameNames)])
+            print("\nLoading game...")
+            UI.sleep(1)
     elif gameType == "FEN":
         board,colour,playerTurn = FENBoard(getFEN())
     
@@ -38,7 +43,7 @@ def load(gameType):
 def gameConfig():
     # returns the settings for the game as a string
     UI.sleep(1)
-    option = UI.generateMenu(["New Game","Load Game"])
+    option = UI.generateMenu(["New Game","Load Game [" + str(gamesAvailable()[0]) + " available]"])
 
     if option == 0:
         UI.sleep(1)
@@ -125,5 +130,22 @@ def giveRandomColour():
 def gamesAvailable():
     # returns a string with either 'No games found' or 'N games found' where N is the number of games
     # will show player how many games they have on going
-    return "No games found"
+    saveFile = None 
+    games = []
+    gameNames = []
+    numOfGames = 0
+    try:
+        saveFile = open("saveFile.txt","rt")
+
+        for game in saveFile:
+            numOfGames = numOfGames + 1
+            game = game.split(",")
+            games = games + [game[0]]
+            gameNames = gameNames + [game[1]]
+
+        saveFile.close()
+    except:
+        print("File doesnt exist")
+
+    return numOfGames,games,gameNames
 
