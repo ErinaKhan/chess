@@ -13,9 +13,9 @@ import math
 def startGame():
     # main loop of program
     Engine.precomputeSquaresToEdge()
-    colour,playerTurn,newBoard,castlingData = FileHandler.load(FileHandler.gameConfig()) # loads new game or previous game
+    colour,playerTurn,newBoard,castlingData,enPassant = FileHandler.load(FileHandler.gameConfig()) # loads new game or previous game
     enemyColour = Engine.assignColours(colour)
-    Engine.convertToBitBoard(newBoard,castlingData)
+    Engine.convertToBitBoard(newBoard,castlingData,enPassant)
 
     print(f"\nYour colour is {colour}!\n")
     print("isYourTurn: " + str(playerTurn) + "\n")

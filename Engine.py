@@ -700,7 +700,7 @@ def getPieceType(pieceSelected):
     else:
         return "NONE",None
 
-def convertToBitBoard(board,castlingData):
+def convertToBitBoard(board,castlingData,enPassant):
 
     global bitWordBoard
     global whitePieces
@@ -780,6 +780,7 @@ def convertToBitBoard(board,castlingData):
     blackPieces = blackPawns | blackBishops | blackHorses | blackRooks | blackQueens | blackKing
     bitWordBoard = whitePieces | blackPieces
 
+    # castling setup
     global wKingMoved
     global wRooksMoved
 
@@ -802,6 +803,32 @@ def convertToBitBoard(board,castlingData):
     bKingMoved = blackKing
     bRooksMoved = blackRooks
 
+    # enPassant setup
+
+    if "-" not in enPassant:
+        file = ord(enPassant[0].lower()) - 97
+        rank = 8 - int(enPassant[1])
+        direction = 0
+
+        print(rank,file)
+
+        if rank == 2:
+            direction = -1
+        elif rank == 5:
+            direction = 1
+
+        currentSquareIndex = (rank * 8) + file
+        cameFrom = currentSquareIndex + (8 * direction) 
+        goingTo = currentSquareIndex + (8 * direction * -1) 
+
+        global lastMove
+        lastMove = [cameFrom,goingTo] # enables the isEnPassant flag to be triggered when generating moves
+
+        print(enPassant)
+        print(lastMove)
+        UI.sleep(4)
+
+    # all data together
     global currentBoardFullData
     castlingData = [wkingSide,wqueenSide,wKingMoved,wRooksMoved,bkingSide,bqueenSide,bKingMoved,bRooksMoved]
     whitePiecesData = [whitePawns, whiteBishops, whiteHorses, whiteRooks, whiteQueens, whiteKing]
