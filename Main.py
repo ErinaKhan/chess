@@ -118,9 +118,7 @@ def selectPiece(colour):
             chosenCoordinates = input("\n\nEnter the coordinates on the chess board (such as A8,a8,b5 etc...) of the piece you would like to move or type 'resign' to resign\n\nInput: ")
             if chosenCoordinates == "resign":
                 return None, True
-
         currentSquareInBinary = coordinatesToBinary(chosenCoordinates)
-
     return currentSquareInBinary,False
 
 def selectDestination(square,legalMoves,overlay):
@@ -145,7 +143,7 @@ def selectDestination(square,legalMoves,overlay):
 
 UI.load()
 UI.clear()
-UI.mainMenuUI()
-startGame()
+if UI.mainMenuUI():
+    startGame()
 
 

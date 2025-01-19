@@ -182,4 +182,6 @@ def mainMenuUI():
     print("----------------------------------------------------------------")
     print("----------------------------------------------------------------")
     while keyboard.read_key() != "enter":
-        pass
+        if keyboard.read_key() == "esc" or keyboard.read_key() == "backspace":
+            return False
+    return True

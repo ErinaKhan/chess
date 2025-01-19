@@ -553,10 +553,6 @@ def promote(chosenLegalMove,colour,piece):
             blackRooks = blackRooks | chosenLegalMove
         elif piece == "QUEEN":
             blackQueens = blackQueens | chosenLegalMove
-                
-
-def gameOver():
-    return gameOver
 
 def canCastle(colour):
     global wKingMoved
@@ -835,7 +831,7 @@ def convertToBitBoard(board,castlingData,enPassant):
     blackPiecesData = [blackPawns, blackBishops, blackHorses, blackRooks, blackQueens, blackKing]
     currentBoardFullData = [whitePiecesData,blackPiecesData,castlingData]
 
-def resetData():
+def resetData(): 
     global currentBoardFullData
     global bitWordBoard
     global whitePieces
