@@ -316,13 +316,12 @@ def generateAllMoves(turn,isResponses):
 
         if len(legalMoves) == 0:
             if inCheck(turn,generateAllMoves(switchColours(turn),True)):
-                print("CHECKMATE")
-                UI.sleep(20)
                 global Checkmate
                 Checkmate = True
             else:
-                print("STALEMATE")
-                UI.sleep(20)
+                UI.clear()
+                UI.stalemateUI()
+                UI.sleep(10)
 
         return legalMoves
             

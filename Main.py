@@ -12,6 +12,8 @@ import math
 
 def startGame():
     # main loop of program
+    UI.clear()
+    UI.mainMenuUI()
     Engine.precomputeSquaresToEdge()
     colour,playerTurn,newBoard,castlingData,enPassant = FileHandler.load(FileHandler.gameConfig()) # loads new game or previous game
     enemyColour = Engine.assignColours(colour)
@@ -25,10 +27,13 @@ def startGame():
         if Engine.Checkmate:
             UI.clear()
             if playerTurn:
-                print("You Won")
+                UI.winLossUI(True)
             else:
-                print("You Lost, Better luck next time!")
+                UI.winLossUI(False)
+            UI.sleep(10)
             print("\n\nReturning To Menu...")
+            UI.load()
+            startGame()
             break
         else:
             if resigning:
@@ -141,9 +146,6 @@ def selectDestination(square,legalMoves,overlay):
 
     return int(math.log(currentSquareInBinary,2))
 
-UI.load()
-UI.clear()
-if UI.mainMenuUI():
-    startGame()
+startGame()
 
 
