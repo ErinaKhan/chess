@@ -88,7 +88,7 @@ def AITurn(colour):
                     if bestMove == i:
                         extraInfo = piece
             else:
-                Engine.makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True,None)
+                Engine.makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True)
             
             bestMove, newEvaluation = Engine.getBestEvalMove(colour,bestMove,newEvaluation,i)
 

@@ -173,7 +173,7 @@ def blackAssignment(i,value):
     elif i == 5:
         blackKing = value    
 
-def makeMove(square,chosenLegalMove,colour,isFake,extraInfo):
+def makeMove(square,chosenLegalMove,colour,isFake=False,extraInfo=None):
     updateBoard(square,chosenLegalMove,colour,isFake,extraInfo) # w and b are arrays of piece bitboards [Pawns,Bishops,Horses,Rooks,Queens,King]
 
     if not isFake:
