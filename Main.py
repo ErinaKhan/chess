@@ -71,36 +71,9 @@ def playersTurn(colour):
     
 def AITurn(colour):
     moves = Engine.generateAllMoves(colour,False)
-    currentEvaluation = Engine.evaluate()
-    newEvaluation = currentEvaluation
-    extraInfo = None # may contain promotion piece
-    bestMove = None
-
-    if len(moves) != 0:
-        for i in moves:
-            Engine.resetData()
-        
-            if Engine.isPromoting(int(math.pow(2,i[0])),i[1]):
-                for piece in ["BISHOP","ROOK","HORSE","QUEEN"]:
-                    Engine.resetData()
-                    Engine.makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True,piece)
-                    bestMove, newEvaluation = Engine.getBestEvalMove(colour,bestMove,newEvaluation,i)
-                    if bestMove == i:
-                        extraInfo = piece
-            else:
-                Engine.makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True)
-            
-            bestMove, newEvaluation = Engine.getBestEvalMove(colour,bestMove,newEvaluation,i)
-
-        UI.sleep(2)
-        Engine.resetData()
-
-        if newEvaluation == currentEvaluation:
-            index = random.randint(0, len(moves) - 1)
-            chosenMove = moves[index]
-            Engine.makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,False,extraInfo)
-        else:
-            Engine.makeMove(int(math.pow(2,bestMove[0])),int(math.pow(2,bestMove[1])),colour,False,extraInfo)
+    chosenMove,extraInfo = Engine.search(moves,colour,1)
+    UI.sleep(2)
+    Engine.makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,False,extraInfo)
 
 def validCoordinates(coordinates):
     return len(coordinates) == 2 and coordinates[0].lower() in ['a','b','c','d','e','f','g','h'] and coordinates[1] in ['1','2','3','4','5','6','7','8']
