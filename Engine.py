@@ -284,7 +284,7 @@ def getPieceTypeFromSquare(square):
     else:
         return "NONE"
     
-def generateAllMoves(turn,isResponses,movesDone=[]):
+def generateAllMoves(turn,isResponses):
     legalMoves = []
     moves = [] 
 
@@ -313,7 +313,7 @@ def generateAllMoves(turn,isResponses,movesDone=[]):
             makeMove(int(math.pow(2,move[0])),int(math.pow(2,move[1])),turn,True,None)
             if not inCheck(turn,generateAllMoves(switchColours(turn),True)):
                 legalMoves = legalMoves + [move]
-            resetData(movesDone,turn)
+            resetData()
 
         if len(legalMoves) == 0:
             if inCheck(turn,generateAllMoves(switchColours(turn),True)):
@@ -659,45 +659,38 @@ def getBestEvalMove(colour,currentBestMove,newEvaluation,move):
 
     return currentBestMove,newEvaluation
 
-def search(moves,colour,depth,movesDone=[]):
-
-    extraInfo = None # may contain promotion piece
+def search(moves,colour):
     currentEvaluation = evaluate()
     newEvaluation = currentEvaluation
+    extraInfo = None # may contain promotion piece
     bestMove = None
 
     if len(moves) != 0:
         for i in moves:
-            resetData(movesDone,colour)
+            resetData()
         
             if isPromoting(int(math.pow(2,i[0])),i[1]):
                 for piece in ["BISHOP","ROOK","HORSE","QUEEN"]:
-                    resetData(movesDone,colour)
+                    resetData()
                     makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True,piece)
                     bestMove, newEvaluation = getBestEvalMove(colour,bestMove,newEvaluation,i)
                     if bestMove == i:
                         extraInfo = piece
             else:
-                makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True)
-
-            if depth != 0 :
-                enemyColour = switchColours(colour)
-                enemyMove,enemyInfo = search(generateAllMoves(enemyColour,False,movesDone + [i]),enemyColour,depth - 1,movesDone + [i])
-                makeMove(int(math.pow(2,enemyMove[0])),int(math.pow(2,enemyMove[1])),enemyColour,True,enemyInfo)
+                makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True)        
             
             bestMove, newEvaluation = getBestEvalMove(colour,bestMove,newEvaluation,i)
 
-        resetData(movesDone,colour)
+    
+    resetData()
 
-        if newEvaluation == currentEvaluation:
-            index = random.randint(0, len(moves) - 1)
-            chosenMove = moves[index]
-            #makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,False,extraInfo)
-            return chosenMove,extraInfo
-        else:
-            #makeMove(int(math.pow(2,bestMove[0])),int(math.pow(2,bestMove[1])),colour,False,extraInfo)
-            return bestMove,extraInfo
-
+    if newEvaluation == currentEvaluation:
+        index = random.randint(0, len(moves) - 1)
+        chosenMove = moves[index]
+        return chosenMove,extraInfo
+    else:
+        return bestMove,extraInfo
+     
 
 ##################################################################################################################################################################################
 ##################################################################################################################################################################################
@@ -868,7 +861,7 @@ def convertToBitBoard(board,castlingData,enPassant):
     blackPiecesData = [blackPawns, blackBishops, blackHorses, blackRooks, blackQueens, blackKing]
     currentBoardFullData = [whitePiecesData,blackPiecesData,castlingData]
 
-def resetData(movesDone=[],colour="WHITE"): 
+def resetData(): 
     global currentBoardFullData
     global bitWordBoard
     global whitePieces
@@ -928,10 +921,3 @@ def resetData(movesDone=[],colour="WHITE"):
     whitePieces = whitePawns | whiteBishops | whiteHorses | whiteRooks | whiteQueens | whiteKing
     blackPieces = blackPawns | blackBishops | blackHorses | blackRooks | blackQueens | blackKing
     bitWordBoard = whitePieces | blackPieces
-
-    i = 0
-    for move in movesDone:
-        if i % 2 != 0:
-            makeMove(int(math.pow(2,move[0])),int(math.pow(2,move[1])),colour,True)
-        else:
-            makeMove(int(math.pow(2,move[0])),int(math.pow(2,move[1])),switchColours(colour),True)
