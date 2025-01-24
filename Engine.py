@@ -510,7 +510,7 @@ def castle(chosenLegalMove,colour):
     elif placementForRook == 62:
         updateBoard(int(math.pow(2,63)),int(math.pow(2,61)),colour,False,None)
     elif placementForRook == 2:
-        updateBoard(1,8,colour)
+        updateBoard(1,8,colour,False,None)
     elif placementForRook == 58:
         updateBoard(int(math.pow(2,56)),int(math.pow(2,59)),colour,False,None)
 
@@ -678,10 +678,9 @@ def search(moves,colour):
                         extraInfo = piece
             else:
                 makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True)        
-            
+
             bestMove, newEvaluation = getBestEvalMove(colour,bestMove,newEvaluation,i)
 
-    
     resetData()
 
     if newEvaluation == currentEvaluation:
