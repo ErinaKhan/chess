@@ -284,9 +284,18 @@ def getPieceTypeFromSquare(square):
     else:
         return "NONE"
     
-def generateAllMoves(turn,isResponses):
+def generateAllMoves(turn,isResponses,movesToSearch=[]):
     legalMoves = []
     moves = [] 
+
+    if movesToSearch != []:
+        turnIndex = 0
+        for i in movesToSearch:
+            turnIndex = turnIndex + 1
+            if turnIndex % 2 == 1:
+                makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),enemyColour,True)  
+            else:
+                makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),playerColour,True)  
 
     for file in range(8):
         
@@ -311,18 +320,30 @@ def generateAllMoves(turn,isResponses):
     if not isResponses:
         for move in moves:            
             makeMove(int(math.pow(2,move[0])),int(math.pow(2,move[1])),turn,True,None)
-            if not inCheck(turn,generateAllMoves(switchColours(turn),True)):
+            if not inCheck(turn,generateAllMoves(switchColours(turn),True,movesToSearch)):
                 legalMoves = legalMoves + [move]
             resetData()
 
+            if movesToSearch != []:
+                turnIndex = 0
+                for i in movesToSearch:
+                    turnIndex = turnIndex + 1
+                    if turnIndex % 2 == 1:
+                        makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),enemyColour,True)  
+                    else:
+                        makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),playerColour,True)  
+
+
         if len(legalMoves) == 0:
-            if inCheck(turn,generateAllMoves(switchColours(turn),True)):
+            if inCheck(turn,generateAllMoves(switchColours(turn),True,movesToSearch)):
                 global Checkmate
                 Checkmate = True
             else:
-                UI.clear()
-                UI.stalemateUI()
-                UI.sleep(10)
+                if movesToSearch == []:
+                    UI.clear()
+                    UI.stalemateUI()
+                    UI.sleep(10)
+                        
 
         return legalMoves
             
@@ -659,7 +680,7 @@ def getBestEvalMove(colour,currentBestMove,newEvaluation,move):
 
     return currentBestMove,newEvaluation
 
-def search(moves,colour):
+def search(moves,colour,depth=0,searchMoves=[]):
     currentEvaluation = evaluate()
     newEvaluation = currentEvaluation
     extraInfo = None # may contain promotion piece
@@ -667,11 +688,23 @@ def search(moves,colour):
 
     if len(moves) != 0:
         for i in moves:
+
             resetData()
+
+            if searchMoves != []:
+                turnIndex = 0
+                for i in searchMoves:
+                    turnIndex = turnIndex + 1
+                    if turnIndex % 2 == 1:
+                        makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),enemyColour,True)  
+                    else:
+                        makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),playerColour,True)  
+
         
             if isPromoting(int(math.pow(2,i[0])),i[1]):
                 for piece in ["BISHOP","ROOK","HORSE","QUEEN"]:
-                    resetData()
+                    if depth == 0:
+                        resetData()
                     makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True,piece)
                     bestMove, newEvaluation = getBestEvalMove(colour,bestMove,newEvaluation,i)
                     if bestMove == i:
@@ -679,6 +712,19 @@ def search(moves,colour):
             else:
                 makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True)        
 
+            if depth != 0:
+                depthCopy = depth
+                depthMove = i
+                searchMovesCopy = searchMoves
+                currentColour = switchColours(colour)
+
+                while depthCopy != 0:
+                    currentColour = switchColours(currentColour)
+                    depthCopy = depth - 1
+                    searchMovesCopy = searchMovesCopy + [depthMove]
+                    depthMoves = generateAllMoves(currentColour,False,searchMovesCopy)
+                    depthMove,depthExtraInfo = search(depthMoves,currentColour,depthCopy,searchMovesCopy)
+            
             bestMove, newEvaluation = getBestEvalMove(colour,bestMove,newEvaluation,i)
 
     resetData()
@@ -689,8 +735,7 @@ def search(moves,colour):
         return chosenMove,extraInfo
     else:
         return bestMove,extraInfo
-     
-
+    
 ##################################################################################################################################################################################
 ##################################################################################################################################################################################
 ################################################################ Used to create bitboards from 2d array ##########################################################################
