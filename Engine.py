@@ -723,7 +723,8 @@ def search(moves,colour,depth=0,searchMoves=[]):
                     depthCopy = depth - 1
                     searchMovesCopy = searchMovesCopy + [depthMove]
                     depthMoves = generateAllMoves(currentColour,False,searchMovesCopy)
-                    depthMove,depthExtraInfo = search(depthMoves,currentColour,depthCopy,searchMovesCopy)
+                    #depthMove,depthExtraInfo = search(depthMoves,currentColour,depthCopy,searchMovesCopy)
+                    #isnt working for some reason due to the recursion of search()
             
             bestMove, newEvaluation = getBestEvalMove(colour,bestMove,newEvaluation,i)
 
