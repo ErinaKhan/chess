@@ -71,9 +71,10 @@ def playersTurn(colour):
     
 def AITurn(colour):
     moves = Engine.generateAllMoves(colour,False)
-    chosenMove,extraInfo = Engine.search(moves,colour,1)
+    chosenMove,extraInfo = Engine.search(moves,colour,2)
     UI.sleep(2)
-    Engine.makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,False,extraInfo)
+    if chosenMove != None:
+        Engine.makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,False,extraInfo)
 
 def validCoordinates(coordinates):
     return len(coordinates) == 2 and coordinates[0].lower() in ['a','b','c','d','e','f','g','h'] and coordinates[1] in ['1','2','3','4','5','6','7','8']

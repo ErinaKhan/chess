@@ -321,7 +321,11 @@ def generateAllMoves(turn,isResponses,movesToSearch=[]):
         for move in moves:            
             makeMove(int(math.pow(2,move[0])),int(math.pow(2,move[1])),turn,True,None)
             if not inCheck(turn,generateAllMoves(switchColours(turn),True,movesToSearch)):
-                legalMoves = legalMoves + [move]
+                startValid = move[0] <= 63 and move[0] >= 0 
+                endValid = move[1] <= 63 and move[1] >= 0 
+                if startValid and endValid:
+                    legalMoves = legalMoves + [move]
+                
             resetData()
 
             if movesToSearch != []:
@@ -336,8 +340,9 @@ def generateAllMoves(turn,isResponses,movesToSearch=[]):
 
         if len(legalMoves) == 0:
             if inCheck(turn,generateAllMoves(switchColours(turn),True,movesToSearch)):
-                global Checkmate
-                Checkmate = True
+                if movesToSearch == []:
+                    global Checkmate
+                    Checkmate = True
             else:
                 if movesToSearch == []:
                     UI.clear()
@@ -690,42 +695,76 @@ def search(moves,colour,depth=0,searchMoves=[]):
         for i in moves:
 
             resetData()
-
             if searchMoves != []:
                 turnIndex = 0
-                for i in searchMoves:
+                for j in searchMoves:
                     turnIndex = turnIndex + 1
                     if turnIndex % 2 == 1:
-                        makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),enemyColour,True)  
+                        makeMove(int(math.pow(2,j[0])),int(math.pow(2,j[1])),enemyColour,True)  
                     else:
-                        makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),playerColour,True)  
+                        makeMove(int(math.pow(2,j[0])),int(math.pow(2,j[1])),playerColour,True) 
 
-        
+            if depth != 0:
+                currentColour = switchColours(colour)
+                depthMove = i
+                depthCopy = depth
+                searchMovesCopy = searchMoves
+                depthCopy = depthCopy - 1
+                searchMovesCopy = searchMovesCopy + [depthMove]
+                depthMoves = generateAllMoves(currentColour,False,searchMovesCopy)
+                depthMove,depthExtraInfo = search(depthMoves,currentColour,depthCopy,searchMovesCopy)
+
             if isPromoting(int(math.pow(2,i[0])),i[1]):
                 for piece in ["BISHOP","ROOK","HORSE","QUEEN"]:
-                    if depth == 0:
-                        resetData()
+                    resetData()
                     makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True,piece)
                     bestMove, newEvaluation = getBestEvalMove(colour,bestMove,newEvaluation,i)
                     if bestMove == i:
                         extraInfo = piece
             else:
                 makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True)        
-
-            if depth != 0:
-                depthCopy = depth
-                depthMove = i
-                searchMovesCopy = searchMoves
-                currentColour = switchColours(colour)
-
-                while depthCopy != 0:
-                    currentColour = switchColours(currentColour)
-                    depthCopy = depth - 1
-                    searchMovesCopy = searchMovesCopy + [depthMove]
-                    depthMoves = generateAllMoves(currentColour,False,searchMovesCopy)
-                    #depthMove,depthExtraInfo = search(depthMoves,currentColour,depthCopy,searchMovesCopy)
-                    #isnt working for some reason due to the recursion of search()
+                
+            bestMove, newEvaluation = getBestEvalMove(colour,bestMove,newEvaluation,i)
             
+            resetData()
+
+        if newEvaluation == currentEvaluation:
+            index = random.randint(0, len(moves) - 1)
+            chosenMove = moves[index]
+            return chosenMove,extraInfo
+        else:
+            return bestMove,extraInfo
+    else:
+        return None,None
+    
+'''def searchIteration(moves,colour,searchMoves=[]):
+    currentEvaluation = evaluate()
+    newEvaluation = currentEvaluation
+    extraInfo = None # may contain promotion piece
+    bestMove = None
+
+    if len(moves) != 0:
+        for i in moves:
+            resetData()
+            if searchMoves != []:
+                turnIndex = 0
+                for j in searchMoves:
+                    turnIndex = turnIndex + 1
+                    if turnIndex % 2 == 1:
+                        makeMove(int(math.pow(2,j[0])),int(math.pow(2,j[1])),enemyColour,True)  
+                    else:
+                        makeMove(int(math.pow(2,j[0])),int(math.pow(2,j[1])),playerColour,True) 
+    
+            if isPromoting(int(math.pow(2,i[0])),i[1]):
+                for piece in ["BISHOP","ROOK","HORSE","QUEEN"]:
+                    resetData()
+                    makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True,piece)
+                    bestMove, newEvaluation = getBestEvalMove(colour,bestMove,newEvaluation,i)
+                    if bestMove == i:
+                        extraInfo = piece
+            else:
+                makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True)  
+
             bestMove, newEvaluation = getBestEvalMove(colour,bestMove,newEvaluation,i)
 
     resetData()
@@ -735,7 +774,7 @@ def search(moves,colour,depth=0,searchMoves=[]):
         chosenMove = moves[index]
         return chosenMove,extraInfo
     else:
-        return bestMove,extraInfo
+        return bestMove,extraInfo'''
     
 ##################################################################################################################################################################################
 ##################################################################################################################################################################################
