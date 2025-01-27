@@ -713,10 +713,25 @@ def search(moves,colour,depth=0,searchMoves=[]):
                 searchMovesCopy = searchMovesCopy + [depthMove]
                 depthMoves = generateAllMoves(currentColour,False,searchMovesCopy)
                 depthMove,depthExtraInfo = search(depthMoves,currentColour,depthCopy,searchMovesCopy)
+                turnIndex = 0
+                for searchMove in searchMovesCopy:
+                    turnIndex = turnIndex + 1
+                    if turnIndex % 2 == 1:
+                        makeMove(int(math.pow(2,searchMove[0])),int(math.pow(2,searchMove[1])),enemyColour,True)  
+                    else:
+                        makeMove(int(math.pow(2,searchMove[0])),int(math.pow(2,searchMove[1])),playerColour,True) 
 
             if isPromoting(int(math.pow(2,i[0])),i[1]):
                 for piece in ["BISHOP","ROOK","HORSE","QUEEN"]:
                     resetData()
+                    if searchMoves != []:
+                        turnIndex = 0
+                        for j in searchMoves:
+                            turnIndex = turnIndex + 1
+                            if turnIndex % 2 == 1:
+                                makeMove(int(math.pow(2,j[0])),int(math.pow(2,j[1])),enemyColour,True)  
+                            else:
+                                makeMove(int(math.pow(2,j[0])),int(math.pow(2,j[1])),playerColour,True) 
                     makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True,piece)
                     bestMove, newEvaluation = getBestEvalMove(colour,bestMove,newEvaluation,i)
                     if bestMove == i:
@@ -724,7 +739,7 @@ def search(moves,colour,depth=0,searchMoves=[]):
             else:
                 makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True)        
                 
-            bestMove, newEvaluation = getBestEvalMove(colour,bestMove,newEvaluation,i)
+            bestMove,newEvaluation = getBestEvalMove(colour,bestMove,newEvaluation,i)
             
             resetData()
 
@@ -736,45 +751,6 @@ def search(moves,colour,depth=0,searchMoves=[]):
             return bestMove,extraInfo
     else:
         return None,None
-    
-'''def searchIteration(moves,colour,searchMoves=[]):
-    currentEvaluation = evaluate()
-    newEvaluation = currentEvaluation
-    extraInfo = None # may contain promotion piece
-    bestMove = None
-
-    if len(moves) != 0:
-        for i in moves:
-            resetData()
-            if searchMoves != []:
-                turnIndex = 0
-                for j in searchMoves:
-                    turnIndex = turnIndex + 1
-                    if turnIndex % 2 == 1:
-                        makeMove(int(math.pow(2,j[0])),int(math.pow(2,j[1])),enemyColour,True)  
-                    else:
-                        makeMove(int(math.pow(2,j[0])),int(math.pow(2,j[1])),playerColour,True) 
-    
-            if isPromoting(int(math.pow(2,i[0])),i[1]):
-                for piece in ["BISHOP","ROOK","HORSE","QUEEN"]:
-                    resetData()
-                    makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True,piece)
-                    bestMove, newEvaluation = getBestEvalMove(colour,bestMove,newEvaluation,i)
-                    if bestMove == i:
-                        extraInfo = piece
-            else:
-                makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True)  
-
-            bestMove, newEvaluation = getBestEvalMove(colour,bestMove,newEvaluation,i)
-
-    resetData()
-
-    if newEvaluation == currentEvaluation:
-        index = random.randint(0, len(moves) - 1)
-        chosenMove = moves[index]
-        return chosenMove,extraInfo
-    else:
-        return bestMove,extraInfo'''
     
 ##################################################################################################################################################################################
 ##################################################################################################################################################################################
