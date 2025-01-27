@@ -713,13 +713,7 @@ def search(moves,colour,depth=0,searchMoves=[]):
                 searchMovesCopy = searchMovesCopy + [depthMove]
                 depthMoves = generateAllMoves(currentColour,False,searchMovesCopy)
                 depthMove,depthExtraInfo = search(depthMoves,currentColour,depthCopy,searchMovesCopy)
-                turnIndex = 0
-                for searchMove in searchMovesCopy:
-                    turnIndex = turnIndex + 1
-                    if turnIndex % 2 == 1:
-                        makeMove(int(math.pow(2,searchMove[0])),int(math.pow(2,searchMove[1])),enemyColour,True)  
-                    else:
-                        makeMove(int(math.pow(2,searchMove[0])),int(math.pow(2,searchMove[1])),playerColour,True) 
+                return depthMove,depthExtraInfo
 
             if isPromoting(int(math.pow(2,i[0])),i[1]):
                 for piece in ["BISHOP","ROOK","HORSE","QUEEN"]:
