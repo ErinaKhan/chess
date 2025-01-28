@@ -337,7 +337,6 @@ def generateAllMoves(turn,isResponses,movesToSearch=[]):
                     else:
                         makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),playerColour,True)  
 
-
         if len(legalMoves) == 0:
             if inCheck(turn,generateAllMoves(switchColours(turn),True,movesToSearch)):
                 if movesToSearch == []:
@@ -713,27 +712,28 @@ def search(moves,colour,depth=0,searchMoves=[]):
                 searchMovesCopy = searchMovesCopy + [depthMove]
                 depthMoves = generateAllMoves(currentColour,False,searchMovesCopy)
                 depthMove,depthExtraInfo = search(depthMoves,currentColour,depthCopy,searchMovesCopy)
-                return depthMove,depthExtraInfo
-
-            if isPromoting(int(math.pow(2,i[0])),i[1]):
-                for piece in ["BISHOP","ROOK","HORSE","QUEEN"]:
-                    resetData()
-                    if searchMoves != []:
-                        turnIndex = 0
-                        for j in searchMoves:
-                            turnIndex = turnIndex + 1
-                            if turnIndex % 2 == 1:
-                                makeMove(int(math.pow(2,j[0])),int(math.pow(2,j[1])),enemyColour,True)  
-                            else:
-                                makeMove(int(math.pow(2,j[0])),int(math.pow(2,j[1])),playerColour,True) 
-                    makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True,piece)
-                    bestMove, newEvaluation = getBestEvalMove(colour,bestMove,newEvaluation,i)
-                    if bestMove == i:
-                        extraInfo = piece
+                bestMove,newEvaluation = getBestEvalMove(colour,bestMove,newEvaluation,i)
             else:
-                makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True)        
-                
-            bestMove,newEvaluation = getBestEvalMove(colour,bestMove,newEvaluation,i)
+                if isPromoting(int(math.pow(2,i[0])),i[1]):
+                    for piece in ["BISHOP","ROOK","HORSE","QUEEN"]:
+                        resetData()
+                        if searchMoves != []:
+                            turnIndex = 0
+                            for j in searchMoves:
+                                turnIndex = turnIndex + 1
+                                if turnIndex % 2 == 1:
+                                    makeMove(int(math.pow(2,j[0])),int(math.pow(2,j[1])),enemyColour,True)  
+                                else:
+                                    makeMove(int(math.pow(2,j[0])),int(math.pow(2,j[1])),playerColour,True) 
+                        makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True,piece)
+                        bestMove, newEvaluation = getBestEvalMove(colour,bestMove,newEvaluation,i)
+                        if bestMove == i:
+                            extraInfo = piece
+                else:
+                    makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True)        
+                    
+
+                bestMove,newEvaluation = getBestEvalMove(colour,bestMove,newEvaluation,i)
             
             resetData()
 
