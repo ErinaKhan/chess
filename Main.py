@@ -71,7 +71,7 @@ def playersTurn(colour):
     
 def AITurn(colour):
     moves = Engine.generateAllMoves(colour,False)
-    chosenMove,extraInfo = Engine.search(moves,colour,2)
+    chosenMove,extraInfo,eval = Engine.search(moves,colour,2)
     UI.sleep(2)
     if chosenMove != None:
         Engine.makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,False,extraInfo)
