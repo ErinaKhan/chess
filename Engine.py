@@ -685,7 +685,7 @@ def getBestEvalMove(colour,currentBestMove,newEvaluation,move):
 
     return currentBestMove,newEvaluation
 
-def search(moves,colour,depth=0,searchMoves=[]):
+def search(moves,colour,searchMoves=[]):
     resetData()
     if searchMoves != []:
         turnIndex = 0
@@ -704,16 +704,7 @@ def search(moves,colour,depth=0,searchMoves=[]):
 
     if len(moves) != 0:
         for i in moves:
-            if depth != 0:
-                currentColour = switchColours(colour)
-                depthMove = i
-                depthCopy = depth
-                depthCopy = depthCopy - 1
-                searchMovesCopy = searchMoves
-                searchMovesCopy = searchMovesCopy + [depthMove]
-                depthMoves = generateAllMoves(currentColour,False,searchMovesCopy)
-                depthMove,depthExtraInfo,eval = search(depthMoves,currentColour,depthCopy,searchMovesCopy)
-            
+
             resetData()
             if searchMoves != []:
                 turnIndex = 0
@@ -753,6 +744,16 @@ def search(moves,colour,depth=0,searchMoves=[]):
             return bestMove,extraInfo,newEvaluation
     else:
         return None,None,None
+    
+def searchWithDepth(depth,colour):
+    for i in range(depth):
+        if depth != 0:
+            depth = depth - 1
+            currentColour = switchColours(colour)
+            depthMoves = generateAllMoves(currentColour,False)
+            depthMove,depthExtraInfo,eval = search(depthMoves,currentColour)
+            maxDepthMoves = maxDepthMoves + [[depthMove,depthExtraInfo,eval]]
+
     
 ##################################################################################################################################################################################
 ##################################################################################################################################################################################
