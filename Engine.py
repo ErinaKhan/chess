@@ -699,22 +699,10 @@ def search(moves,colour,depth=0,searchMoves=[]):
     newEvaluation = currentEvaluation
     extraInfo = None # may contain promotion piece
     bestMove = None
-    maxDepthMoves = []    
+    maxDepthMove = None  
 
     if len(moves) != 0:
         for i in moves:
-
-            if depth != 0:
-                currentColour = switchColours(colour)
-                depthMove = i
-                depthCopy = depth
-                depthCopy = depthCopy - 1
-                searchMovesCopy = searchMoves
-                searchMovesCopy = searchMovesCopy + [depthMove]
-                depthMoves = generateAllMoves(currentColour,False,searchMovesCopy)
-                depthMove,depthExtraInfo,eval = search(depthMoves,currentColour,depthCopy,searchMovesCopy)
-                if depthCopy == 0:
-                    maxDepthMoves = maxDepthMoves + [[depthMove,depthExtraInfo,eval]]
 
             resetData()
             if searchMoves != []:
@@ -726,29 +714,43 @@ def search(moves,colour,depth=0,searchMoves=[]):
                     else:
                         makeMove(int(math.pow(2,j[0])),int(math.pow(2,j[1])),playerColour,True) 
 
-            if isPromoting(int(math.pow(2,i[0])),i[1]):
-                for piece in ["BISHOP","ROOK","HORSE","QUEEN"]:
-                    resetData()
-                    if searchMoves != []:
-                        turnIndex = 0
-                        for j in searchMoves:
-                            turnIndex = turnIndex + 1
-                            if turnIndex % 2 == 1:
-                                makeMove(int(math.pow(2,j[0])),int(math.pow(2,j[1])),enemyColour,True)  
-                            else:
-                                makeMove(int(math.pow(2,j[0])),int(math.pow(2,j[1])),playerColour,True) 
-                    makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True,piece)
-                    bestMove, newEvaluation = getBestEvalMove(colour,bestMove,newEvaluation,i)
-                    if bestMove == i:
-                        extraInfo = piece
+            if depth != 0:
+                currentColour = switchColours(colour)
+                depthMove = i
+                depthCopy = depth
+                depthCopy = depthCopy - 1
+                searchMovesCopy = searchMoves
+                searchMovesCopy = searchMovesCopy + [depthMove]
+                depthMoves = generateAllMoves(currentColour,False,searchMovesCopy)
+                if depthCopy != 0:
+                    search(depthMoves,currentColour,depthCopy,searchMovesCopy)
+                else:
+                    depthMove,depthExtraInfo,eval = search(depthMoves,currentColour,depthCopy,searchMovesCopy)
+                    maxDepthMove = depthMove
             else:
-                makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True)                            
-            
-            bestMove,newEvaluation = getBestEvalMove(colour,bestMove,newEvaluation,i)     
-            resetData()
+                if isPromoting(int(math.pow(2,i[0])),i[1]):
+                    for piece in ["BISHOP","ROOK","HORSE","QUEEN"]:
+                        resetData()
+                        if searchMoves != []:
+                            turnIndex = 0
+                            for j in searchMoves:
+                                turnIndex = turnIndex + 1
+                                if turnIndex % 2 == 1:
+                                    makeMove(int(math.pow(2,j[0])),int(math.pow(2,j[1])),enemyColour,True)  
+                                else:
+                                    makeMove(int(math.pow(2,j[0])),int(math.pow(2,j[1])),playerColour,True) 
+                        makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True,piece)
+                        bestMove, newEvaluation = getBestEvalMove(colour,bestMove,newEvaluation,i)
+                        if bestMove == i:
+                            extraInfo = piece
+                else:
+                    makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True)         
+                
+                bestMove,newEvaluation = getBestEvalMove(colour,bestMove,newEvaluation,i)     
+                resetData()
 
         if depth != 0:
-            return maxDepthMoves
+            return maxDepthMove
 
         if newEvaluation == currentEvaluation:
             index = random.randint(0, len(moves) - 1)
