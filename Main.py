@@ -77,10 +77,9 @@ def AITurn(colour):
         Engine.makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,False,extraInfo)'''
     
     moves = Engine.generateAllMoves(colour,False)
-    maxdepthmoves = Engine.search(moves,colour,3)
-    print(maxdepthmoves)
-    UI.sleep(10)
-    
+    chosenMove,extraInfo,newEvaluation = Engine.search(moves,colour)
+    chosenMove,extraInfo = Engine.searchWithDepth(2,colour,moves)
+    Engine.makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,False,extraInfo)    
 
 def validCoordinates(coordinates):
     return len(coordinates) == 2 and coordinates[0].lower() in ['a','b','c','d','e','f','g','h'] and coordinates[1] in ['1','2','3','4','5','6','7','8']

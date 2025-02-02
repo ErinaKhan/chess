@@ -684,7 +684,7 @@ def getBestEvalMove(colour,currentBestMove,newEvaluation,move):
 
     return currentBestMove,newEvaluation
 
-def search(moves,colour,depth=0,searchMoves=[]):
+def search(moves,colour,searchMoves=[]):
     resetData()
     if searchMoves != []:
         turnIndex = 0
@@ -699,7 +699,6 @@ def search(moves,colour,depth=0,searchMoves=[]):
     newEvaluation = currentEvaluation
     extraInfo = None # may contain promotion piece
     bestMove = None
-    maxDepthMove = None  
 
     if len(moves) != 0:
         for i in moves:
@@ -714,7 +713,7 @@ def search(moves,colour,depth=0,searchMoves=[]):
                     else:
                         makeMove(int(math.pow(2,j[0])),int(math.pow(2,j[1])),playerColour,True) 
 
-            if depth != 0:
+            '''if depth != 0:
                 currentColour = switchColours(colour)
                 depthMove = i
                 depthCopy = depth
@@ -726,31 +725,28 @@ def search(moves,colour,depth=0,searchMoves=[]):
                     search(depthMoves,currentColour,depthCopy,searchMovesCopy)
                 else:
                     depthMove,depthExtraInfo,eval = search(depthMoves,currentColour,depthCopy,searchMovesCopy)
-                    maxDepthMove = depthMove
+                    maxDepthMoves = maxDepthMoves + [depthMove,eval]'''
+           
+            if isPromoting(int(math.pow(2,i[0])),i[1]):
+                for piece in ["BISHOP","ROOK","HORSE","QUEEN"]:
+                    resetData()
+                    if searchMoves != []:
+                        turnIndex = 0
+                        for j in searchMoves:
+                            turnIndex = turnIndex + 1
+                            if turnIndex % 2 == 1:
+                                makeMove(int(math.pow(2,j[0])),int(math.pow(2,j[1])),enemyColour,True)  
+                            else:
+                                makeMove(int(math.pow(2,j[0])),int(math.pow(2,j[1])),playerColour,True) 
+                    makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True,piece)
+                    bestMove, newEvaluation = getBestEvalMove(colour,bestMove,newEvaluation,i)
+                    if bestMove == i:
+                        extraInfo = piece
             else:
-                if isPromoting(int(math.pow(2,i[0])),i[1]):
-                    for piece in ["BISHOP","ROOK","HORSE","QUEEN"]:
-                        resetData()
-                        if searchMoves != []:
-                            turnIndex = 0
-                            for j in searchMoves:
-                                turnIndex = turnIndex + 1
-                                if turnIndex % 2 == 1:
-                                    makeMove(int(math.pow(2,j[0])),int(math.pow(2,j[1])),enemyColour,True)  
-                                else:
-                                    makeMove(int(math.pow(2,j[0])),int(math.pow(2,j[1])),playerColour,True) 
-                        makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True,piece)
-                        bestMove, newEvaluation = getBestEvalMove(colour,bestMove,newEvaluation,i)
-                        if bestMove == i:
-                            extraInfo = piece
-                else:
-                    makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True)         
+                makeMove(int(math.pow(2,i[0])),int(math.pow(2,i[1])),colour,True)         
                 
-                bestMove,newEvaluation = getBestEvalMove(colour,bestMove,newEvaluation,i)     
-                resetData()
-
-        if depth != 0:
-            return maxDepthMove
+            bestMove,newEvaluation = getBestEvalMove(colour,bestMove,newEvaluation,i)     
+            resetData()
 
         if newEvaluation == currentEvaluation:
             index = random.randint(0, len(moves) - 1)
@@ -761,14 +757,49 @@ def search(moves,colour,depth=0,searchMoves=[]):
     else:
         return None,None,None
     
-def searchWithDepth(depth,colour):
-    for i in range(depth):
-        if depth != 0:
-            depth = depth - 1
-            currentColour = switchColours(colour)
-            depthMoves = generateAllMoves(currentColour,False)
-            depthMove,depthExtraInfo,eval = search(depthMoves,currentColour)
-            maxDepthMoves = maxDepthMoves + [[depthMove,depthExtraInfo,eval]]
+def searchWithDepth(depth,colour,startingMoves):
+    depthMove = None
+    searchMoves = []
+    enemyColour = switchColours(colour)
+    allMoves = []
+
+    if depth != 0:
+        for move in startingMoves:
+            searchMoves = searchMoves + [move]
+            depthMoves = generateAllMoves(enemyColour,False,searchMoves)
+            
+            for depthMove in depthMoves:
+                searchMovesCopy = searchMoves + [depthMove]
+                depthMoves = generateAllMoves(colour,False,searchMovesCopy)
+                bestMove,extraInfo,newEvaluation = search(depthMoves,colour,searchMovesCopy)
+                allMoves = allMoves + [[move,extraInfo,newEvaluation]]
+                searchMovesCopy = searchMoves
+            
+            searchMoves = []
+    else:
+        depthMoves = generateAllMoves(colour,False,searchMoves)
+        depthMove,depthExtraInfo,eval = search(depthMoves,colour)
+
+    moveToDo = None
+    info = None
+
+    resetData()
+    startEval = evaluate()
+    for i in allMoves:
+        if colour == "WHITE":
+            if i[2] > startEval:
+                moveToDo = i[0]
+                info = i[1]
+        else:
+            if i[2] < startEval:
+                moveToDo = i[0]
+                info = i[1]
+
+        
+    return moveToDo,info
+
+
+
 
     
 ##################################################################################################################################################################################
