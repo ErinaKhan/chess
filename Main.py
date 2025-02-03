@@ -77,9 +77,13 @@ def AITurn(colour):
         Engine.makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,False,extraInfo)'''
     
     moves = Engine.generateAllMoves(colour,False)
-    chosenMove,extraInfo,newEvaluation = Engine.search(moves,colour)
-    chosenMove,extraInfo = Engine.searchWithDepth(2,colour,moves)
+    chosenMove,extraInfo,eval = Engine.search(moves,colour)
+    #chosenMove,extraInfo,newEvaluation = Engine.search(moves,colour,1,1)
+    #newEvaluation,chosenMove = Engine.searchv2(2,colour)
+    #print(Engine.search(moves,colour,1,1))
+    #chosenMove,extraInfo = Engine.searchWithDepth(2,colour,moves)
     Engine.makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,False,extraInfo)    
+    UI.sleep(2)
 
 def validCoordinates(coordinates):
     return len(coordinates) == 2 and coordinates[0].lower() in ['a','b','c','d','e','f','g','h'] and coordinates[1] in ['1','2','3','4','5','6','7','8']
