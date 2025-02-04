@@ -767,7 +767,23 @@ def searchv2(depth,colour,searchMoves = []):
 
     return bestEval,bestMove
     
-
+# ------------- plan for final search function that supports depth ----------------------
+#
+#                    does search call for each branch and 
+#                        returns best move for enemy
+#         (the start then adds all these moves returned from branches 
+#       into list and selects one with lowest eval response from black)
+#                        ^       ^        ^        ^
+#                        |       |        |        |
+#                   Checks every move person searching has
+#                        ^       ^        ^        ^
+#                        |       |        |        |
+#                              Start of search
+#
+# all above can then be called as many times for different depths
+# the above section is of depth 1
+#
+# ---------------------------------------------------------------------------------------
     
 ##################################################################################################################################################################################
 ##################################################################################################################################################################################
