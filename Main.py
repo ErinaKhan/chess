@@ -77,11 +77,12 @@ def AITurn(colour):
         Engine.makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,False,extraInfo)'''
     
     moves = Engine.generateAllMoves(colour,False)
-    chosenMove,extraInfo,eval = Engine.search(moves,colour)
+    #chosenMove,extraInfo,eval = Engine.search(moves,colour)
     #chosenMove,extraInfo,newEvaluation = Engine.search(moves,colour,1,1)
     #newEvaluation,chosenMove = Engine.searchv2(2,colour)
     #print(Engine.search(moves,colour,1,1))
     #chosenMove,extraInfo = Engine.searchWithDepth(2,colour,moves)
+    bestOpponentEval,chosenMove,extraInfo = Engine.searchv3(colour,[],2)
     Engine.makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,False,extraInfo)    
     UI.sleep(2)
 

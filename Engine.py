@@ -784,6 +784,43 @@ def searchv2(depth,colour,searchMoves = []):
 # the above section is of depth 1
 #
 # ---------------------------------------------------------------------------------------
+
+def searchv3(colour,searchMoves = [],depth = 1):
+    #chosenMove,extraInfo,newEvaluation
+    resetData(searchMoves)
+    startEval = evaluate()
+    moves = generateAllMoves(colour,False,searchMoves)
+    opponentColour = switchColours(colour)
+    allEndDepthMoves = []
+
+    for move in moves:
+        resetData(searchMoves)
+        opponentMoves = generateAllMoves(opponentColour,False,searchMoves)
+        bestOpponentMove, extraInfo, bestOpponentEval = search(opponentMoves,opponentColour,searchMoves + [move])
+        
+        if depth - 1 != 0:
+            bestOpponentEval,newMove,extraInfo = searchv3(colour,searchMoves + [move,bestOpponentMove],depth - 1)
+            allEndDepthMoves = allEndDepthMoves + [[bestOpponentEval,move,extraInfo]]
+        else:
+            allEndDepthMoves = allEndDepthMoves + [[bestOpponentEval,move,extraInfo]]
+
+    bestMove = None
+    if len(allEndDepthMoves) > 0:
+        bestMove = allEndDepthMoves[0]
+
+    for i in range(len(allEndDepthMoves)):
+        if colour == "WHITE":
+            if allEndDepthMoves[i][0] > bestMove[0]:
+                bestMove = allEndDepthMoves[i]
+        else:
+            if allEndDepthMoves[i][0] < bestMove[0]:
+                bestMove = allEndDepthMoves[i]
+
+    if bestMove != None:
+        return bestMove[0],bestMove[1],bestMove[2]
+    else:
+        return None,None,None
+    
     
 ##################################################################################################################################################################################
 ##################################################################################################################################################################################
