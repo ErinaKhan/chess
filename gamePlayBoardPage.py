@@ -75,9 +75,8 @@ def drawPiece(boardx,boardy,i,j):
         new_piece = image_lookup[colour+piece]
         pawn_rect = new_piece.get_rect()
         new_piece = pygame.transform.scale(new_piece, (90,90))
-        if i == 0 or i == 1 or i == 6 or i == 7:
-            #pygame.draw.rect(screen,(232,46,46),(boardx + PIECE_PLACEMENT,boardy + PIECE_PLACEMENT,PIECE_SIZE,PIECE_SIZE))
-            screen.blit(new_piece,(boardx + PIECE_PLACEMENT,boardy + PIECE_PLACEMENT))
+        #pygame.draw.rect(screen,(232,46,46),(boardx + PIECE_PLACEMENT,boardy + PIECE_PLACEMENT,PIECE_SIZE,PIECE_SIZE))
+        screen.blit(new_piece,(boardx + PIECE_PLACEMENT,boardy + PIECE_PLACEMENT))
 
 def drawBoard():
     running = True
