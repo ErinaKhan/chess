@@ -36,7 +36,7 @@ queen_back = pygame.image.load(r"chessPieces\bq.png")
 
 image_lookup = {
     "BLACKROOK": rook_black,
-    "BLACKHORSE": king_black,
+    "BLACKHORSE": knight_black,
     "BLACKBISHOP": bishop_black,
     "BLACKQUEEN": queen_back,
     "BLACKKING": king_black,
