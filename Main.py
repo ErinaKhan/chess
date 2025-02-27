@@ -20,6 +20,7 @@ def startGame():
     Engine.convertToBitBoard(newBoard,castlingData,enPassant)
     UI.starterGameInfo(colour)
     UI.drawBoard(None)
+    import gamePlayBoardPage as test
 
     resigning = False
 
