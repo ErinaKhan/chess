@@ -1,6 +1,5 @@
 # Function to generate a FEN string for a given chess position
-# This is written in a beginner-friendly way with less efficient practices
-def generate_fen(board, turn, castling, en_passant, halfmove, fullmove):
+def generateFen(board, turn, castling, en_passant, halfmove, fullmove):
     """
     Generates a FEN string given the board position and game state.
     
@@ -14,7 +13,7 @@ def generate_fen(board, turn, castling, en_passant, halfmove, fullmove):
     """
     
     # Function to compress a rank into FEN format
-    def compress_rank(rank):
+    def compressRank(rank):
         compressed = ""
         empty_count = 0  # Counter for empty squares
         for i in range(len(rank)):
