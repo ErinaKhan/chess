@@ -1,13 +1,18 @@
 import pygame
 import Engine
+import os
 import math
+import Pygame_Utils as utils
 
 pygame.init()
 
-SCREEN_WIDTH = 1200
-SCREEN_HEIGHT = 900
+os.environ['SDL_VIDEO_CENTERED'] = '1'
+info = pygame.display.Info()
 
-screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
+SCREEN_WIDTH = info.current_w
+SCREEN_HEIGHT = info.current_h
+
+screen = pygame.display.set_mode((SCREEN_WIDTH - 10,SCREEN_HEIGHT- 50),pygame.RESIZABLE)
 pygame.display.set_caption('DEMO')
 
 SQUARE_SIZE = 100
@@ -33,6 +38,8 @@ knight_black = pygame.image.load(r"chessPieces\bn.png")
 bishop_black = pygame.image.load(r"chessPieces\bb.png")
 king_black = pygame.image.load(r"chessPieces\bk.png")
 queen_back = pygame.image.load(r"chessPieces\bq.png")
+
+back_btn = pygame.image.load(r"imagesMisc\undo.png")
 
 image_lookup = {
     "BLACKROOK": rook_black,
@@ -62,6 +69,8 @@ White = (240,217,181), Black = (181,136,99) - lichess board'''
 
 clock = pygame.time.Clock
 
+exitButton = utils.Button(100,200,back_btn,0.25)
+
 #pawn_rect.topleft = (BOARD_START_X,BOARD_START_Y + SQUARE_SIZE)
 
 def drawPiece(boardx,boardy,i,j):
@@ -84,6 +93,11 @@ def drawBoard():
     while running:
 
         screen.fill((26, 33, 36))
+
+        if exitButton.drawButton(screen):
+            # do the action you want to do when clicked
+            running = False
+            pass
 
         pygame.draw.rect(screen,(107, 70, 44),(BOARD_START_X - OUTERBOARD_OFFSET,BOARD_START_Y - OUTERBOARD_OFFSET,(SQUARE_SIZE * 8) + (2 * OUTERBOARD_OFFSET),(SQUARE_SIZE * 8) + (2 * OUTERBOARD_OFFSET)),border_radius=10)
 

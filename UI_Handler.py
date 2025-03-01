@@ -2,6 +2,8 @@ import keyboard
 import Engine
 import math
 
+# this module is specifically for the console application and has nothing to do with pygame
+
 from os import system, name
 from time import sleep
 def clear():
