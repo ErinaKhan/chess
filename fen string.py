@@ -34,7 +34,7 @@ def generateFen(board, turn, castling, en_passant, halfmove, fullmove):
     # Compress the board into FEN notation
     board_fen = ""
     for i in range(len(board)):
-        board_fen += compress_rank(board[i])
+        board_fen += compressRank(board[i])
         if i != len(board) - 1:
             board_fen += "/"  # Add '/' separator between ranks
     
@@ -58,7 +58,7 @@ default_board = [
 ]
 
 # Generate the FEN string for the initial position
-fen = generate_fen(default_board, 'w', 'KQkq', '-', 0, 1)
+fen = generateFen(default_board, 'w', 'KQkq', '-', 0, 1)
 
 # Print the generated FEN string
 print(fen)

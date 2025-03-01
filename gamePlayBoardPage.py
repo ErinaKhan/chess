@@ -21,6 +21,7 @@ BOARD_START_X = int((SCREEN_WIDTH - (SQUARE_SIZE * 8)) / 2)
 BOARD_START_Y = int((SCREEN_HEIGHT - (SQUARE_SIZE * 8)) / 2)
 BLACK_SQUARE_COLOUR = (181,136,99)
 WHITE_SQUARE_COLOUR = (240,217,181)
+OVERLAY_SQUARE_COLOUR = (230, 112, 112)
 
 PIECE_SIZE = SQUARE_SIZE - (0.1 * SQUARE_SIZE)
 PIECE_PLACEMENT = int((SQUARE_SIZE - PIECE_SIZE) / 2)
@@ -40,6 +41,7 @@ king_black = pygame.image.load(r"chessPieces\bk.png")
 queen_back = pygame.image.load(r"chessPieces\bq.png")
 
 back_btn = pygame.image.load(r"imagesMisc\undo.png")
+help_btn = pygame.image.load(r"imagesMisc\help.png")
 
 image_lookup = {
     "BLACKROOK": rook_black,
@@ -69,7 +71,8 @@ White = (240,217,181), Black = (181,136,99) - lichess board'''
 
 clock = pygame.time.Clock
 
-exitButton = utils.Button(100,200,back_btn,0.25)
+exitButton = utils.Button(20,SCREEN_HEIGHT * 0.8,back_btn,0.25)
+helpButton = utils.Button(SCREEN_WIDTH * 0.95,10,help_btn,0.15)
 
 #pawn_rect.topleft = (BOARD_START_X,BOARD_START_Y + SQUARE_SIZE)
 
@@ -92,11 +95,15 @@ def drawBoard():
 
     while running:
 
-        screen.fill((26, 33, 36))
+        screen.fill((219, 200, 167))
+        drawMoveTracker()
 
         if exitButton.drawButton(screen):
-            # do the action you want to do when clicked
+            # exit page
             running = False
+
+        if helpButton.drawButton(screen):
+            # do help stuff
             pass
 
         pygame.draw.rect(screen,(107, 70, 44),(BOARD_START_X - OUTERBOARD_OFFSET,BOARD_START_Y - OUTERBOARD_OFFSET,(SQUARE_SIZE * 8) + (2 * OUTERBOARD_OFFSET),(SQUARE_SIZE * 8) + (2 * OUTERBOARD_OFFSET)),border_radius=10)
@@ -129,6 +136,9 @@ def drawBoard():
         pygame.display.update()
 
     pygame.quit()
+
+def drawMoveTracker():
+    pygame.draw.rect(screen,(219, 219, 219),(BOARD_START_X + (SQUARE_SIZE * 9)  + (2 * OUTERBOARD_OFFSET) ,BOARD_START_Y - OUTERBOARD_OFFSET,(SQUARE_SIZE * 3)  + (2 * OUTERBOARD_OFFSET),(SQUARE_SIZE * 8) + (2 * OUTERBOARD_OFFSET)),border_radius=10)
 
 
 drawBoard()
