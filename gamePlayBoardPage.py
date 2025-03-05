@@ -76,6 +76,8 @@ helpButton = utils.Button(SCREEN_WIDTH * 0.95,10,help_btn,0.15)
 
 #pawn_rect.topleft = (BOARD_START_X,BOARD_START_Y + SQUARE_SIZE)
 
+allPieces = []
+
 def drawPiece(boardx,boardy,i,j):
     currentSquareIndex = (i * 8) + j
     squareBinary = int(math.pow(2,currentSquareIndex))
@@ -83,18 +85,35 @@ def drawPiece(boardx,boardy,i,j):
     piece = str(Engine.getPieceTypeFromSquare(squareBinary))
     
     if colour+piece != "NONENONE":
-        #print(colour+piece)
         new_piece = image_lookup[colour+piece]
-        pawn_rect = new_piece.get_rect()
-        new_piece = pygame.transform.scale(new_piece, (90,90))
+        new_piece = pygame.transform.scale(new_piece, (100,100))
+        pieceButton = utils.chessPiece(colour,currentSquareIndex,boardx,boardy,new_piece)
+        #new_piece = pygame.transform.scale(new_piece, (90,90))
         #pygame.draw.rect(screen,(232,46,46),(boardx + PIECE_PLACEMENT,boardy + PIECE_PLACEMENT,PIECE_SIZE,PIECE_SIZE))
-        screen.blit(new_piece,(boardx + PIECE_PLACEMENT,boardy + PIECE_PLACEMENT))
+        #screen.blit(new_piece,(boardx + PIECE_PLACEMENT,boardy + PIECE_PLACEMENT))
+        return pieceButton
+
+def drawPieces():
+
+    for i in range(8):
+        for j in range(8):
+            boardx = BOARD_START_X + (SQUARE_SIZE * j)
+            boardy = BOARD_START_Y + (SQUARE_SIZE * i)
+            piece = drawPiece(boardx,boardy,i,j)
+            if piece != None:
+                allPieces.append(piece)
 
 def drawBoard():
     running = True
+    overlay = []
+    newOverlay = []
+    overlaySquares = []
+    selectedPiece = None
+    drawPieces()
 
     while running:
 
+        
         screen.fill((219, 200, 167))
         drawMoveTracker()
 
@@ -108,32 +127,64 @@ def drawBoard():
 
         pygame.draw.rect(screen,(107, 70, 44),(BOARD_START_X - OUTERBOARD_OFFSET,BOARD_START_Y - OUTERBOARD_OFFSET,(SQUARE_SIZE * 8) + (2 * OUTERBOARD_OFFSET),(SQUARE_SIZE * 8) + (2 * OUTERBOARD_OFFSET)),border_radius=10)
 
+        if overlay != newOverlay:
+            overlay = newOverlay
+            overlaySquares = []
+            for square in overlay:
+                #create new overlay square
+                x = (square) % 8
+                y = int(square // 8)
+                boardx = BOARD_START_X + (SQUARE_SIZE * x)
+                boardy = BOARD_START_Y + (SQUARE_SIZE * y)
+                newSquare = utils.OverlaySquare(square,boardx,boardy,OVERLAY_SQUARE_COLOUR)
+                overlaySquares = overlaySquares + [newSquare]
+
+            
+
         for i in range(8):
 
             for j in range(8):
                 boardx = BOARD_START_X + (SQUARE_SIZE * j)
                 boardy = BOARD_START_Y + (SQUARE_SIZE * i)
+                currentSquareIndex = (i * 8) + j
 
+                
                 if i % 2 == 0:
                     if j % 2 == 0:
                         pygame.draw.rect(screen,(WHITE_SQUARE_COLOUR),(boardx,boardy,SQUARE_SIZE,SQUARE_SIZE))
-                        drawPiece(boardx,boardy,i,j)
                     else:
                         pygame.draw.rect(screen,(BLACK_SQUARE_COLOUR),(boardx,boardy,SQUARE_SIZE,SQUARE_SIZE))
-                        drawPiece(boardx,boardy,i,j) 
                 else:
                     if j % 2 == 0:
                         pygame.draw.rect(screen,(BLACK_SQUARE_COLOUR),(boardx,boardy,SQUARE_SIZE,SQUARE_SIZE))
-                        drawPiece(boardx,boardy,i,j)
                     else:
                         pygame.draw.rect(screen,(WHITE_SQUARE_COLOUR),(boardx,boardy,SQUARE_SIZE,SQUARE_SIZE))
-                        drawPiece(boardx,boardy,i,j)
+        
+        for square in overlaySquares:
+            if square.drawButton(screen) and selectedPiece != None:
+                print(f"{selectedPiece.coordinates} is going to {square.coordinates}")
+                start = int(math.pow(2,selectedPiece.coordinates))
+                destination = int(math.pow(2,square.coordinates))
+                Engine.makeMove(start,destination,selectedPiece.colour,False,None)
+                allPieces[allPieces.index(selectedPiece)].move(screen,square.x,square.y,square.coordinates)
+                selectedPiece = None
+                newOverlay = []
+                
+
+        for piece in allPieces:
+            if piece.drawButton(screen):
+                allMoves = Engine.filterMovesBySquare(piece.coordinates,piece.colour)
+                selectedPiece = piece
+                newOverlay = []
+                for move in allMoves:
+                    newOverlay = newOverlay + [move[1]]
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
         pygame.display.update()
+            
 
     pygame.quit()
 
