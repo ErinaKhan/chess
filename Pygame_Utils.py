@@ -8,10 +8,15 @@ class Button():
         self.image = pygame.transform.scale(image,(int(width * scale), int(height * scale)))
         self.rect = self.image.get_rect()
         self.rect.topleft = (x,y)
+        self.selectable = True
         self.clicked = False
         self.moving = False
 
     def drawButton(self,screen):
+
+        if not self.selectable:
+            return False
+        
         action = False
         # get pos of mouse
         pos = pygame.mouse.get_pos()
@@ -36,6 +41,10 @@ class Button():
         self.rect.topleft = (x,y)
         print(self.rect)
         screen.blit(self.image,self.rect)
+
+    def destroy(self):
+        self.image.fill((0,0,0,0))
+        self.selectable = False
         
 
 
@@ -81,3 +90,4 @@ class chessPiece(Button):
     def move(self, screen, x, y,newcoords):
         self.coordinates = newcoords
         return super().move(screen, x, y)
+

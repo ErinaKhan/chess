@@ -109,6 +109,7 @@ def drawBoard():
     newOverlay = []
     overlaySquares = []
     selectedPiece = None
+    playerTurn = Engine.playerColour == "WHITE"
     drawPieces()
 
     while running:
@@ -117,7 +118,7 @@ def drawBoard():
         screen.fill((219, 200, 167))
         drawMoveTracker()
 
-        if exitButton.drawButton(screen):
+        if exitButton.drawButton(screen) or Engine.Checkmate == True:
             # exit page
             running = False
 
@@ -159,20 +160,38 @@ def drawBoard():
                         pygame.draw.rect(screen,(BLACK_SQUARE_COLOUR),(boardx,boardy,SQUARE_SIZE,SQUARE_SIZE))
                     else:
                         pygame.draw.rect(screen,(WHITE_SQUARE_COLOUR),(boardx,boardy,SQUARE_SIZE,SQUARE_SIZE))
-        
-        for square in overlaySquares:
-            if square.drawButton(screen) and selectedPiece != None:
-                print(f"{selectedPiece.coordinates} is going to {square.coordinates}")
-                start = int(math.pow(2,selectedPiece.coordinates))
-                destination = int(math.pow(2,square.coordinates))
-                Engine.makeMove(start,destination,selectedPiece.colour,False,None)
-                allPieces[allPieces.index(selectedPiece)].move(screen,square.x,square.y,square.coordinates)
-                selectedPiece = None
-                newOverlay = []
-                
 
+        if playerTurn:
+            for square in overlaySquares:
+                if square.drawButton(screen) and selectedPiece != None:
+                    print(f"{selectedPiece.coordinates} is going to {square.coordinates}")
+                    start = int(math.pow(2,selectedPiece.coordinates))
+                    destination = int(math.pow(2,square.coordinates))
+                    Engine.makeMove(start,destination,selectedPiece.colour,False,None)
+                    allPieces[allPieces.index(selectedPiece)].move(screen,square.x,square.y,square.coordinates)
+                    disposeOfPiece(Engine.enemyColour,square.coordinates)
+                    #allPieces[allPieces.index(selectedPiece)].destroy() <- this will get rid of a piece if taken
+                    playerTurn = False
+                    selectedPiece = None
+                    newOverlay = []
+        else:
+            playerTurn = True
+            chosenMove = opponentTurn(Engine.enemyColour)
+            if chosenMove != None:
+                for piece in allPieces:
+                    if piece.coordinates == chosenMove[0]:
+                        x = (chosenMove[1]) % 8
+                        y = int(chosenMove[1] // 8)
+                        x = BOARD_START_X + (SQUARE_SIZE * x)
+                        y = BOARD_START_Y + (SQUARE_SIZE * y)
+
+                        print(f"{chosenMove[0]} is going to {chosenMove[1]}")
+                        allPieces[allPieces.index(piece)].move(screen,x,y,chosenMove[1])
+                        disposeOfPiece(Engine.playerColour,chosenMove[1])
+
+        
         for piece in allPieces:
-            if piece.drawButton(screen):
+            if piece.drawButton(screen) and piece.colour == Engine.playerColour:
                 allMoves = Engine.filterMovesBySquare(piece.coordinates,piece.colour)
                 selectedPiece = piece
                 newOverlay = []
@@ -191,5 +210,23 @@ def drawBoard():
 def drawMoveTracker():
     pygame.draw.rect(screen,(219, 219, 219),(BOARD_START_X + (SQUARE_SIZE * 9)  + (2 * OUTERBOARD_OFFSET) ,BOARD_START_Y - OUTERBOARD_OFFSET,(SQUARE_SIZE * 3)  + (2 * OUTERBOARD_OFFSET),(SQUARE_SIZE * 8) + (2 * OUTERBOARD_OFFSET)),border_radius=10)
 
+def opponentTurn(colour):
+    moves = Engine.generateAllMoves(colour,False)
+    #chosenMove,extraInfo,eval = Engine.search(moves,colour)
+    #chosenMove,extraInfo,newEvaluation = Engine.search(moves,colour,1,1)
+    #newEvaluation,chosenMove = Engine.searchv2(2,colour)
+    #print(Engine.search(moves,colour,1,1))
+    #chosenMove,extraInfo = Engine.searchWithDepth(2,colour,moves)
+    chosenMove,extraInfo,newEvaluation = Engine.search(moves,colour)
+    if len(moves) > 0:
+        Engine.makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,False,extraInfo)    
+        return chosenMove
+   
+    return None
+
+def disposeOfPiece(colour,disposeSquare):
+    for piece in allPieces:
+        if piece.coordinates == disposeSquare and colour == piece.colour:
+            allPieces[allPieces.index(piece)].destroy()
 
 drawBoard()
