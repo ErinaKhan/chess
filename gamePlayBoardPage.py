@@ -177,6 +177,8 @@ def drawBoard():
                     allMoves = []
         else:
             playerTurn = True
+            selectedPiece = None
+            newOverlay = []
             removeOverlay(overlaySquares)
             chosenMove = opponentTurn(Engine.enemyColour)
             if chosenMove != None:
