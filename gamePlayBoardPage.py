@@ -3,6 +3,7 @@ import Engine
 import os
 import math
 import Pygame_Utils as utils
+import pyTimer as timer
 
 pygame.init()
 
@@ -77,6 +78,8 @@ helpButton = utils.Button(SCREEN_WIDTH * 0.95,10,help_btn,0.15)
 #pawn_rect.topleft = (BOARD_START_X,BOARD_START_Y + SQUARE_SIZE)
 
 allPieces = []
+timerMins = 4
+timerExample = timer.Timer(timerMins * 60 * 1000)
 
 def drawPiece(boardx,boardy,i,j):
     currentSquareIndex = (i * 8) + j
@@ -103,6 +106,9 @@ def drawPieces():
             if piece != None:
                 allPieces.append(piece)
 
+
+timerExample.start()
+
 def drawBoard():
     running = True
     overlay = []
@@ -110,13 +116,20 @@ def drawBoard():
     overlaySquares = []
     selectedPiece = None
     playerTurn = Engine.playerColour == "WHITE"
+    i = 0
+    text = ""
     drawPieces()
 
     while running:
 
-        
         screen.fill((219, 200, 167))
         drawMoveTracker()
+
+        if timerExample.active:
+            timerExample.update()
+            minutes,seconds = timerExample.time()
+            print(f"time {minutes} : {seconds} ")
+            print(text)
 
         if exitButton.drawButton(screen) or Engine.Checkmate == True:
             # exit page
@@ -124,7 +137,13 @@ def drawBoard():
 
         if helpButton.drawButton(screen):
             # do help stuff
-            pass
+            if text == "un paused":
+                text = "paused"
+                timerExample.pause()
+            else:
+                text = "un paused"
+                timerExample.unpause()
+            i = i + 1
 
         pygame.draw.rect(screen,(107, 70, 44),(BOARD_START_X - OUTERBOARD_OFFSET,BOARD_START_Y - OUTERBOARD_OFFSET,(SQUARE_SIZE * 8) + (2 * OUTERBOARD_OFFSET),(SQUARE_SIZE * 8) + (2 * OUTERBOARD_OFFSET)),border_radius=10)
 
