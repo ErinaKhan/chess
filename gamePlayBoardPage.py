@@ -174,8 +174,10 @@ def drawBoard():
                     playerTurn = False
                     selectedPiece = None
                     newOverlay = []
+                    allMoves = []
         else:
             playerTurn = True
+            removeOverlay(overlaySquares)
             chosenMove = opponentTurn(Engine.enemyColour)
             if chosenMove != None:
                 for piece in allPieces:
@@ -228,5 +230,9 @@ def disposeOfPiece(colour,disposeSquare):
     for piece in allPieces:
         if piece.coordinates == disposeSquare and colour == piece.colour:
             allPieces[allPieces.index(piece)].destroy()
+
+def removeOverlay(overlay):
+    for square in overlay:
+        overlay[overlay.index(square)].destroy()
 
 drawBoard()

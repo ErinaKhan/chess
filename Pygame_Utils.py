@@ -52,6 +52,7 @@ class OverlaySquare(Button):
     def __init__(self,coordinates, x, y, colour):
         self.coordinates = coordinates
         self.colour = colour
+        self.selectable = True
         self.rect = pygame.Rect(x,y,100,100)
         self.rect.topleft = (x,y)
         self.clicked = False
@@ -61,6 +62,9 @@ class OverlaySquare(Button):
 
     
     def drawButton(self, screen):
+        if not self.selectable:
+            return
+
         action = False
         # get pos of mouse
         pos = pygame.mouse.get_pos()
@@ -80,6 +84,9 @@ class OverlaySquare(Button):
         pygame.draw.rect(screen,(self.colour),self.rect)
         return action
 
+    def destroy(self):
+        self.rect.scale_by(0,0)
+        self.selectable = False
 
 class chessPiece(Button):
     def __init__(self,colour,coordinates,x,y,image,scale = 1):
