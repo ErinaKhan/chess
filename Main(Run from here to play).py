@@ -8,9 +8,10 @@ import random
 import File_handler as FileHandler
 import UI_Handler as UI
 import math
+import PROJECT_SETTINGS as settings
 #------------------------------------ FUNCTIONS ------------------------------------
 
-CONSOLE_APPLICATION = False
+CONSOLE_APPLICATION = settings.isConsoleApplication()
 
 def startGame():
     # main loop of program

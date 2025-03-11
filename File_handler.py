@@ -1,7 +1,8 @@
 import random
 import UI_Handler as UI
+import PROJECT_SETTINGS as settings
 
-CONSOLE_APPLICATION = False
+CONSOLE_APPLICATION = settings.isConsoleApplication()
 
 FENlookup = {
     "r": "♖",
@@ -183,7 +184,7 @@ def gamesAvailable():
     gameNames = []
     numOfGames = 0
     try:
-        saveFile = open("saveFile.txt","rt")
+        saveFile = open(r"data\saveFile.txt","rt")
 
         for game in saveFile:
             numOfGames = numOfGames + 1
