@@ -35,12 +35,11 @@ class Timer:
             
     def time(self):
         time = self.timeElapsed // 1000 # num of seconds
-        durationInSec = self.duration // 1000
-        durationInMins = durationInSec // 60
-        durationInSec = durationInSec % 60
-        minutes = time // 60 
-        seconds = time % 60
-        return durationInMins - minutes,(durationInSec - seconds) + 60
+        duration = self.duration // 1000
+
+        newTime = duration - time
+        
+        return newTime // 60, newTime % 60
     
     def drawTimerUI(self,screen, x, y, height, width):
         # Alex's section
@@ -49,21 +48,22 @@ class Timer:
         # . the function should draw a rectangle with the current time inside it
         #   like the timer on chess.com (https://www.chess.com/terms/chess-clocks)
         # -----------------------------------------------------
-        # parameters
-        # -----------------------------------------------------
+        #   parameters
         # . the screen is the place the ui should be displayed
         # . x and y are the coordinates to display the image at
         # . length is the length of the timer
         # . width is the width of the timer
         # -----------------------------------------------------
-        # resources if stuck below
+        #   resources if stuck below
         # -----------------------------------------------------
         # how to draw rectangle - https://www.geeksforgeeks.org/how-to-draw-rectangle-in-pygame/
         # displaying text to the screen - https://www.youtube.com/watch?v=ndtFoWWBAoE
+        #
         # if it says pygame doesnt exist when running then there is a help section on our trello board to help
 
         minutes,seconds = self.time() # contains the minutes and the seconds the timer should display
         #-----------------------------------------------------
+
 
 
         #-----------------------------------------------------
@@ -77,11 +77,11 @@ class Timer:
 
 
 
-
-
-
+testTimeMin = 2 # can change value to get different times on the timer
+testTimeSec = 30 # can change value to get different times on the timer
 
 # dont edit code below 
+
 pygame.init()
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
@@ -94,7 +94,7 @@ screen = pygame.display.set_mode((SCREEN_WIDTH - 10,SCREEN_HEIGHT- 50),pygame.RE
 pygame.display.set_caption('DEMO')
 
 run = True
-timerTest = Timer(60000)
+timerTest = Timer((((testTimeMin) * 60) + testTimeSec) * 1000)
 timerTest.start()
 while run:
     screen.fill((0,0,0))
@@ -109,3 +109,5 @@ while run:
             run = False
 
     pygame.display.update()
+
+pygame.quit()

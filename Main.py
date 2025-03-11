@@ -10,46 +10,52 @@ import UI_Handler as UI
 import math
 #------------------------------------ FUNCTIONS ------------------------------------
 
+CONSOLE_APPLICATION = True
+
 def startGame():
     # main loop of program
-    UI.clear()
-    UI.mainMenuUI()
+
     Engine.precomputeSquaresToEdge()
     colour,playerTurn,newBoard,castlingData,enPassant = FileHandler.load(FileHandler.gameConfig()) # loads new game or previous game
     enemyColour = Engine.assignColours(colour)
     Engine.convertToBitBoard(newBoard,castlingData,enPassant)
-    UI.starterGameInfo(colour)
-    UI.drawBoard(None)
-    import gamePlayBoardPage as test
 
-    resigning = False
-
-    while True:
-        if Engine.Checkmate:
-            UI.clear()
-            if playerTurn:
-                UI.winLossUI(True)
-            else:
-                UI.winLossUI(False)
-            UI.sleep(10)
-            print("\n\nReturning To Menu...")
-            UI.load()
-            startGame()
-            break
-        else:
-            if resigning:
-                UI.clear()
-                print("thanks for playing!!")
-                break
-            elif playerTurn:
-                resigning = playersTurn(colour)
-                playerTurn = False
-            else:
-                AITurn(enemyColour)
-                playerTurn = True
-
+    if not CONSOLE_APPLICATION:
+        import mainMenuPage
+    else:
         UI.clear()
+        UI.mainMenuUI()
+        UI.starterGameInfo(colour)
         UI.drawBoard(None)
+
+        resigning = False
+
+        while True:
+            if Engine.Checkmate:
+                UI.clear()
+                if playerTurn:
+                    UI.winLossUI(True)
+                else:
+                    UI.winLossUI(False)
+                UI.sleep(10)
+                print("\n\nReturning To Menu...")
+                UI.load()
+                startGame()
+                break
+            else:
+                if resigning:
+                    UI.clear()
+                    print("thanks for playing!!")
+                    break
+                elif playerTurn:
+                    resigning = playersTurn(colour)
+                    playerTurn = False
+                else:
+                    AITurn(enemyColour)
+                    playerTurn = True
+
+            UI.clear()
+            UI.drawBoard(None)
 
 def playersTurn(colour):
     valid = False

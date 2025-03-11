@@ -1,6 +1,8 @@
 import random
 import UI_Handler as UI
 
+CONSOLE_APPLICATION = True
+
 FENlookup = {
     "r": "♖",
     "n": "♘",
@@ -45,6 +47,9 @@ def load(gameType):
 
 def gameConfig():
     # returns the settings for the game as a string
+    if not CONSOLE_APPLICATION:
+        return "new"
+
     UI.sleep(1)
     option = UI.generateMenu(["New Game","Load Game [" + str(gamesAvailable()[0]) + " available]"])
 
