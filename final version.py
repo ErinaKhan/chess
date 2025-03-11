@@ -7,9 +7,9 @@ pygame.init()
 screen = pygame.display.set_mode((1280, 960))
 
 # load the images
-chess = pygame.image.load("chess123.jpg")
-start_img = pygame.image.load("start_btn.png").convert_alpha()
-exit_img = pygame.image.load("exit_btn.png").convert_alpha()
+chess = pygame.image.load(r"imagesMisc\chess123.jpg")
+start_img = pygame.image.load(r"imagesMisc\start_btn.png").convert_alpha()
+exit_img = pygame.image.load(r"imagesMisc\exit_btn.png").convert_alpha()
 
 # scale the images
 chess = pygame.transform.scale(chess, (1280, 960))

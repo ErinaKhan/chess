@@ -1,0 +1,19 @@
+THE BASICS
+Pawn:It is not a minor or major player but can be useful depending on your pawn moves.\nIt moves vertically forward one vacant square, with the option two squares forward if they have not yet moved and the squares are vacant.:
+Queen:The strongest and most important player.\nIt cam move diagonally, horizontally or vertically of unoccupied squares.:
+Knight:The minor piece\nit moves in "L" or "7" form.\nIt moves one square horizontally or vertically, then two squares in a horizontal or vertical direction.\n\nIt has the ability to fork the opponent's pieces. Forking means attacking two or more pieces simultaneously.:
+King:The King is not the strongest.\n\nIt can move one square at a time, in any direction.\n\nAlthough the victory or loss at the game depends on which side has their King by the end.:
+Bishop:The minor piece.\n\nit is capable of diagonal movement for any number of vacant squares.\n\nA pair of bishops is much stronger than a Bishop and a Knight.:
+Rook:The second strongest and important player.\n\nIt moves vertically and horizontally on ant number of vacant squares.
+Checkmate:What is a CHECKMATE ?\n\nWhen a KING is attacked, it is called a CHECK. A CHECKMATE occurs when a KING is placed in check and has no legal moves to escape. When a CHECKMATE happens, the game ends immediately, and the player who delivered the checkmate wins.:
+TECHNIQUES
+Pin: : 
+Fork: : 
+Battery: : 
+SPECIAL MOVES
+En Passant: : 
+Castling: : 
+Promotion: :
+OPENINGS
+London: : 
+

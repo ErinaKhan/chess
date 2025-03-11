@@ -1,7 +1,7 @@
 import random
 import UI_Handler as UI
 
-CONSOLE_APPLICATION = True
+CONSOLE_APPLICATION = False
 
 FENlookup = {
     "r": "♖",

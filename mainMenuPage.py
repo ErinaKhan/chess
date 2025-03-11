@@ -1,7 +1,10 @@
 import pygame
+import Engine
+import File_handler as FileHandler
 
 #pygame intialization
 pygame.init()
+
 
 #RGB background
 background_colour = (244, 225, 193)
@@ -10,7 +13,7 @@ background_colour = (244, 225, 193)
 screen = pygame.display.set_mode((1280, 960))
 
 # load the image
-chess = pygame.image.load("chess123.jpg")
+chess = pygame.image.load(r"imagesMisc\chess123.jpg") # not an error just red highlight on vscode
 chessrect = chess.get_rect()
 
 # caption of the screen
@@ -52,13 +55,23 @@ while running:
         # check for mouse click on buttons
         if event.type == pygame.MOUSEBUTTONDOWN:
             if play_button.collidepoint(event.pos):
-                pygame.quit()
+
                 import gamePlayBoardPage
-                running = False
+                Engine.precomputeSquaresToEdge()
+                colour,playerTurn,newBoard,castlingData,enPassant = FileHandler.load(FileHandler.gameConfig()) # loads new game or previous game
+                enemyColour = Engine.assignColours(colour)
+                Engine.convertToBitBoard(newBoard,castlingData,enPassant)
+                gamePlayBoardPage.drawBoard()
+
             elif options_button.collidepoint(event.pos):
-                print("Options button clicked!")
+
+                pass
+
             elif learn_button.collidepoint(event.pos):
-                print("Learn How to Play button clicked!")
+
+                import tutorialPage
+                tutorialPage.Start()
+
 
     # fill the screen with the background color
     screen.fill(background_colour)

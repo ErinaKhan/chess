@@ -4,6 +4,7 @@ import os
 import math
 import Pygame_Utils as utils
 import pyTimer as timer
+import File_handler as FileHandler
 
 pygame.init()
 
@@ -61,7 +62,9 @@ image_lookup = {
     "MOVEOVERLAY": None
 }
 
-'''white = (232,46,46), black = (0,0,0)
+'''    potential colour schemes
+
+white = (232,46,46), black = (0,0,0)
 white = (99,228,247), black (0,0,0)
 White = (187, 207, 186), Black = (80, 158, 74)
 White = (184, 129, 77), Black = (184, 88, 77)
@@ -69,8 +72,6 @@ White = (97, 245, 167), Black = (34, 148, 242)
 White = (0,0,0), Black = (255,255,255)
 White = (235,236,208), Black = (119,149,86) - chess.com board
 White = (240,217,181), Black = (181,136,99) - lichess board'''
-
-clock = pygame.time.Clock
 
 exitButton = utils.Button(20,SCREEN_HEIGHT * 0.8,back_btn,0.25)
 helpButton = utils.Button(SCREEN_WIDTH * 0.95,10,help_btn,0.15)
@@ -110,6 +111,9 @@ def drawPieces():
 timerExample.start()
 
 def drawBoard():
+
+    allPieces.clear()
+    
     running = True
     overlay = []
     newOverlay = []
@@ -166,8 +170,6 @@ def drawBoard():
             for j in range(8):
                 boardx = BOARD_START_X + (SQUARE_SIZE * j)
                 boardy = BOARD_START_Y + (SQUARE_SIZE * i)
-                currentSquareIndex = (i * 8) + j
-
                 
                 if i % 2 == 0:
                     if j % 2 == 0:
@@ -226,9 +228,7 @@ def drawBoard():
                 running = False
 
         pygame.display.update()
-            
 
-    pygame.quit()
 
 def drawMoveTracker():
     pygame.draw.rect(screen,(219, 219, 219),(BOARD_START_X + (SQUARE_SIZE * 9)  + (2 * OUTERBOARD_OFFSET) ,BOARD_START_Y - OUTERBOARD_OFFSET,(SQUARE_SIZE * 3)  + (2 * OUTERBOARD_OFFSET),(SQUARE_SIZE * 8) + (2 * OUTERBOARD_OFFSET)),border_radius=10)
@@ -255,5 +255,3 @@ def disposeOfPiece(colour,disposeSquare):
 def removeOverlay(overlay):
     for square in overlay:
         overlay[overlay.index(square)].destroy()
-
-drawBoard()

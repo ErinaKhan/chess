@@ -1,0 +1,18 @@
+This file is to understand how dialogue.txt works and how to split the file to get the correct information
+
+background info:
+
+the purpose of the dialogue file is to load in dialogue as well as the titles of tutorial sections inside of the tutorial page.
+
+How it works:
+
+.each line of the text file is a seperate piece of information
+
+.if you dont detect a ':' character on a line then this means the following text on that line is the title of the next chapter of tutorial sections
+
+.if you do detect a ':'character then split that line by the ':' character, put it in an array and you should get returned a list with 3 elements in the following order
+     
+    .the first element in the list is the title of the section 
+    .the second is the text that will be displayed
+    .the third is a FEN string that will be the board to be displayed so the user can try out moving the piece
+
