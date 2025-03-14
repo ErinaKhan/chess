@@ -50,6 +50,8 @@ queen_back = pygame.image.load(r"chessPieces\bq.png")
 
 back_btn = pygame.image.load(r"imagesMisc\undo.png")
 help_btn = pygame.image.load(r"imagesMisc\help.png")
+home_btn = pygame.image.load(r"imagesMisc\home.png")
+
 
 image_lookup = {
     "BLACKROOK": rook_black,
@@ -141,7 +143,7 @@ def drawBoard():
             print(f"time {minutes} : {seconds} ")
             print(text)
 
-        if exitButton.drawButton(screen) or Engine.Checkmate == True:
+        if exitButton.drawButton(screen):
             # exit page
             running = False
 
@@ -188,38 +190,40 @@ def drawBoard():
                     else:
                         pygame.draw.rect(screen,(WHITE_SQUARE_COLOUR),(boardx,boardy,SQUARE_SIZE,SQUARE_SIZE))
 
-        if playerTurn:
-            for square in overlaySquares:
-                if square.drawButton(screen) and selectedPiece != None:
-                    print(f"{selectedPiece.coordinates} is going to {square.coordinates}")
-                    start = int(math.pow(2,selectedPiece.coordinates))
-                    destination = int(math.pow(2,square.coordinates))
-                    Engine.makeMove(start,destination,selectedPiece.colour,False,None)
-                    allPieces[allPieces.index(selectedPiece)].move(screen,square.x,square.y,square.coordinates)
-                    disposeOfPiece(Engine.enemyColour,square.coordinates)
-                    #allPieces[allPieces.index(selectedPiece)].destroy() <- this will get rid of a piece if taken
-                    playerTurn = False
-                    selectedPiece = None
-                    newOverlay = []
-                    allMoves = []
+        if not Engine.Checkmate:
+            if playerTurn:
+                for square in overlaySquares:
+                    if square.drawButton(screen) and selectedPiece != None :
+                        print(f"{selectedPiece.coordinates} is going to {square.coordinates}")
+                        start = int(math.pow(2,selectedPiece.coordinates))
+                        destination = int(math.pow(2,square.coordinates))
+                        Engine.makeMove(start,destination,selectedPiece.colour,False,None)
+                        allPieces[allPieces.index(selectedPiece)].move(screen,square.x,square.y,square.coordinates)
+                        disposeOfPiece(Engine.enemyColour,square.coordinates)
+                        #allPieces[allPieces.index(selectedPiece)].destroy() <- this will get rid of a piece if taken
+                        playerTurn = False
+                        selectedPiece = None
+                        newOverlay = []
+                        allMoves = []
+            else:
+                playerTurn = True
+                selectedPiece = None
+                newOverlay = []
+                removeOverlay(overlaySquares)
+                chosenMove = opponentTurn(Engine.enemyColour)
+                if chosenMove != None:
+                    for piece in allPieces:
+                        if piece.coordinates == chosenMove[0]:
+                            x = (chosenMove[1]) % 8
+                            y = int(chosenMove[1] // 8)
+                            x = BOARD_START_X + (SQUARE_SIZE * x)
+                            y = BOARD_START_Y + (SQUARE_SIZE * y)
+
+                            print(f"{chosenMove[0]} is going to {chosenMove[1]}")
+                            allPieces[allPieces.index(piece)].move(screen,x,y,chosenMove[1])
+                            disposeOfPiece(Engine.playerColour,chosenMove[1])
         else:
-            playerTurn = True
-            selectedPiece = None
-            newOverlay = []
-            removeOverlay(overlaySquares)
-            chosenMove = opponentTurn(Engine.enemyColour)
-            if chosenMove != None:
-                for piece in allPieces:
-                    if piece.coordinates == chosenMove[0]:
-                        x = (chosenMove[1]) % 8
-                        y = int(chosenMove[1] // 8)
-                        x = BOARD_START_X + (SQUARE_SIZE * x)
-                        y = BOARD_START_Y + (SQUARE_SIZE * y)
-
-                        print(f"{chosenMove[0]} is going to {chosenMove[1]}")
-                        allPieces[allPieces.index(piece)].move(screen,x,y,chosenMove[1])
-                        disposeOfPiece(Engine.playerColour,chosenMove[1])
-
+            running = False
         
         for piece in allPieces:
             if piece.drawButton(screen) and piece.colour == Engine.playerColour:
@@ -235,6 +239,7 @@ def drawBoard():
 
         pygame.display.update()
 
+    winLossScreen(playerTurn)
 
 def drawMoveTracker():
     pygame.draw.rect(screen,(219, 219, 219),(BOARD_START_X + (SQUARE_SIZE * 9)  + (2 * OUTERBOARD_OFFSET) ,BOARD_START_Y - OUTERBOARD_OFFSET,(SQUARE_SIZE * 3)  + (2 * OUTERBOARD_OFFSET),(SQUARE_SIZE * 8) + (2 * OUTERBOARD_OFFSET)),border_radius=10)
@@ -267,3 +272,35 @@ def setup():
     colour,playerTurn,newBoard,castlingData,enPassant = FileHandler.load(FileHandler.gameConfig()) # loads new game or previous game
     enemyColour = Engine.assignColours(colour)
     Engine.convertToBitBoard(newBoard,castlingData,enPassant)
+
+def winLossScreen(turn):
+    running = True
+    timerExample.pause()
+
+    while running:
+        size = (SQUARE_SIZE * 6) + (2*OUTERBOARD_OFFSET)
+        locationX = (SCREEN_WIDTH - size) // 2
+        locationY = (SCREEN_HEIGHT - size) // 2
+        pygame.draw.rect(screen,(219, 200, 167),(locationX,locationY,size,size),border_radius=10)
+        size = (SQUARE_SIZE * 6)
+        locationX = (SCREEN_WIDTH - size) // 2
+        locationY = (SCREEN_HEIGHT - size) // 2
+        checkmateScreen = pygame.draw.rect(screen,(255,255,255),(locationX,locationY,size,size),border_radius=10)
+        font = pygame.font.Font(None, 120)
+        if turn:
+            text_surface = font.render("You Win", True, (0,0,0))
+        else: 
+            text_surface = font.render("You Lose", True, (0,0,0))
+
+        text_rect = text_surface.get_rect(center=(checkmateScreen.center[0],checkmateScreen.top + 60))
+        screen.blit(text_surface, text_rect)
+        homeButton = utils.Button(0,0,home_btn,0.3)
+        homeButton.move(screen,checkmateScreen.centerx - (homeButton.rect.width// 2),checkmateScreen.centery - (homeButton.rect.height // 2) + 180)
+        if homeButton.drawButton(screen):
+            running = False
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+        pygame.display.update()

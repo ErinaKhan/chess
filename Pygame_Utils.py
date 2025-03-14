@@ -37,9 +37,7 @@ class Button():
         return action
     
     def move(self,screen,x,y):
-        print(self.rect)
         self.rect.topleft = (x,y)
-        print(self.rect)
         screen.blit(self.image,self.rect)
 
     def destroy(self):

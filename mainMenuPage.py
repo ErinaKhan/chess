@@ -78,7 +78,6 @@ while running:
                 import tutorialPage
                 tutorialPage.Start()
 
-
     # fill the screen with the background color
     screen.fill(background_colour)
 
