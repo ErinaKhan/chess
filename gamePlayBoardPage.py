@@ -5,8 +5,14 @@ import math
 import Pygame_Utils as utils
 import pyTimer as timer
 import File_handler as FileHandler
+import GAME_SETTINGS as gameSettings
 
 pygame.init()
+
+Engine.precomputeSquaresToEdge()
+colour,playerTurn,newBoard,castlingData,enPassant = FileHandler.load(FileHandler.gameConfig()) # loads new game or previous game
+enemyColour = Engine.assignColours(colour)
+Engine.convertToBitBoard(newBoard,castlingData,enPassant)
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 info = pygame.display.Info()
@@ -62,7 +68,7 @@ image_lookup = {
     "MOVEOVERLAY": None
 }
 
-'''    potential colour schemes
+'''potential colour schemes
 
 white = (232,46,46), black = (0,0,0)
 white = (99,228,247), black (0,0,0)
@@ -255,3 +261,9 @@ def disposeOfPiece(colour,disposeSquare):
 def removeOverlay(overlay):
     for square in overlay:
         overlay[overlay.index(square)].destroy()
+
+def setup():
+    Engine.precomputeSquaresToEdge()
+    colour,playerTurn,newBoard,castlingData,enPassant = FileHandler.load(FileHandler.gameConfig()) # loads new game or previous game
+    enemyColour = Engine.assignColours(colour)
+    Engine.convertToBitBoard(newBoard,castlingData,enPassant)

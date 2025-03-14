@@ -1,26 +1,35 @@
 import pygame
 import Engine
 import File_handler as FileHandler
+import os
 
 #pygame intialization
 pygame.init()
 
+# ------------------------------------------------------------
+os.environ['SDL_VIDEO_CENTERED'] = '1'
+info = pygame.display.Info() # get users devices screen dimensions
+
+SCREEN_WIDTH = info.current_w 
+SCREEN_HEIGHT = info.current_h
+
+screen = pygame.display.set_mode((SCREEN_WIDTH - 10,SCREEN_HEIGHT- 50),pygame.RESIZABLE) # fullscreens the display
+# ------------------------------------------------------------
 
 #RGB background
 background_colour = (244, 225, 193)
 
-# dimesnions of screen
-screen = pygame.display.set_mode((1280, 960))
-
 # load the image
 chess = pygame.image.load(r"imagesMisc\chess123.jpg") # not an error just red highlight on vscode
+
+# scale the img
+chess = pygame.transform.scale_by(chess, 2)
+
 chessrect = chess.get_rect()
 
 # caption of the screen
 pygame.display.set_caption('En Passant')
 
-# scale the img
-chess = pygame.transform.scale(chess, (1280, 960))
 
 # fill the background color
 screen.fill(background_colour)
@@ -31,9 +40,9 @@ text_color = (255, 255, 255)
 font = pygame.font.Font(None, 36)
 
 # create the buttons and sizes
-play_button = pygame.Rect(540, 700, 200, 50)  # center button moved lower
-options_button = pygame.Rect(1020, 800, 250, 50)  # right button moved lower
-learn_button = pygame.Rect(20, 800, 250, 50)  # left button moved lower and made longer (width increased)
+play_button = pygame.Rect((SCREEN_WIDTH - 200) // 2, SCREEN_HEIGHT * 0.65 - 50, 200, 50)  # center button moved lower
+options_button = pygame.Rect(SCREEN_WIDTH * 0.9 - 250, 800, 250, 50)  # right button moved lower
+learn_button = pygame.Rect(SCREEN_WIDTH * 0.1, 800, 250, 50)  # left button moved lower and made longer (width increased)
 
 # function to draw text on buttons
 def draw_text(text, button_rect):
@@ -57,10 +66,7 @@ while running:
             if play_button.collidepoint(event.pos):
 
                 import gamePlayBoardPage
-                Engine.precomputeSquaresToEdge()
-                colour,playerTurn,newBoard,castlingData,enPassant = FileHandler.load(FileHandler.gameConfig()) # loads new game or previous game
-                enemyColour = Engine.assignColours(colour)
-                Engine.convertToBitBoard(newBoard,castlingData,enPassant)
+                gamePlayBoardPage.setup()
                 gamePlayBoardPage.drawBoard()
 
             elif options_button.collidepoint(event.pos):
@@ -77,7 +83,7 @@ while running:
     screen.fill(background_colour)
 
     # blit the chess image to the screen
-    screen.blit(chess, chessrect)
+    screen.blit(chess, ((SCREEN_WIDTH - chessrect.width) // 2, 80,chessrect.width,chessrect.height))
 
     # draw the buttons
     pygame.draw.rect(screen, button_color, play_button)

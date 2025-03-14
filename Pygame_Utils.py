@@ -97,4 +97,19 @@ class chessPiece(Button):
     def move(self, screen, x, y,newcoords):
         self.coordinates = newcoords
         return super().move(screen, x, y)
+    
+
+class TutorialSection():
+
+    def __init__(self,dialogue,title,x,y,image,scale = 1):
+        self.title = title
+        self.dialogue = dialogue
+        Button.__init__(self,x,y,image,scale)
+
+    def loadSection(self):
+        pass
+
+    def completedSection(self):
+        pass
+
 
