@@ -117,9 +117,9 @@ def drawPieces():
 
 timerExample.start()
 
-def drawBoard():
+def drawBoard(fen=""):
 
-    settings = setup()
+    settings = setup(fen)
 
     allPieces.clear()
     
@@ -239,7 +239,6 @@ def drawBoard():
                 castle(data[0],data[1])
 
             if allEvents[1]:
-                print("promoting")
                 promote(data[0],data[1],data[2])
 
             if allEvents[2]:
@@ -279,9 +278,9 @@ def removeOverlay(overlay):
     for square in overlay:
         overlay[overlay.index(square)].destroy()
 
-def setup():
+def setup(fen=""):
     Engine.precomputeSquaresToEdge()
-    colour,playerTurn,newBoard,castlingData,enPassant = FileHandler.load(FileHandler.gameConfig()) # loads new game or previous game
+    colour,playerTurn,newBoard,castlingData,enPassant = FileHandler.load(FileHandler.gameConfig(fen != ""),fen) # loads new game or previous game
     enemyColour = Engine.assignColours(colour)
     Engine.convertToBitBoard(newBoard,castlingData,enPassant)
     settings = gameSettings.UIEvents()
@@ -333,9 +332,6 @@ def promote(coordinate,colour,newPiece):
     print(coordinate)
     for piece in allPieces:
         if piece.coordinates == coordinate:
-            print("found piece")
-            print(colour)
-            print(piece)
             piece.changeImage(pygame.transform.scale(image_lookup[colour+newPiece], (100,100)))
 
 def passant(pieceToDestroy):

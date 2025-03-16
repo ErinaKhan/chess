@@ -19,7 +19,7 @@ FENlookup = {
     "P": "♟",
 }
 
-def load(gameType):
+def load(gameType,fen=""):
     # returns all variables needed by main to run the game
     # colour -> the players colour in the game "White" or "Black"
     # playerTurn -> boolean value 
@@ -42,14 +42,21 @@ def load(gameType):
             print("\nLoading game...")
             UI.sleep(1)
     elif gameType == "FEN":
-        board,colour,playerTurn,castlingData,enPassant = FENBoard(getFEN())
+        if not CONSOLE_APPLICATION:
+            if validFEN(fen):
+                board,colour,playerTurn,castlingData,enPassant = FENBoard(fen)
+        else:
+            board,colour,playerTurn,castlingData,enPassant = FENBoard(getFEN())
     
     return colour,playerTurn,board,castlingData,enPassant
 
-def gameConfig():
+def gameConfig(tutorial = False):
     # returns the settings for the game as a string
     if not CONSOLE_APPLICATION:
-        return "new"
+        if tutorial:
+            return "FEN"
+        else:
+            return "new"
 
     UI.sleep(1)
     option = UI.generateMenu(["New Game","Load Game [" + str(gamesAvailable()[0]) + " available]"])

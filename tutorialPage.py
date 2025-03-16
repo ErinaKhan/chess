@@ -34,6 +34,7 @@ def Start():
     numberOfSections = 7
     index = 0
     inTutorial = False
+    inPractice = False
     clicked = False
     buttonSelectedIndex = -1
 
@@ -70,6 +71,20 @@ def Start():
             rect = surface.get_rect(center=(inner.midtop[0],inner.midtop[1] + 64))
             screen.blit(surface, rect)
             renderTextCenteredAt(allSections[buttonSelectedIndex][1],font,(0,0,0),inner.centerx,inner.centery,inner.width - 30,fontSize)
+            play_button = pygame.Rect((SCREEN_WIDTH - 200) // 2, SCREEN_HEIGHT * 0.85 - 50, 200, 50)
+
+            newButton = pygame.draw.rect(screen,(107, 70, 44),play_button)
+            surface = font.render("Practice", True, (255,255,255))
+            rect = surface.get_rect(center=newButton.center)
+            screen.blit(surface, rect)
+
+            pos = pygame.mouse.get_pos()
+            if newButton.collidepoint(pos):
+                if pygame.mouse.get_pressed()[0] == 1 and not inPractice:
+                    inPractice = True
+                    import GamePlayBoardPage
+                    GamePlayBoardPage.drawBoard(allSections[buttonSelectedIndex][2])
+                    inPractice = False
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

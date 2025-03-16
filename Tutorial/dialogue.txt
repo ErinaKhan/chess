@@ -1,5 +1,5 @@
 THE BASICS
-Lesson 1 - Pawn:It is not a minor or major player but can be useful depending on your pawn moves. It moves vertically forward one vacant square, with the option two squares forward if they have not yet moved and the squares are vacant.:rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1:
+Lesson 1 - Pawn:It is not a minor or major player but can be useful depending on your pawn moves. It moves vertically forward one vacant square, with the option two squares forward if they have not yet moved and the squares are vacant.:7B/3P1p2/2k1PbB1/2P1P3/2K5/5pp1/2Q3rp/6q1 w - - 0 1:
 Lesson 2 - Queen:The strongest and most important player. It can move diagonally, horizontally or vertically of unoccupied squares.:rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1:
 Lesson 3 - Knight:The knight moves in "L" or "7" form. It moves one square horizontally or vertically, then two squares in a horizontal or vertical direction. It has the ability to fork the opponent's pieces. Forking means attacking two or more pieces simultaneously.:rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1:
 Lesson 4 - King:The King is not the strongest. It can move one square at a time, in any direction. Although the victory or loss at the game depends on which side has their King by the end.:rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1:
