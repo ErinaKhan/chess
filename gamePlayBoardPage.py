@@ -250,7 +250,8 @@ def drawBoard():
                 promote(data[0],data[1],data[2])
 
             if allEvents[2]:
-                pass
+                passant(data[0])
+
             print(allEvents)
             settings.resetEvents()
 
@@ -277,7 +278,7 @@ def opponentTurn(colour):
 
 def disposeOfPiece(colour,disposeSquare):
     for piece in allPieces:
-        if piece.coordinates == disposeSquare and colour == piece.colour:
+        if piece.coordinates == disposeSquare and (colour == piece.colour or colour == "ANY"):
             allPieces[allPieces.index(piece)].destroy()
 
 def removeOverlay(overlay):
@@ -343,5 +344,7 @@ def promote(coordinate,colour,newPiece):
             print(piece)
             piece.changeImage(pygame.transform.scale(image_lookup[colour+newPiece], (100,100)))
 
-def passant():
-    pass
+def passant(pieceToDestroy):
+    for piece in allPieces:
+        if piece.coordinates == pieceToDestroy:
+            disposeOfPiece("ANY",pieceToDestroy)

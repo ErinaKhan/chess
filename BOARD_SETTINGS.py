@@ -17,8 +17,9 @@ class UIEvents():
         self.isCastling = True
         self.eventData = rookMoves
 
-    def emitEnPassantEvent(self):
+    def emitEnPassantEvent(self,piece):
         self.isEnpassant = True
+        self.eventData = [piece]
 
     def emitPromotionEvent(self,move,colour,piece):
         self.isPromoting = True

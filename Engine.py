@@ -203,10 +203,10 @@ def updateBoard(square,chosenLegalMove,colour,isFake,extraInfo):
     nonBinMove = int(math.log(chosenLegalMove,2))
 
     if isEnPassant(nonBinSquare,square,nonBinMove):
-        enPassant(nonBinMove,nonBinSquare,colour)
+        pieceUIToUpdate = enPassant(nonBinMove,nonBinSquare,colour)
 
         if not settings.isConsoleApplication() and not isFake:
-            signalGameUIEvents.emitEnPassantEvent(nonBinMove)
+            signalGameUIEvents.emitEnPassantEvent(pieceUIToUpdate)
      
     if isCastling(nonBinSquare,square, nonBinMove):
         rookMoves = castle(chosenLegalMove,colour)
@@ -539,6 +539,8 @@ def enPassant(nonBinMove,nonBinSquare,colour):
         blackPawns = blackPawns ^ int(math.pow(2, nonBinMove + (direction * 8)))
     else:
         whitePawns = whitePawns ^ int(math.pow(2, nonBinMove + (direction * 8)))
+
+    return nonBinMove + (direction * 8)
     
 def isCastling(square,binary, chosenLegalMove):
     legalMoves = [6,2,58,62]
