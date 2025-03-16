@@ -65,8 +65,8 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if play_button.collidepoint(event.pos):
 
-                import gamePlayBoardPage
-                gamePlayBoardPage.drawBoard()
+                import GamePlayBoardPage
+                GamePlayBoardPage.drawBoard()
 
             elif options_button.collidepoint(event.pos):
 
@@ -74,8 +74,8 @@ while running:
 
             elif learn_button.collidepoint(event.pos):
 
-                import tutorialPage
-                tutorialPage.Start()
+                import TutorialPage
+                TutorialPage.Start()
 
     # fill the screen with the background color
     screen.fill(background_colour)

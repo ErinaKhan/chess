@@ -49,8 +49,6 @@ class Button():
         height = image.get_height()
         self.image = pygame.transform.scale(image,(int(width), int(height)))
         
-
-
 class OverlaySquare(Button):
     def __init__(self,coordinates, x, y, colour):
         self.coordinates = coordinates

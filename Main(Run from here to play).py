@@ -22,7 +22,7 @@ def startGame():
     Engine.convertToBitBoard(newBoard,castlingData,enPassant)
 
     if not CONSOLE_APPLICATION:
-        import mainMenuPage
+        import MainMenuPage
     else:
         UI.clear()
         UI.mainMenuUI()

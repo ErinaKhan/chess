@@ -257,7 +257,8 @@ def drawBoard():
 
         pygame.display.update()
 
-    winLossScreen(playerTurn)
+    if Engine.Checkmate:
+        winLossScreen(playerTurn)
 
 def drawMoveTracker():
     pygame.draw.rect(screen,(219, 219, 219),(BOARD_START_X + (SQUARE_SIZE * 9)  + (2 * OUTERBOARD_OFFSET) ,BOARD_START_Y - OUTERBOARD_OFFSET,(SQUARE_SIZE * 3)  + (2 * OUTERBOARD_OFFSET),(SQUARE_SIZE * 8) + (2 * OUTERBOARD_OFFSET)),border_radius=10)
