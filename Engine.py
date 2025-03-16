@@ -209,10 +209,10 @@ def updateBoard(square,chosenLegalMove,colour,isFake,extraInfo):
             signalGameUIEvents.emitEnPassantEvent(nonBinMove)
      
     if isCastling(nonBinSquare,square, nonBinMove):
-        castle(chosenLegalMove,colour)
+        rookMoves = castle(chosenLegalMove,colour)
 
         if not settings.isConsoleApplication() and not isFake:
-            signalGameUIEvents.emitCastleEvent()
+            signalGameUIEvents.emitCastleEvent(rookMoves)
 
 
     if colour == "WHITE":
@@ -551,12 +551,16 @@ def castle(chosenLegalMove,colour):
 
     if placementForRook == 6:
         updateBoard(int(math.pow(2,7)),int(math.pow(2,5)),colour,False,None)    
+        return [7,5]
     elif placementForRook == 62:
         updateBoard(int(math.pow(2,63)),int(math.pow(2,61)),colour,False,None)
+        return [63,61]
     elif placementForRook == 2:
         updateBoard(1,8,colour,False,None)
+        return [1,8]
     elif placementForRook == 58:
         updateBoard(int(math.pow(2,56)),int(math.pow(2,59)),colour,False,None)
+        return [56,59]
 
 
 def isPromoting(binary,chosenLegalMove):

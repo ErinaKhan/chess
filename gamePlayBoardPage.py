@@ -243,7 +243,7 @@ def drawBoard():
             data = settings.getEventData()
 
             if allEvents[0]:
-                pass
+                castle(data[0],data[1])
 
             if allEvents[1]:
                 print("promoting")
@@ -325,8 +325,14 @@ def winLossScreen(turn):
 
         pygame.display.update()
 
-def castle(coordinate,colour,piece):
-    pass
+def castle(rookStart,rookEnd):
+    for piece in allPieces:
+        if piece.coordinates == rookStart:
+            x = rookEnd % 8
+            y = int(rookEnd // 8)
+            x = BOARD_START_X + (SQUARE_SIZE * x)
+            y = BOARD_START_Y + (SQUARE_SIZE * y)
+            allPieces[allPieces.index(piece)].move(screen,x,y,rookEnd)
 
 def promote(coordinate,colour,newPiece):
     print(coordinate)

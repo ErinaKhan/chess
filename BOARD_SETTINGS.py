@@ -13,8 +13,9 @@ class UIEvents():
     def colourBlindMode(self):
         self.changeBoardColour(None)
 
-    def emitCastleEvent(self):
+    def emitCastleEvent(self,rookMoves):
         self.isCastling = True
+        self.eventData = rookMoves
 
     def emitEnPassantEvent(self):
         self.isEnpassant = True
