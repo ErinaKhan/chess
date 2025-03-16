@@ -43,6 +43,11 @@ class Button():
     def destroy(self):
         self.image.fill((0,0,0,0))
         self.selectable = False
+    
+    def changeImage(self,image):
+        width = image.get_width()
+        height = image.get_height()
+        self.image = pygame.transform.scale(image,(int(width), int(height)))
         
 
 

@@ -66,7 +66,6 @@ while running:
             if play_button.collidepoint(event.pos):
 
                 import gamePlayBoardPage
-                gamePlayBoardPage.setup()
                 gamePlayBoardPage.drawBoard()
 
             elif options_button.collidepoint(event.pos):

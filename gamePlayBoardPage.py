@@ -5,7 +5,7 @@ import math
 import Pygame_Utils as utils
 import pyTimer as timer
 import File_handler as FileHandler
-import GAME_SETTINGS as gameSettings
+import BOARD_SETTINGS as gameSettings
 
 pygame.init()
 
@@ -51,7 +51,6 @@ queen_back = pygame.image.load(r"chessPieces\bq.png")
 back_btn = pygame.image.load(r"imagesMisc\undo.png")
 help_btn = pygame.image.load(r"imagesMisc\help.png")
 home_btn = pygame.image.load(r"imagesMisc\home.png")
-
 
 image_lookup = {
     "BLACKROOK": rook_black,
@@ -119,6 +118,8 @@ def drawPieces():
 timerExample.start()
 
 def drawBoard():
+
+    settings = setup()
 
     allPieces.clear()
     
@@ -237,6 +238,22 @@ def drawBoard():
             if event.type == pygame.QUIT:
                 running = False
 
+        allEvents = settings.getEvents()
+        if allEvents != [False,False,False]: #[castling,promoting,enpassant]
+            data = settings.getEventData()
+
+            if allEvents[0]:
+                pass
+
+            if allEvents[1]:
+                print("promoting")
+                promote(data[0],data[1],data[2])
+
+            if allEvents[2]:
+                pass
+            print(allEvents)
+            settings.resetEvents()
+
         pygame.display.update()
 
     winLossScreen(playerTurn)
@@ -272,6 +289,9 @@ def setup():
     colour,playerTurn,newBoard,castlingData,enPassant = FileHandler.load(FileHandler.gameConfig()) # loads new game or previous game
     enemyColour = Engine.assignColours(colour)
     Engine.convertToBitBoard(newBoard,castlingData,enPassant)
+    settings = gameSettings.UIEvents()
+    Engine.setupUIEvents(settings)
+    return settings
 
 def winLossScreen(turn):
     running = True
@@ -304,3 +324,18 @@ def winLossScreen(turn):
                 running = False
 
         pygame.display.update()
+
+def castle(coordinate,colour,piece):
+    pass
+
+def promote(coordinate,colour,newPiece):
+    print(coordinate)
+    for piece in allPieces:
+        if piece.coordinates == coordinate:
+            print("found piece")
+            print(colour)
+            print(piece)
+            piece.changeImage(pygame.transform.scale(image_lookup[colour+newPiece], (100,100)))
+
+def passant():
+    pass

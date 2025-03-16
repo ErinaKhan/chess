@@ -21,6 +21,9 @@
 import math
 import random
 import UI_Handler as UI
+import PROJECT_SETTINGS as settings
+
+global signalGameUIEvents
 
 global currentBoardFullData
 
@@ -75,6 +78,7 @@ global squaresToEdge
 
 global lastMove
 global Checkmate
+
 lastMove = [0,0]
 
 pieceLookup = {
@@ -200,9 +204,16 @@ def updateBoard(square,chosenLegalMove,colour,isFake,extraInfo):
 
     if isEnPassant(nonBinSquare,square,nonBinMove):
         enPassant(nonBinMove,nonBinSquare,colour)
+
+        if not settings.isConsoleApplication() and not isFake:
+            signalGameUIEvents.emitEnPassantEvent(nonBinMove)
      
     if isCastling(nonBinSquare,square, nonBinMove):
         castle(chosenLegalMove,colour)
+
+        if not settings.isConsoleApplication() and not isFake:
+            signalGameUIEvents.emitCastleEvent()
+
 
     if colour == "WHITE":
         for i in range(6):
@@ -235,8 +246,15 @@ def updateBoard(square,chosenLegalMove,colour,isFake,extraInfo):
         piece = None
         if playerColour == colour:
             if not isFake:
-                piece = UI.askForPromotePiece()
+                if not settings.isConsoleApplication():
+                    piece = "QUEEN"
+                else:
+                    piece = UI.askForPromotePiece()
+
             promote(chosenLegalMove,colour,piece)
+
+            if not settings.isConsoleApplication() and not isFake:
+                signalGameUIEvents.emitPromotionEvent(nonBinMove,colour,piece)
         else:
             promote(chosenLegalMove,colour,extraInfo)
 
@@ -1060,3 +1078,7 @@ def resetData(searchMoves = []):
                 makeMove(int(math.pow(2,j[0])),int(math.pow(2,j[1])),enemyColour,True)  
             else:
                 makeMove(int(math.pow(2,j[0])),int(math.pow(2,j[1])),playerColour,True) 
+
+def setupUIEvents(eventListener):
+    global signalGameUIEvents
+    signalGameUIEvents = eventListener

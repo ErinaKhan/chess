@@ -2,8 +2,6 @@ import keyboard
 import Engine
 import math
 
-# this module is specifically for the console application and has nothing to do with pygame
-
 from os import system, name
 from time import sleep
 def clear():
@@ -217,4 +215,3 @@ def mainMenuUI():
         if keyboard.read_key() == "esc" or keyboard.read_key() == "backspace":
             return False
     return True
-
