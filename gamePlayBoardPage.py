@@ -140,9 +140,6 @@ def drawBoard():
 
         if timerExample.active:
             timerExample.update()
-            minutes,seconds = timerExample.time()
-            print(f"time {minutes} : {seconds} ")
-            print(text)
 
         if exitButton.drawButton(screen):
             # exit page
@@ -195,13 +192,11 @@ def drawBoard():
             if playerTurn:
                 for square in overlaySquares:
                     if square.drawButton(screen) and selectedPiece != None :
-                        print(f"{selectedPiece.coordinates} is going to {square.coordinates}")
                         start = int(math.pow(2,selectedPiece.coordinates))
                         destination = int(math.pow(2,square.coordinates))
                         Engine.makeMove(start,destination,selectedPiece.colour,False,None)
                         allPieces[allPieces.index(selectedPiece)].move(screen,square.x,square.y,square.coordinates)
                         disposeOfPiece(Engine.enemyColour,square.coordinates)
-                        #allPieces[allPieces.index(selectedPiece)].destroy() <- this will get rid of a piece if taken
                         playerTurn = False
                         selectedPiece = None
                         newOverlay = []
@@ -219,8 +214,6 @@ def drawBoard():
                             y = int(chosenMove[1] // 8)
                             x = BOARD_START_X + (SQUARE_SIZE * x)
                             y = BOARD_START_Y + (SQUARE_SIZE * y)
-
-                            print(f"{chosenMove[0]} is going to {chosenMove[1]}")
                             allPieces[allPieces.index(piece)].move(screen,x,y,chosenMove[1])
                             disposeOfPiece(Engine.playerColour,chosenMove[1])
         else:
