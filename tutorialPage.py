@@ -14,7 +14,7 @@ screen = pygame.display.set_mode((SCREEN_WIDTH - 10,SCREEN_HEIGHT- 50),pygame.RE
 pygame.display.set_caption('DEMO')
 
 INNER_SCREEN_WIDTH = SCREEN_WIDTH * 0.8
-TUTORIAL_SECTION_WIDTH = INNER_SCREEN_WIDTH * 0.85
+TUTORIAL_SECTION_WIDTH = INNER_SCREEN_WIDTH * 0.7
 TUTORIAL_SECTION_PADDING = 80
 
 back_btn = pygame.image.load(r"imagesMisc\undo.png")
@@ -31,6 +31,8 @@ def Start():
     running = True
     numberOfSections = 7
     index = 0
+    inTutorial = False
+    clicked = False
 
     getTutorialSections()
     getSectionRects(numberOfSections)
@@ -38,25 +40,27 @@ def Start():
     while running:
         screen.fill((219, 200, 167))
 
-        pygame.draw.rect(screen,(206,187,155),((SCREEN_WIDTH - INNER_SCREEN_WIDTH) // 2,0,INNER_SCREEN_WIDTH,SCREEN_HEIGHT))
+        if not inTutorial:
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            pygame.draw.rect(screen,(206,187,155),((SCREEN_WIDTH - INNER_SCREEN_WIDTH) // 2,0,INNER_SCREEN_WIDTH,SCREEN_HEIGHT))
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+
+            if exitButton.drawButton(screen):
+                # exit page
                 running = False
 
-        if exitButton.drawButton(screen):
-            # exit page
-            running = False
+            if arrowButtonUp.drawButton(screen):
+                if index - 1 >= 0:
+                    index = index - 1
 
-        if arrowButtonUp.drawButton(screen):
-            if index - 1 >= 0:
-                index = index - 1
+            if arrowButtonDown.drawButton(screen):
+                if index + 7 < len(allSections):
+                    index = index + 1
 
-        if arrowButtonDown.drawButton(screen):
-            if index + 7 < len(allSections):
-                index = index + 1
-
-        drawButtons(numberOfSections,index)
+            clicked,buttonSelected = drawButtons(numberOfSections,index,clicked)
 
         pygame.display.update()
 
@@ -68,7 +72,7 @@ def getSectionRects(sectionsToDisplay):
         buttonRect = pygame.Rect((SCREEN_WIDTH - TUTORIAL_SECTION_WIDTH) // 2,startY * 1.2 + TUTORIAL_SECTION_PADDING,TUTORIAL_SECTION_WIDTH,tutorialSectionHeight)
         sectionButtons.append(buttonRect)
 
-def drawButtons(sectionsToDisplay,index):
+def drawButtons(sectionsToDisplay,index, clicked):
     font = pygame.font.Font(None, 36)
     for i in range(sectionsToDisplay):
         button = sectionButtons[i]
@@ -76,6 +80,15 @@ def drawButtons(sectionsToDisplay,index):
         surface = font.render(allSections[i+index][0], True, (0,0,0))
         rect = surface.get_rect(center=button.center)
         screen.blit(surface, rect)
+        pos = pygame.mouse.get_pos()
+        # is hovering over button
+        if newButton.collidepoint(pos):
+            if pygame.mouse.get_pressed()[0] == 1 and not clicked:
+                clicked = True
+                print(allSections[i+index][0] + " Clicked")
+                return clicked,i+index
+                
+    return clicked,None
 
 def getTutorialSections():
     tutorialData = open("tutorial\dialogue.txt","r")

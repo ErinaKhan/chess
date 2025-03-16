@@ -41,8 +41,8 @@ font = pygame.font.Font(None, 36)
 
 # create the buttons and sizes
 play_button = pygame.Rect((SCREEN_WIDTH - 200) // 2, SCREEN_HEIGHT * 0.65 - 50, 200, 50)  # center button moved lower
-options_button = pygame.Rect(SCREEN_WIDTH * 0.9 - 250, 800, 250, 50)  # right button moved lower
-learn_button = pygame.Rect(SCREEN_WIDTH * 0.1, 800, 250, 50)  # left button moved lower and made longer (width increased)
+options_button = pygame.Rect(SCREEN_WIDTH * 0.95 - 250, 800, 250, 50)  # right button moved lower
+learn_button = pygame.Rect(SCREEN_WIDTH * 0.05, 800, 250, 50)  # left button moved lower and made longer (width increased)
 
 # function to draw text on buttons
 def draw_text(text, button_rect):
