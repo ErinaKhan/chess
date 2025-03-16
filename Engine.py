@@ -78,6 +78,8 @@ global squaresToEdge
 
 global lastMove
 global Checkmate
+global Stalemate
+global checkMoves 
 
 lastMove = [0,0]
 
@@ -179,7 +181,7 @@ def blackAssignment(i,value):
         blackKing = value    
 
 def makeMove(square,chosenLegalMove,colour,isFake=False,extraInfo=None):
-    updateBoard(square,chosenLegalMove,colour,isFake,extraInfo) # w and b are arrays of piece bitboards [Pawns,Bishops,Horses,Rooks,Queens,King]
+    isCapture = updateBoard(square,chosenLegalMove,colour,isFake,extraInfo) # w and b are arrays of piece bitboards [Pawns,Bishops,Horses,Rooks,Queens,King]
 
     if not isFake:
         global currentBoardFullData
@@ -187,6 +189,7 @@ def makeMove(square,chosenLegalMove,colour,isFake=False,extraInfo=None):
         whitePiecesData = [whitePawns, whiteBishops, whiteHorses, whiteRooks, whiteQueens, whiteKing]
         blackPiecesData = [blackPawns, blackBishops, blackHorses, blackRooks, blackQueens, blackKing]
         currentBoardFullData = [whitePiecesData,blackPiecesData,castlingData]
+        signalGameUIEvents.addMoveToTracker(getPieceTypeFromSquare(chosenLegalMove),getColour(chosenLegalMove),isCapture,lastMove in checkMoves,lastMove[0],lastMove[1])
 
 def updateBoard(square,chosenLegalMove,colour,isFake,extraInfo):
     global bitWordBoard
@@ -195,6 +198,8 @@ def updateBoard(square,chosenLegalMove,colour,isFake,extraInfo):
     global lastMove
     global whitePawns
     global blackPawns
+
+    isCapture = False
 
     w = [whitePawns, whiteBishops, whiteHorses, whiteRooks, whiteQueens, whiteKing]
     b = [blackPawns, blackBishops, blackHorses, blackRooks, blackQueens, blackKing]
@@ -225,7 +230,7 @@ def updateBoard(square,chosenLegalMove,colour,isFake,extraInfo):
                 whiteAssignment(i,w[i])
 
             if chosenLegalMove & b[i] != 0:
-
+                isCapture = True
                 b[i] = b[i] ^ chosenLegalMove
                 blackAssignment(i,b[i])
     else:
@@ -238,7 +243,7 @@ def updateBoard(square,chosenLegalMove,colour,isFake,extraInfo):
                 blackAssignment(i,b[i])
 
             if chosenLegalMove & w[i] != 0:
-
+                isCapture = True
                 w[i] = w[i] ^ chosenLegalMove
                 whiteAssignment(i,w[i])
 
@@ -263,6 +268,8 @@ def updateBoard(square,chosenLegalMove,colour,isFake,extraInfo):
     blackPieces = blackPawns | blackBishops | blackHorses | blackRooks | blackQueens | blackKing
     bitWordBoard = whitePieces | blackPieces
     canCastle(colour)
+
+    return isCapture
 
 def precomputeSquaresToEdge():
     global squaresToEdge
@@ -337,8 +344,9 @@ def generateAllMoves(turn,isResponses,movesToSearch=[]):
 
     if not isResponses:
         for move in moves:            
+            
             makeMove(int(math.pow(2,move[0])),int(math.pow(2,move[1])),turn,True,None)
-            if not inCheck(turn,generateAllMoves(switchColours(turn),True,movesToSearch)):
+            if not inCheck(turn,generateAllMoves(switchColours(turn),True,movesToSearch)): # if opponent doesnt put you in check
                 startValid = move[0] <= 63 and move[0] >= 0 
                 endValid = move[1] <= 63 and move[1] >= 0 
                 if startValid and endValid:
@@ -363,14 +371,19 @@ def generateAllMoves(turn,isResponses,movesToSearch=[]):
                     Checkmate = True
             else:
                 if movesToSearch == []:
+                    global Stalemate
+                    Stalemate = True
                     UI.clear()
                     UI.stalemateUI()
                     UI.sleep(10)
-                        
 
         return legalMoves
             
     return moves
+
+def addCheckMove(move):
+    global checkMoves 
+    checkMoves = checkMoves + [move]
 
 def generatePawnMoves(startSquare,colour):
     moves = []
@@ -673,6 +686,33 @@ def inCheck(colour,moves):
             
     return False
 
+def listOfCheckMoves(colour,moves):
+    global blackKing
+    global whiteKing
+    opposite = switchColours(colour)
+    moves = []
+
+    if colour == "WHITE":
+        kingPos = int(math.log(whiteKing,2))
+        print(kingPos)
+        
+        for i in moves:
+            makeMove(i[0],i[1],opposite,True) 
+            if i[1] == kingPos:
+                moves = moves + [i]
+            resetData()
+
+    else:
+        kingPos = int(math.log(blackKing,2))
+        print(kingPos)
+        for i in moves:
+            makeMove(i[0],i[1],opposite,True) 
+            if i[1] == kingPos:
+                moves = moves + [i]
+            resetData()
+            
+    return moves
+
 def evaluate():
     evaluationScore = 0
     for file in range(8):
@@ -902,6 +942,12 @@ def convertToBitBoard(board,castlingData,enPassant):
 
     global Checkmate
     Checkmate = False
+
+    global Stalemate 
+    Stalemate = False
+
+    global checkMoves 
+    checkMoves = []
 
     blackPieces = 0
     whitePieces = 0

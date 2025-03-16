@@ -5,9 +5,20 @@ class UIEvents():
         self.isEnpassant = False
         self.isPromoting = False
         self.eventData = []
+        self.moveList = []
         self.boardColours = boardColours # [blackSquareColour,whiteSquareColour,overlayColour] -> list of 3 rgb tuples
 
     def changeBoardColour(self,colour):
+        pass
+
+    def addMoveToTracker(self,pieceMoving,colour,isCapture,isCheck,startSquare,destinationSquare):
+        if not (self.isCastling or self.isEnpassant or self.isPromoting):
+            startRankFile = startSquare
+            startRankFile = destinationSquare
+            self.moveList = self.moveList + [[startSquare,destinationSquare]]
+            print(f"{pieceMoving}-{colour}-{isCapture}-{isCheck}-{startSquare}-{destinationSquare}")
+
+    def convertToChessNotation(self):
         pass
 
     def colourBlindMode(self):
