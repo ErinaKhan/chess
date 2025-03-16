@@ -71,7 +71,7 @@ def Start():
             rect = surface.get_rect(center=(inner.midtop[0],inner.midtop[1] + 64))
             screen.blit(surface, rect)
             renderTextCenteredAt(allSections[buttonSelectedIndex][1],font,(0,0,0),inner.centerx,inner.centery,inner.width - 30,fontSize)
-            play_button = pygame.Rect((SCREEN_WIDTH - 200) // 2, SCREEN_HEIGHT * 0.85 - 50, 200, 50)
+            play_button = pygame.Rect((SCREEN_WIDTH - 200) // 2, SCREEN_HEIGHT * 0.85 - 50, 250, 50)
 
             newButton = pygame.draw.rect(screen,(107, 70, 44),play_button)
             surface = font.render("Practice", True, (255,255,255))

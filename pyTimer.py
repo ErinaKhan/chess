@@ -9,17 +9,20 @@ class Timer:
         self.timeElapsed = 0 # the amount of time the timer has been on for
         self.active = False # whether the timer currently paused
         self.pauseTicks = 0 # time elapsed since timer was paused 
+        self.timeRanOut = False
 
     def start(self):
         self.active = True
         self.startTime = get_ticks()
 
     def timeout(self):
+        self.timeRanOut = True
         self.active = False
         self.startTime = 0
 
     def pause(self):
         self.active = False
+        self.timeRanOut = True
         self.pauseTicks = get_ticks() # point in time the timer stops from when the application was lauched
 
     def unpause(self):
@@ -44,3 +47,12 @@ class Timer:
         minutes = time // 60 
         seconds = time % 60
         return durationInMins - minutes,(durationInSec - seconds) + 60
+    
+    def reset(self,duration):
+        self.duration = duration
+        self.startTime = 0 # point in time timer started
+        self.timeElapsed = 0 # the amount of time the timer has been on for
+        self.active = False # whether the timer currently paused
+        self.pauseTicks = 0 # time elapsed since timer was paused 
+        self.timeRanOut = False
+        self.start()

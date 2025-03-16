@@ -86,8 +86,8 @@ helpButton = utils.Button(SCREEN_WIDTH * 0.95,10,help_btn,0.15)
 #pawn_rect.topleft = (BOARD_START_X,BOARD_START_Y + SQUARE_SIZE)
 
 allPieces = []
-timerMins = 4
-timerExample = timer.Timer(timerMins * 60 * 1000)
+timerMins = 0.05
+AIMoveDelayTimer = timer.Timer(int(timerMins * 60 * 1000))
 
 def drawPiece(boardx,boardy,i,j):
     currentSquareIndex = (i * 8) + j
@@ -115,7 +115,7 @@ def drawPieces():
                 allPieces.append(piece)
 
 
-timerExample.start()
+AIMoveDelayTimer.start()
 
 def drawBoard(fen=""):
 
@@ -138,8 +138,8 @@ def drawBoard(fen=""):
         screen.fill((219, 200, 167))
         drawMoveTracker()
 
-        if timerExample.active:
-            timerExample.update()
+        if AIMoveDelayTimer.active:
+            AIMoveDelayTimer.update()
 
         if exitButton.drawButton(screen):
             # exit page
@@ -149,10 +149,10 @@ def drawBoard(fen=""):
             # do help stuff
             if text == "un paused":
                 text = "paused"
-                timerExample.pause()
+                AIMoveDelayTimer.pause()
             else:
                 text = "un paused"
-                timerExample.unpause()
+                AIMoveDelayTimer.unpause()
             i = i + 1
 
         pygame.draw.rect(screen,(107, 70, 44),(BOARD_START_X - OUTERBOARD_OFFSET,BOARD_START_Y - OUTERBOARD_OFFSET,(SQUARE_SIZE * 8) + (2 * OUTERBOARD_OFFSET),(SQUARE_SIZE * 8) + (2 * OUTERBOARD_OFFSET)),border_radius=10)
@@ -202,20 +202,23 @@ def drawBoard(fen=""):
                         newOverlay = []
                         allMoves = []
             else:
-                playerTurn = True
-                selectedPiece = None
-                newOverlay = []
-                removeOverlay(overlaySquares)
-                chosenMove = opponentTurn(Engine.enemyColour)
-                if chosenMove != None:
-                    for piece in allPieces:
-                        if piece.coordinates == chosenMove[0]:
-                            x = (chosenMove[1]) % 8
-                            y = int(chosenMove[1] // 8)
-                            x = BOARD_START_X + (SQUARE_SIZE * x)
-                            y = BOARD_START_Y + (SQUARE_SIZE * y)
-                            allPieces[allPieces.index(piece)].move(screen,x,y,chosenMove[1])
-                            disposeOfPiece(Engine.playerColour,chosenMove[1])
+                if AIMoveDelayTimer.timeRanOut:
+                    playerTurn = True
+                    selectedPiece = None
+                    newOverlay = []
+                    removeOverlay(overlaySquares)
+                    chosenMove = opponentTurn(Engine.enemyColour)
+                    if chosenMove != None:
+                        for piece in allPieces:
+                            if piece.coordinates == chosenMove[0]:
+                                x = (chosenMove[1]) % 8
+                                y = int(chosenMove[1] // 8)
+                                x = BOARD_START_X + (SQUARE_SIZE * x)
+                                y = BOARD_START_Y + (SQUARE_SIZE * y)
+                                allPieces[allPieces.index(piece)].move(screen,x,y,chosenMove[1])
+                                disposeOfPiece(Engine.playerColour,chosenMove[1])
+
+                    AIMoveDelayTimer.reset(int(timerMins * 60 * 1000))
         else:
             running = False
         
@@ -289,7 +292,7 @@ def setup(fen=""):
 
 def winLossScreen(turn):
     running = True
-    timerExample.pause()
+    AIMoveDelayTimer.pause()
 
     while running:
         size = (SQUARE_SIZE * 6) + (2*OUTERBOARD_OFFSET)
