@@ -78,7 +78,7 @@ def boardSetup(playerColour):
         data = FENBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
         return data[0],"WHITE",True,data[3],data[4]
     else:
-        data = FENBoard("RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr b KQkq - 0 1")
+        data = FENBoard("RNBKQBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbkqbnr b KQkq - 0 1")
         return data[0],"BLACK",False,data[3],data[4]
 
 def validFEN(fen):
