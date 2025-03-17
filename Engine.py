@@ -79,7 +79,6 @@ global squaresToEdge
 global lastMove
 global Checkmate
 global Stalemate
-global checkMoves 
 
 lastMove = [0,0]
 
@@ -189,7 +188,8 @@ def makeMove(square,chosenLegalMove,colour,isFake=False,extraInfo=None):
         whitePiecesData = [whitePawns, whiteBishops, whiteHorses, whiteRooks, whiteQueens, whiteKing]
         blackPiecesData = [blackPawns, blackBishops, blackHorses, blackRooks, blackQueens, blackKing]
         currentBoardFullData = [whitePiecesData,blackPiecesData,castlingData]
-        signalGameUIEvents.addMoveToTracker(getPieceTypeFromSquare(chosenLegalMove),getColour(chosenLegalMove),isCapture,lastMove in checkMoves,lastMove[0],lastMove[1])
+        kingIsChecked = getCheckMoves(switchColours(colour))
+        signalGameUIEvents.addMoveToTracker(getPieceTypeFromSquare(chosenLegalMove),getColour(chosenLegalMove),isCapture,kingIsChecked,lastMove[0],lastMove[1])
 
 def updateBoard(square,chosenLegalMove,colour,isFake,extraInfo):
     global bitWordBoard
@@ -342,6 +342,7 @@ def generateAllMoves(turn,isResponses,movesToSearch=[]):
                 elif pieceType == "KING":
                     moves = moves + generateKingMoves(currentSquareIndex,turn)
 
+
     if not isResponses:
         for move in moves:            
             
@@ -351,6 +352,7 @@ def generateAllMoves(turn,isResponses,movesToSearch=[]):
                 endValid = move[1] <= 63 and move[1] >= 0 
                 if startValid and endValid:
                     legalMoves = legalMoves + [move]
+                    
                 
             resetData()
 
@@ -377,7 +379,9 @@ def generateAllMoves(turn,isResponses,movesToSearch=[]):
                     UI.stalemateUI()
                     UI.sleep(10)
 
+
         return legalMoves
+    
             
     return moves
 
@@ -686,32 +690,45 @@ def inCheck(colour,moves):
             
     return False
 
-def listOfCheckMoves(colour,moves):
-    global blackKing
-    global whiteKing
-    opposite = switchColours(colour)
-    moves = []
-
+def getCheckMoves(colour):
+    squareToStart = None
     if colour == "WHITE":
-        kingPos = int(math.log(whiteKing,2))
-        print(kingPos)
-        
-        for i in moves:
-            makeMove(i[0],i[1],opposite,True) 
-            if i[1] == kingPos:
-                moves = moves + [i]
-            resetData()
-
+        global whiteKing 
+        squareToStart = int(math.log(whiteKing,2))
     else:
-        kingPos = int(math.log(blackKing,2))
-        print(kingPos)
-        for i in moves:
-            makeMove(i[0],i[1],opposite,True) 
-            if i[1] == kingPos:
-                moves = moves + [i]
-            resetData()
+        global blackKing
+        squareToStart = int(math.log(blackKing,2))
+
+    bishopMoves = generateSlidingPieceMoves(squareToStart,"BISHOP",colour)
+    castleMoves = generateSlidingPieceMoves(squareToStart,"ROOK",colour)
+    horseMoves = generateHorseMoves(squareToStart,colour)
+
+    print(bishopMoves)
+    print(castleMoves)
+    print(horseMoves)
+    print(lastMove)
+    piece = getPieceTypeFromSquare(int(math.pow(2,lastMove[1]))) 
+    print(piece)
+
+    for horseMove in horseMoves:
+        if horseMove[1] == lastMove[1]:
+            #print(f"{piece} : lastMove {lastMove[1]} : {horseMove[1]}")
+            if piece == "HORSE":
+                return True
+    
+    for castleMove in castleMoves:
+        if castleMove[1] == lastMove[1]:
+            #print(f"{piece} : lastMove {lastMove[1]} : {horseMove[1]}")
+            if piece == "ROOK" or piece == "QUEEN":
+                return True
             
-    return moves
+    for bishopMove in bishopMoves:
+        if bishopMove[1] == lastMove[1]:
+            #print(f"{piece} : lastMove {lastMove[1]} : {horseMove[1]}")
+            if piece == "BISHOP" or piece == "QUEEN":
+                return True
+            
+    return False
 
 def evaluate():
     evaluationScore = 0
@@ -945,9 +962,6 @@ def convertToBitBoard(board,castlingData,enPassant):
 
     global Stalemate 
     Stalemate = False
-
-    global checkMoves 
-    checkMoves = []
 
     blackPieces = 0
     whitePieces = 0
