@@ -1,3 +1,5 @@
+import Engine
+
 class UIEvents(): 
     def __init__(self,boardColours = [(181,136,99),(240,217,181),(230, 112, 112)]):
         self.eventFound = False
@@ -17,9 +19,17 @@ class UIEvents():
             startRankFile = destinationSquare
             self.moveList = self.moveList + [[startSquare,destinationSquare]]
             print(f"{pieceMoving}-{colour}-{isCapture}-{isCheck}-{startSquare}-{destinationSquare}")
+            print(self.squareToFileRank(destinationSquare))
 
-    def convertToChessNotation(self):
-        pass
+    def squareToFileRank(self, square):
+        rank = (square // 8)
+        file = square - (rank * 8)
+        if Engine.playerColour == "WHITE":
+            rank = 8 - rank
+            return chr(97 + file)+str(rank) 
+        else:
+            file = 7 - file
+            return chr(97 + file)+str(rank + 1)
 
     def colourBlindMode(self):
         self.changeBoardColour(None)

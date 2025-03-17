@@ -703,28 +703,20 @@ def getCheckMoves(colour):
     castleMoves = generateSlidingPieceMoves(squareToStart,"ROOK",colour)
     horseMoves = generateHorseMoves(squareToStart,colour)
 
-    print(bishopMoves)
-    print(castleMoves)
-    print(horseMoves)
-    print(lastMove)
     piece = getPieceTypeFromSquare(int(math.pow(2,lastMove[1]))) 
-    print(piece)
 
     for horseMove in horseMoves:
         if horseMove[1] == lastMove[1]:
-            #print(f"{piece} : lastMove {lastMove[1]} : {horseMove[1]}")
             if piece == "HORSE":
                 return True
     
     for castleMove in castleMoves:
         if castleMove[1] == lastMove[1]:
-            #print(f"{piece} : lastMove {lastMove[1]} : {horseMove[1]}")
             if piece == "ROOK" or piece == "QUEEN":
                 return True
             
     for bishopMove in bishopMoves:
         if bishopMove[1] == lastMove[1]:
-            #print(f"{piece} : lastMove {lastMove[1]} : {horseMove[1]}")
             if piece == "BISHOP" or piece == "QUEEN":
                 return True
             
