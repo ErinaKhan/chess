@@ -1,1 +1,0 @@
-Lesson 2 - Queen,Lesson 1 - Pawn,Lesson 5 - Bishop,Lesson 3 - Knight,,Lesson 4 - King,Lesson 6 - Rook,Lesson 7 - Checkmate,

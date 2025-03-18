@@ -5,7 +5,8 @@ import math
 import Pygame_Utils as utils
 import pyTimer as timer
 import File_handler as FileHandler
-import BOARD_SETTINGS as gameSettings
+import Settings.BOARD_SETTINGS as gameSettings
+
 
 pygame.init()
 
@@ -51,41 +52,41 @@ help_btn =None
 home_btn = None
 
 try: # for windows users
-    pawn_white = pygame.image.load(r"chessPieces\wp.png")
-    rook_white = pygame.image.load(r"chessPieces\wr.png")
-    knight_white = pygame.image.load(r"chessPieces\wn.png")
-    bishop_white = pygame.image.load(r"chessPieces\wb.png")
-    king_white = pygame.image.load(r"chessPieces\wk.png")
-    queen_white = pygame.image.load(r"chessPieces\wq.png")
+    pawn_white = pygame.image.load(r"ChessPieces\wp.png")
+    rook_white = pygame.image.load(r"ChessPieces\wr.png")
+    knight_white = pygame.image.load(r"ChessPieces\wn.png")
+    bishop_white = pygame.image.load(r"ChessPieces\wb.png")
+    king_white = pygame.image.load(r"ChessPieces\wk.png")
+    queen_white = pygame.image.load(r"ChessPieces\wq.png")
 
-    pawn_black = pygame.image.load(r"chessPieces\bp.png")
-    rook_black = pygame.image.load(r"chessPieces\br.png")
-    knight_black = pygame.image.load(r"chessPieces\bn.png")
-    bishop_black = pygame.image.load(r"chessPieces\bb.png")
-    king_black = pygame.image.load(r"chessPieces\bk.png")
-    queen_back = pygame.image.load(r"chessPieces\bq.png")
+    pawn_black = pygame.image.load(r"ChessPieces\bp.png")
+    rook_black = pygame.image.load(r"ChessPieces\br.png")
+    knight_black = pygame.image.load(r"ChessPieces\bn.png")
+    bishop_black = pygame.image.load(r"ChessPieces\bb.png")
+    king_black = pygame.image.load(r"ChessPieces\bk.png")
+    queen_back = pygame.image.load(r"ChessPieces\bq.png")
 
-    back_btn = pygame.image.load(r"imagesMisc\undo.png")
-    help_btn = pygame.image.load(r"imagesMisc\help.png")
-    home_btn = pygame.image.load(r"imagesMisc\home.png")
+    back_btn = pygame.image.load(r"Images\undo.png")
+    help_btn = pygame.image.load(r"Images\help.png")
+    home_btn = pygame.image.load(r"Images\home.png")
 except: # for mac users
-    pawn_white = pygame.image.load(r"chessPieces/wp.png")
-    rook_white = pygame.image.load(r"chessPieces/wr.png")
-    knight_white = pygame.image.load(r"chessPieces/wn.png")
-    bishop_white = pygame.image.load(r"chessPieces/wb.png")
-    king_white = pygame.image.load(r"chessPieces/wk.png")
-    queen_white = pygame.image.load(r"chessPieces/wq.png")
+    pawn_white = pygame.image.load(r"ChessPieces/wp.png")
+    rook_white = pygame.image.load(r"ChessPieces/wr.png")
+    knight_white = pygame.image.load(r"ChessPieces/wn.png")
+    bishop_white = pygame.image.load(r"ChessPieces/wb.png")
+    king_white = pygame.image.load(r"ChessPieces/wk.png")
+    queen_white = pygame.image.load(r"ChessPieces/wq.png")
 
-    pawn_black = pygame.image.load(r"chessPieces/bp.png")
-    rook_black = pygame.image.load(r"chessPieces/br.png")
-    knight_black = pygame.image.load(r"chessPieces/bn.png")
-    bishop_black = pygame.image.load(r"chessPieces/bb.png")
-    king_black = pygame.image.load(r"chessPieces/bk.png")
-    queen_back = pygame.image.load(r"chessPieces/bq.png")
+    pawn_black = pygame.image.load(r"ChessPieces/bp.png")
+    rook_black = pygame.image.load(r"ChessPieces/br.png")
+    knight_black = pygame.image.load(r"ChessPieces/bn.png")
+    bishop_black = pygame.image.load(r"ChessPieces/bb.png")
+    king_black = pygame.image.load(r"ChessPieces/bk.png")
+    queen_back = pygame.image.load(r"ChessPieces/bq.png")
 
-    back_btn = pygame.image.load(r"imagesMisc/undo.png")
-    help_btn = pygame.image.load(r"imagesMisc/help.png")
-    home_btn = pygame.image.load(r"imagesMisc/home.png")
+    back_btn = pygame.image.load(r"Images/undo.png")
+    help_btn = pygame.image.load(r"Images/help.png")
+    home_btn = pygame.image.load(r"Images/home.png")
 
 
 image_lookup = {

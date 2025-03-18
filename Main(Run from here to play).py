@@ -8,7 +8,7 @@ import random
 import File_handler as FileHandler
 import UI_Handler as UI
 import math
-import PROJECT_SETTINGS as settings
+import Settings.PROJECT_SETTINGS as settings
 #------------------------------------ FUNCTIONS ------------------------------------
 
 CONSOLE_APPLICATION = settings.isConsoleApplication()

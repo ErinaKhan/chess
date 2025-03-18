@@ -23,15 +23,15 @@ arrowD = None
 completedTick = None
 
 try:
-    back_btn = pygame.image.load(r"imagesMisc\undo.png")
-    arrowU = pygame.image.load(r"imagesMisc\arrow_up.png")
-    arrowD = pygame.image.load(r"imagesMisc\arrow_down.png")
-    completedTick = pygame.image.load(r"imagesMisc\completed.png")
+    back_btn = pygame.image.load(r"Images\undo.png")
+    arrowU = pygame.image.load(r"Images\arrow_up.png")
+    arrowD = pygame.image.load(r"Images\arrow_down.png")
+    completedTick = pygame.image.load(r"Images\completed.png")
 except:
-    back_btn = pygame.image.load(r"imagesMisc/undo.png")
-    arrowU = pygame.image.load(r"imagesMisc/arrow_up.png")
-    arrowD = pygame.image.load(r"imagesMisc/arrow_down.png")
-    completedTick = pygame.image.load(r"imagesMisc/completed.png")
+    back_btn = pygame.image.load(r"Images/undo.png")
+    arrowU = pygame.image.load(r"Images/arrow_up.png")
+    arrowD = pygame.image.load(r"Images/arrow_down.png")
+    completedTick = pygame.image.load(r"Images/completed.png")
 
 exitButton = utils.Button(20,SCREEN_HEIGHT * 0.8,back_btn,0.25)
 arrowButtonUp = utils.Button(SCREEN_WIDTH * 0.82,SCREEN_HEIGHT * 0.08,arrowU,0.35)
@@ -151,9 +151,9 @@ def drawButtons(sectionsToDisplay,index,completed):
 def getTutorialSections():
     tutorialData = None
     try:
-        tutorialData = open("tutorial\dialogue.txt","r")
+        tutorialData = open(r"Tutorial\Dialogue.txt","r")
     except:
-        tutorialData = open("tutorial/dialogue.txt","r")
+        tutorialData = open(r"Tutorial/Dialogue.txt","r")
 
     for section in tutorialData.readlines():
         if section.count(':') != 0:
@@ -208,9 +208,9 @@ def renderTextCenteredAt(text, font, colour, x, y, allowed_width,fontSize = 64):
 def getUserTutorialProgress():
     tutorialData = None
     try:
-        tutorialData = open(r"data\userTutorialProgress.txt","r")
+        tutorialData = open(r"Data\UserTutorialProgress.txt","r")
     except:
-        tutorialData = open(r"data/userTutorialProgress.txt","r")
+        tutorialData = open(r"Data/UserTutorialProgress.txt","r")
 
     data = tutorialData.readline()
     if data == "":
@@ -227,9 +227,9 @@ def saveSections(completedSections):
     # shouldnt return any value
     tutorialData = None
     try:
-        tutorialData = open(r"data\userTutorialProgress.txt","w")
+        tutorialData = open(r"Data\UserTutorialProgress.txt","w")
     except:
-        tutorialData = open(r"data/userTutorialProgress.txt","w")
+        tutorialData = open(r"Data/UserTutorialProgress.txt","w")
         
     #---- code here -----
 

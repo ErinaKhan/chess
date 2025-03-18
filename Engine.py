@@ -21,7 +21,7 @@
 import math
 import random
 import UI_Handler as UI
-import PROJECT_SETTINGS as settings
+import Settings.PROJECT_SETTINGS as settings
 
 global signalGameUIEvents
 

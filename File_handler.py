@@ -1,6 +1,6 @@
 import random
 import UI_Handler as UI
-import PROJECT_SETTINGS as settings
+import Settings.PROJECT_SETTINGS as settings
 
 CONSOLE_APPLICATION = settings.isConsoleApplication()
 
@@ -193,9 +193,9 @@ def gamesAvailable():
     try:
         saveFile = None
         try:
-            saveFile = open(r"data\saveFile.txt","rt")
+            saveFile = open(r"Data\SaveFile.txt","rt")
         except:
-            saveFile = open(r"data/saveFile.txt","rt")
+            saveFile = open(r"Data/SaveFile.txt","rt")
 
         for game in saveFile:
             numOfGames = numOfGames + 1
