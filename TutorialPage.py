@@ -17,9 +17,19 @@ INNER_SCREEN_WIDTH = SCREEN_WIDTH * 0.8
 TUTORIAL_SECTION_WIDTH = INNER_SCREEN_WIDTH * 0.7
 TUTORIAL_SECTION_PADDING = 80
 
-back_btn = pygame.image.load(r"imagesMisc\undo.png")
-arrowU = pygame.image.load(r"imagesMisc\arrow_up.png")#
-arrowD = pygame.image.load(r"imagesMisc\arrow_down.png")
+back_btn = None
+arrowU = None
+arrowD = None
+
+try:
+    back_btn = pygame.image.load(r"imagesMisc\undo.png")
+    arrowU = pygame.image.load(r"imagesMisc\arrow_up.png")
+    arrowD = pygame.image.load(r"imagesMisc\arrow_down.png")
+except:
+    back_btn = pygame.image.load(r"imagesMisc/undo.png")
+    arrowU = pygame.image.load(r"imagesMisc/arrow_up.png")
+    arrowD = pygame.image.load(r"imagesMisc/arrow_down.png")
+
 exitButton = utils.Button(20,SCREEN_HEIGHT * 0.8,back_btn,0.25)
 arrowButtonUp = utils.Button(SCREEN_WIDTH * 0.82,SCREEN_HEIGHT * 0.08,arrowU,0.35)
 arrowButtonDown = utils.Button(SCREEN_WIDTH * 0.82,SCREEN_HEIGHT * 0.8,arrowD,0.35)
@@ -127,7 +137,12 @@ def drawButtons(sectionsToDisplay,index):
     return -1
 
 def getTutorialSections():
-    tutorialData = open("tutorial\dialogue.txt","r")
+    tutorialData = None
+    try:
+        tutorialData = open("tutorial\dialogue.txt","r")
+    except:
+        tutorialData = open("tutorial/dialogue.txt","r")
+
     for section in tutorialData.readlines():
         if section.count(':') != 0:
             newSection = section.split(':') # array containing [title of section, text to display, board for demo]

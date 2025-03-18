@@ -191,7 +191,11 @@ def gamesAvailable():
     gameNames = []
     numOfGames = 0
     try:
-        saveFile = open(r"data\saveFile.txt","rt")
+        saveFile = None
+        try:
+            saveFile = open(r"data\saveFile.txt","rt")
+        except:
+            saveFile = open(r"data/saveFile.txt","rt")
 
         for game in saveFile:
             numOfGames = numOfGames + 1

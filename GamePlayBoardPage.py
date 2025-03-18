@@ -34,23 +34,61 @@ OVERLAY_SQUARE_COLOUR = (230, 112, 112)
 PIECE_SIZE = SQUARE_SIZE - (0.1 * SQUARE_SIZE)
 PIECE_PLACEMENT = int((SQUARE_SIZE - PIECE_SIZE) / 2)
 
-pawn_white = pygame.image.load(r"chessPieces\wp.png")
-rook_white = pygame.image.load(r"chessPieces\wr.png")
-knight_white = pygame.image.load(r"chessPieces\wn.png")
-bishop_white = pygame.image.load(r"chessPieces\wb.png")
-king_white = pygame.image.load(r"chessPieces\wk.png")
-queen_white = pygame.image.load(r"chessPieces\wq.png")
+pawn_white = None
+rook_white = None
+knight_white = None
+bishop_white = None
+king_white = None
+queen_white = None
 
-pawn_black = pygame.image.load(r"chessPieces\bp.png")
-rook_black = pygame.image.load(r"chessPieces\br.png")
-knight_black = pygame.image.load(r"chessPieces\bn.png")
-bishop_black = pygame.image.load(r"chessPieces\bb.png")
-king_black = pygame.image.load(r"chessPieces\bk.png")
-queen_back = pygame.image.load(r"chessPieces\bq.png")
+pawn_black = None
+rook_black = None
+knight_black = None
+bishop_black = None
+king_black =None
+queen_back =None
 
-back_btn = pygame.image.load(r"imagesMisc\undo.png")
-help_btn = pygame.image.load(r"imagesMisc\help.png")
-home_btn = pygame.image.load(r"imagesMisc\home.png")
+back_btn =None
+help_btn =None
+home_btn = None
+
+try:
+    pawn_white = pygame.image.load(r"chessPieces\wp.png")
+    rook_white = pygame.image.load(r"chessPieces\wr.png")
+    knight_white = pygame.image.load(r"chessPieces\wn.png")
+    bishop_white = pygame.image.load(r"chessPieces\wb.png")
+    king_white = pygame.image.load(r"chessPieces\wk.png")
+    queen_white = pygame.image.load(r"chessPieces\wq.png")
+
+    pawn_black = pygame.image.load(r"chessPieces\bp.png")
+    rook_black = pygame.image.load(r"chessPieces\br.png")
+    knight_black = pygame.image.load(r"chessPieces\bn.png")
+    bishop_black = pygame.image.load(r"chessPieces\bb.png")
+    king_black = pygame.image.load(r"chessPieces\bk.png")
+    queen_back = pygame.image.load(r"chessPieces\bq.png")
+
+    back_btn = pygame.image.load(r"imagesMisc\undo.png")
+    help_btn = pygame.image.load(r"imagesMisc\help.png")
+    home_btn = pygame.image.load(r"imagesMisc\home.png")
+except:
+    pawn_white = pygame.image.load(r"chessPieces/wp.png")
+    rook_white = pygame.image.load(r"chessPieces/wr.png")
+    knight_white = pygame.image.load(r"chessPieces/wn.png")
+    bishop_white = pygame.image.load(r"chessPieces/wb.png")
+    king_white = pygame.image.load(r"chessPieces/wk.png")
+    queen_white = pygame.image.load(r"chessPieces/wq.png")
+
+    pawn_black = pygame.image.load(r"chessPieces/bp.png")
+    rook_black = pygame.image.load(r"chessPieces/br.png")
+    knight_black = pygame.image.load(r"chessPieces/bn.png")
+    bishop_black = pygame.image.load(r"chessPieces/bb.png")
+    king_black = pygame.image.load(r"chessPieces/bk.png")
+    queen_back = pygame.image.load(r"chessPieces/bq.png")
+
+    back_btn = pygame.image.load(r"imagesMisc/undo.png")
+    help_btn = pygame.image.load(r"imagesMisc/help.png")
+    home_btn = pygame.image.load(r"imagesMisc/home.png")
+
 
 image_lookup = {
     "BLACKROOK": rook_black,

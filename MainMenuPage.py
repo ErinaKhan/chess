@@ -21,8 +21,13 @@ screen = pygame.display.set_mode((SCREEN_WIDTH - 10,SCREEN_HEIGHT- 50),pygame.RE
 background_colour = (244, 225, 193)
 
 # load the image
-chess = pygame.image.load(r"imagesMisc\chess123.jpg") # not an error just red highlight on vscode
+chess = None
 
+try:
+    chess = pygame.image.load(r"imagesMisc\chess123.jpg") # not an error just red highlight on vscode
+except:
+    chess = pygame.image.load(r"imagesMisc/chess123.jpg")
+    
 # scale the img
 chess = pygame.transform.scale_by(chess, 2)
 
