@@ -1,4 +1,5 @@
 import Engine
+import math
 
 pieceToACN = {
     "ROOK": "R",
@@ -15,6 +16,7 @@ class UIEvents():
         self.isCastling = False
         self.isEnpassant = False
         self.isPromoting = False
+        self.sideOfCastling = None
         self.eventData = []
         self.moveList = []
         self.boardColours = boardColours # [blackSquareColour,whiteSquareColour,overlayColour] -> list of 3 rgb tuples
@@ -25,11 +27,7 @@ class UIEvents():
     def addMoveToTracker(self,pieceMoving,colour,isCapture,isCheck,startSquare,destinationSquare):
         algebraicChessNotationMove = ""
 
-        if not (self.isCastling or self.isEnpassant or self.isPromoting):
-            startRankFile = startSquare
-            startRankFile = destinationSquare
-            self.moveList = self.moveList + [[startSquare,destinationSquare]]
-            
+        if not (self.isCastling or self.isEnpassant or self.isPromoting):            
             algebraicChessNotationMove = algebraicChessNotationMove + pieceToACN[pieceMoving]
             
             if isCapture:
@@ -42,8 +40,22 @@ class UIEvents():
 
             if isCheck:
                 algebraicChessNotationMove = algebraicChessNotationMove + "+"
-            
-            return algebraicChessNotationMove
+        
+        elif self.isCastling:
+            if self.sideOfCastling == "QUEENSIDE":
+                algebraicChessNotationMove = "O-O-O"
+            else:
+                algebraicChessNotationMove = "O-O"
+        elif self.isEnpassant:
+            algebraicChessNotationMove = self.squareToFileRank(startSquare)[0] + "x" + self.squareToFileRank(destinationSquare)
+            pass
+        elif self.isPromoting:
+            algebraicChessNotationMove = self.squareToFileRank(destinationSquare) + pieceToACN[Engine.getPieceTypeFromSquare(int(math.pow(2,destinationSquare)))]
+            pass
+        else:
+            return " "
+
+        self.moveList = self.moveList + [algebraicChessNotationMove]
 
 
     def squareToFileRank(self, square):
@@ -59,8 +71,9 @@ class UIEvents():
     def colourBlindMode(self):
         self.changeBoardColour(None)
 
-    def emitCastleEvent(self,rookMoves):
+    def emitCastleEvent(self,rookMoves,sideOfCastle):
         self.isCastling = True
+        self.sideOfCastling = sideOfCastle
         self.eventData = rookMoves
 
     def emitEnPassantEvent(self,piece):
@@ -79,7 +92,11 @@ class UIEvents():
         self.isCastling = False
         self.isEnpassant = False
         self.isPromoting = False
+        self.sideOfCastling = None
         self.eventData = []
 
     def getEventData(self):
         return self.eventData
+    
+    def getMoveList(self):
+        return self.moveList

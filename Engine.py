@@ -214,10 +214,10 @@ def updateBoard(square,chosenLegalMove,colour,isFake,extraInfo):
             signalGameUIEvents.emitEnPassantEvent(pieceUIToUpdate)
      
     if isCastling(nonBinSquare,square, nonBinMove):
-        rookMoves = castle(chosenLegalMove,colour)
+        rookMoves,sideOfCastle = castle(chosenLegalMove,colour)
 
         if not settings.isConsoleApplication() and not isFake:
-            signalGameUIEvents.emitCastleEvent(rookMoves)
+            signalGameUIEvents.emitCastleEvent(rookMoves,sideOfCastle)
 
 
     if colour == "WHITE":
@@ -586,29 +586,29 @@ def castle(chosenLegalMove,colour):
     if playerColour == "WHITE":
         if placementForRook == 6:
             updateBoard(int(math.pow(2,7)),int(math.pow(2,5)),colour,False,None)    
-            return [7,5]
+            return [7,5],"KINGSIDE"
         elif placementForRook == 62:
             updateBoard(int(math.pow(2,63)),int(math.pow(2,61)),colour,False,None)
-            return [63,61]
+            return [63,61],"KINGSIDE"
         elif placementForRook == 2:
-            updateBoard(0,3,colour,False,None)
-            return [0,3]
+            updateBoard(1,3,colour,False,None)
+            return [1,3],"QUEENSIDE"
         elif placementForRook == 58:
             updateBoard(int(math.pow(2,56)),int(math.pow(2,59)),colour,False,None)
-            return [56,59]
+            return [56,59],"QUEENSIDE"
     else:
         if placementForRook == 5:
             updateBoard(int(math.pow(2,7)),int(math.pow(2,4)),colour,False,None)    
-            return [7,4]
+            return [7,4],"QUEENSIDE"
         elif placementForRook == 61:
             updateBoard(int(math.pow(2,63)),int(math.pow(2,60)),colour,False,None)
-            return [63,60]
+            return [63,60],"QUEENSIDE"
         elif placementForRook == 1:
-            updateBoard(0,2,colour,False,None)
-            return [0,2]
+            updateBoard(1,2,colour,False,None)
+            return [1,2],"KINGSIDE"
         elif placementForRook == 57:
             updateBoard(int(math.pow(2,56)),int(math.pow(2,58)),colour,False,None)
-            return [56,58]
+            return [56,58],"KINGSIDE"
 
 
 

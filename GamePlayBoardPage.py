@@ -163,6 +163,7 @@ def drawBoard(fen=""):
     overlay = []
     newOverlay = []
     overlaySquares = []
+    trackedMoves = []
     selectedPiece = None
     playerTurn = Engine.playerColour == "WHITE"
     i = 0
@@ -172,7 +173,6 @@ def drawBoard(fen=""):
     while running:
 
         screen.fill((219, 200, 167))
-        drawMoveTracker()
 
         if AIMoveDelayTimer.active:
             AIMoveDelayTimer.update()
@@ -237,6 +237,7 @@ def drawBoard(fen=""):
                         selectedPiece = None
                         newOverlay = []
                         allMoves = []
+                        trackedMoves = settings.getMoveList()
             else:
                 if AIMoveDelayTimer.timeRanOut:
                     playerTurn = True
@@ -254,6 +255,7 @@ def drawBoard(fen=""):
                                 allPieces[allPieces.index(piece)].move(screen,x,y,chosenMove[1])
                                 disposeOfPiece(Engine.playerColour,chosenMove[1])
 
+                    trackedMoves = settings.getMoveList()
                     AIMoveDelayTimer.reset(int(timerMins * 60 * 1000))
         else:
             running = False
@@ -286,14 +288,30 @@ def drawBoard(fen=""):
             print(allEvents)
             settings.resetEvents()
 
+        drawMoveTracker(trackedMoves)
         pygame.display.update()
 
     if Engine.Checkmate:
         winLossScreen(playerTurn)
 
-def drawMoveTracker():
-    pygame.draw.rect(screen,(219, 219, 219),(BOARD_START_X + (SQUARE_SIZE * 9)  + (2 * OUTERBOARD_OFFSET) ,BOARD_START_Y - OUTERBOARD_OFFSET,(SQUARE_SIZE * 3)  + (2 * OUTERBOARD_OFFSET),(SQUARE_SIZE * 8) + (2 * OUTERBOARD_OFFSET)),border_radius=10)
-
+def drawMoveTracker(moves):
+    trackerRect = pygame.Rect(BOARD_START_X + (SQUARE_SIZE * 9)  + (2 * OUTERBOARD_OFFSET) ,BOARD_START_Y - OUTERBOARD_OFFSET,(SQUARE_SIZE * 3)  + (2 * OUTERBOARD_OFFSET),(SQUARE_SIZE * 8) + (2 * OUTERBOARD_OFFSET))
+    pygame.draw.rect(screen,(219, 219, 219),trackerRect,border_radius=10)
+    fontSize = 24
+    font = pygame.font.Font(None, fontSize)
+    fullMoveNum = 0
+    for i in range(len(moves)):
+        if i != 0 and (i + 1) % 2 == 0:
+            surface = font.render(str(i // 2 + 1) + ". " + moves[i - 1] + "  " + moves[i], True, (0,0,0))
+            rect = surface.get_rect(center=(trackerRect.midtop[0],(trackerRect.midtop[1]) + fontSize +((i // 2) * fontSize)))
+            screen.blit(surface, rect)
+            fullMoveNum = (i + 1) // 2
+    
+    if len(moves) % 2 != 0:
+        surface = font.render(str(fullMoveNum) + ". " + moves[-1], True, (0,0,0))
+        rect = surface.get_rect(center=(trackerRect.midtop[0],(trackerRect.midtop[1]) + fontSize + (fullMoveNum * fontSize)))
+        screen.blit(surface, rect)
+        
 def opponentTurn(colour):
     moves = Engine.generateAllMoves(colour,False)
     #chosenMove,extraInfo,eval = Engine.search(moves,colour)
@@ -365,7 +383,6 @@ def castle(rookStart,rookEnd):
             y = int(rookEnd // 8)
             x = BOARD_START_X + (SQUARE_SIZE * x)
             y = BOARD_START_Y + (SQUARE_SIZE * y)
-            print(f"x : y")
             allPieces[allPieces.index(piece)].move(screen,x,y,rookEnd)
 
 def promote(coordinate,colour,newPiece):

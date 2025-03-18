@@ -51,7 +51,7 @@ def Start():
     clicked = False
     buttonSelectedIndex = -1
 
-    completedSections = []
+    completedSections = getUserTutorialProgress()
 
     fontSize = 64
     font = pygame.font.Font(None, fontSize)
@@ -161,9 +161,6 @@ def getTutorialSections():
     tutorialData.close()
 
 
-def getUserTutorialProgress():
-    return []
-
 def renderTextCenteredAt(text, font, colour, x, y, allowed_width,fontSize = 64):
 
     #reference https://stackoverflow.com/questions/49432109/how-to-wrap-text-in-pygame-using-pygame-font-font
@@ -204,3 +201,7 @@ def renderTextCenteredAt(text, font, colour, x, y, allowed_width,fontSize = 64):
         surface = font.render(line, True, colour)
         screen.blit(surface, (tx, ty))
         i = i + 1
+
+
+def getUserTutorialProgress():
+    return []
