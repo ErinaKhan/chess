@@ -100,6 +100,9 @@ def Start():
                     import GamePlayBoardPage
                     GamePlayBoardPage.drawBoard(allSections[buttonSelectedIndex][2])
                     inPractice = False
+                    completedSections = completedSections + [allSections[buttonSelectedIndex][0]]
+                    print(completedSections)
+                    saveSections(completedSections)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -204,4 +207,43 @@ def renderTextCenteredAt(text, font, colour, x, y, allowed_width,fontSize = 64):
 
 
 def getUserTutorialProgress():
-    return []
+    tutorialData = None
+    try:
+        tutorialData = open(r"data\userTutorialProgress.txt","r")
+    except:
+        tutorialData = open(r"data/userTutorialProgress.txt","r")
+
+    data = tutorialData.readline()
+    print(data)
+    if data == "":
+        print("nothing")
+        return []
+    else:
+        data.split(",")
+
+    tutorialData.close()
+
+    return data
+
+def saveSections(completedSections):
+    # the program needs to write into tutorialData every string in the array completedSections
+    # shouldnt return any value
+    tutorialData = None
+    try:
+        tutorialData = open(r"data\userTutorialProgress.txt","w")
+    except:
+        tutorialData = open(r"data/userTutorialProgress.txt","w")
+        
+    #---- code here -----
+
+    data = ""
+
+    for i in completedSections:
+        data = data + i + ","
+
+    print(data)
+
+    tutorialData.write(data)
+    # -------------------
+
+    tutorialData.close()
