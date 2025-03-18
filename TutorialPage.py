@@ -20,15 +20,18 @@ TUTORIAL_SECTION_PADDING = 80
 back_btn = None
 arrowU = None
 arrowD = None
+completedTick = None
 
 try:
     back_btn = pygame.image.load(r"imagesMisc\undo.png")
     arrowU = pygame.image.load(r"imagesMisc\arrow_up.png")
     arrowD = pygame.image.load(r"imagesMisc\arrow_down.png")
+    completedTick = pygame.image.load(r"imagesMisc\completed.png")
 except:
     back_btn = pygame.image.load(r"imagesMisc/undo.png")
     arrowU = pygame.image.load(r"imagesMisc/arrow_up.png")
     arrowD = pygame.image.load(r"imagesMisc/arrow_down.png")
+    completedTick = pygame.image.load(r"imagesMisc/completed.png")
 
 exitButton = utils.Button(20,SCREEN_HEIGHT * 0.8,back_btn,0.25)
 arrowButtonUp = utils.Button(SCREEN_WIDTH * 0.82,SCREEN_HEIGHT * 0.08,arrowU,0.35)
@@ -47,6 +50,8 @@ def Start():
     inPractice = False
     clicked = False
     buttonSelectedIndex = -1
+
+    completedSections = []
 
     fontSize = 64
     font = pygame.font.Font(None, fontSize)
@@ -70,7 +75,7 @@ def Start():
                     index = index + 1
 
             if not clicked:
-                buttonSelectedIndex = drawButtons(numberOfSections,index)
+                buttonSelectedIndex = drawButtons(numberOfSections,index,completedSections)
             
                 if buttonSelectedIndex > -1:
                     clicked = True
@@ -118,7 +123,7 @@ def getSectionRects(sectionsToDisplay):
         buttonRect = pygame.Rect((SCREEN_WIDTH - TUTORIAL_SECTION_WIDTH) // 2,startY * 1.2 + TUTORIAL_SECTION_PADDING,TUTORIAL_SECTION_WIDTH,tutorialSectionHeight)
         sectionButtons.append(buttonRect)
 
-def drawButtons(sectionsToDisplay,index):
+def drawButtons(sectionsToDisplay,index,completed):
     font = pygame.font.Font(None, 36)
     for i in range(sectionsToDisplay):
         button = sectionButtons[i]
@@ -127,6 +132,11 @@ def drawButtons(sectionsToDisplay,index):
         rect = surface.get_rect(center=button.center)
         screen.blit(surface, rect)
         pos = pygame.mouse.get_pos()
+
+        if allSections[i+index][0] in completed:
+            tickRect = completedTick.get_rect()
+            screen.blit(completedTick,(button.right - (tickRect.width * 1.5),button.centery - (tickRect.height// 2),tickRect.width,tickRect.height))
+
         # is hovering over button
         if newButton.collidepoint(pos):
             if pygame.mouse.get_pressed()[0] == 1:
