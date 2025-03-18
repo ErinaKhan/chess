@@ -40,19 +40,17 @@ knight_white = None
 bishop_white = None
 king_white = None
 queen_white = None
-
 pawn_black = None
 rook_black = None
 knight_black = None
 bishop_black = None
 king_black =None
 queen_back =None
-
 back_btn =None
 help_btn =None
 home_btn = None
 
-try:
+try: # for windows users
     pawn_white = pygame.image.load(r"chessPieces\wp.png")
     rook_white = pygame.image.load(r"chessPieces\wr.png")
     knight_white = pygame.image.load(r"chessPieces\wn.png")
@@ -70,7 +68,7 @@ try:
     back_btn = pygame.image.load(r"imagesMisc\undo.png")
     help_btn = pygame.image.load(r"imagesMisc\help.png")
     home_btn = pygame.image.load(r"imagesMisc\home.png")
-except:
+except: # for mac users
     pawn_white = pygame.image.load(r"chessPieces/wp.png")
     rook_white = pygame.image.load(r"chessPieces/wr.png")
     knight_white = pygame.image.load(r"chessPieces/wn.png")
@@ -367,6 +365,7 @@ def castle(rookStart,rookEnd):
             y = int(rookEnd // 8)
             x = BOARD_START_X + (SQUARE_SIZE * x)
             y = BOARD_START_Y + (SQUARE_SIZE * y)
+            print(f"x : y")
             allPieces[allPieces.index(piece)].move(screen,x,y,rookEnd)
 
 def promote(coordinate,colour,newPiece):

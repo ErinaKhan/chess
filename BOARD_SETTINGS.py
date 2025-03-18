@@ -1,5 +1,14 @@
 import Engine
 
+pieceToACN = {
+    "ROOK": "R",
+    "HORSE": "N",
+    "BISHOP": "B",
+    "QUEEN": "Q",
+    "KING": "K",
+    "PAWN": "",
+}
+
 class UIEvents(): 
     def __init__(self,boardColours = [(181,136,99),(240,217,181),(230, 112, 112)]):
         self.eventFound = False
@@ -14,12 +23,28 @@ class UIEvents():
         pass
 
     def addMoveToTracker(self,pieceMoving,colour,isCapture,isCheck,startSquare,destinationSquare):
+        algebraicChessNotationMove = ""
+
         if not (self.isCastling or self.isEnpassant or self.isPromoting):
             startRankFile = startSquare
             startRankFile = destinationSquare
             self.moveList = self.moveList + [[startSquare,destinationSquare]]
-            print(f"{pieceMoving}-{colour}-{isCapture}-{isCheck}-{startSquare}-{destinationSquare}")
-            print(self.squareToFileRank(destinationSquare))
+            
+            algebraicChessNotationMove = algebraicChessNotationMove + pieceToACN[pieceMoving]
+            
+            if isCapture:
+                if pieceMoving == "PAWN":
+                    algebraicChessNotationMove = algebraicChessNotationMove + self.squareToFileRank(startSquare)[0]
+
+                algebraicChessNotationMove = algebraicChessNotationMove + "x"
+
+            algebraicChessNotationMove = algebraicChessNotationMove + self.squareToFileRank(destinationSquare)
+
+            if isCheck:
+                algebraicChessNotationMove = algebraicChessNotationMove + "+"
+            
+            return algebraicChessNotationMove
+
 
     def squareToFileRank(self, square):
         rank = (square // 8)

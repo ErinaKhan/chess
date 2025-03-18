@@ -489,13 +489,22 @@ def generateKingMoves(startSquare,colour):
                 moves = moves + [[startSquare, targetSquare]]
 
     kingSide,queenSide = canCastle(colour)
-    
-    if kingSide:
-        if getPieceTypeFromSquare(int(math.pow(2,startSquare + 1))) == "NONE" and getPieceTypeFromSquare(int(math.pow(2,startSquare + 2))) == "NONE":
-            moves = moves + [[startSquare, startSquare + 2]]
-    if queenSide:
-        if getPieceTypeFromSquare(int(math.pow(2,startSquare - 1))) == "NONE" and getPieceTypeFromSquare(int(math.pow(2,startSquare - 2))) == "NONE" and getPieceTypeFromSquare(int(math.pow(2,startSquare - 3))) == "NONE":
-            moves = moves + [[startSquare, startSquare - 2]]
+
+    if playerColour == "WHITE":
+        if kingSide:
+            if getPieceTypeFromSquare(int(math.pow(2,startSquare + 1))) == "NONE" and getPieceTypeFromSquare(int(math.pow(2,startSquare + 2))) == "NONE":
+                moves = moves + [[startSquare, startSquare + 2]]
+        if queenSide:
+            if getPieceTypeFromSquare(int(math.pow(2,startSquare - 1))) == "NONE" and getPieceTypeFromSquare(int(math.pow(2,startSquare - 2))) == "NONE" and getPieceTypeFromSquare(int(math.pow(2,startSquare - 3))) == "NONE":
+                moves = moves + [[startSquare, startSquare - 2]]
+    else:
+        if kingSide:
+            if getPieceTypeFromSquare(int(math.pow(2,startSquare - 1))) == "NONE" and getPieceTypeFromSquare(int(math.pow(2,startSquare - 2))) == "NONE":
+                moves = moves + [[startSquare, startSquare - 2]]
+        if queenSide:
+            if getPieceTypeFromSquare(int(math.pow(2,startSquare + 1))) == "NONE" and getPieceTypeFromSquare(int(math.pow(2,startSquare + 2))) == "NONE" and getPieceTypeFromSquare(int(math.pow(2,startSquare + 3))) == "NONE":
+                moves = moves + [[startSquare, startSquare + 2]]
+
     return moves
             
 def generateSlidingPieceMoves(startSquare, piece,colour):
@@ -560,26 +569,47 @@ def enPassant(nonBinMove,nonBinSquare,colour):
     return nonBinMove + (direction * 8)
     
 def isCastling(square,binary, chosenLegalMove):
-    legalMoves = [6,2,58,62]
-    if (square == 4 or square == 60) and (chosenLegalMove in legalMoves) and getPieceTypeFromSquare(binary) == "KING":
-        return True
+    if playerColour == "WHITE":
+        legalMoves = [6,2,58,62]
+        if (square == 4 or square == 60) and (chosenLegalMove in legalMoves) and getPieceTypeFromSquare(binary) == "KING":
+            return True
+    else:
+        legalMoves = [5,1,57,61]
+        if (square == 3 or square == 59) and (chosenLegalMove in legalMoves) and getPieceTypeFromSquare(binary) == "KING":
+            return True
+        
     return False
 
 def castle(chosenLegalMove,colour):
     placementForRook = int(math.log(chosenLegalMove,2))
 
-    if placementForRook == 6:
-        updateBoard(int(math.pow(2,7)),int(math.pow(2,5)),colour,False,None)    
-        return [7,5]
-    elif placementForRook == 62:
-        updateBoard(int(math.pow(2,63)),int(math.pow(2,61)),colour,False,None)
-        return [63,61]
-    elif placementForRook == 2:
-        updateBoard(1,8,colour,False,None)
-        return [1,8]
-    elif placementForRook == 58:
-        updateBoard(int(math.pow(2,56)),int(math.pow(2,59)),colour,False,None)
-        return [56,59]
+    if playerColour == "WHITE":
+        if placementForRook == 6:
+            updateBoard(int(math.pow(2,7)),int(math.pow(2,5)),colour,False,None)    
+            return [7,5]
+        elif placementForRook == 62:
+            updateBoard(int(math.pow(2,63)),int(math.pow(2,61)),colour,False,None)
+            return [63,61]
+        elif placementForRook == 2:
+            updateBoard(0,3,colour,False,None)
+            return [0,3]
+        elif placementForRook == 58:
+            updateBoard(int(math.pow(2,56)),int(math.pow(2,59)),colour,False,None)
+            return [56,59]
+    else:
+        if placementForRook == 5:
+            updateBoard(int(math.pow(2,7)),int(math.pow(2,4)),colour,False,None)    
+            return [7,4]
+        elif placementForRook == 61:
+            updateBoard(int(math.pow(2,63)),int(math.pow(2,60)),colour,False,None)
+            return [63,60]
+        elif placementForRook == 1:
+            updateBoard(0,2,colour,False,None)
+            return [0,2]
+        elif placementForRook == 57:
+            updateBoard(int(math.pow(2,56)),int(math.pow(2,58)),colour,False,None)
+            return [56,58]
+
 
 
 def isPromoting(binary,chosenLegalMove):
