@@ -101,7 +101,6 @@ def Start():
                     GamePlayBoardPage.drawBoard(allSections[buttonSelectedIndex][2])
                     inPractice = False
                     completedSections = completedSections + [allSections[buttonSelectedIndex][0]]
-                    print(completedSections)
                     saveSections(completedSections)
 
         for event in pygame.event.get():
@@ -214,12 +213,10 @@ def getUserTutorialProgress():
         tutorialData = open(r"data/userTutorialProgress.txt","r")
 
     data = tutorialData.readline()
-    print(data)
     if data == "":
-        print("nothing")
         return []
     else:
-        data.split(",")
+        data = data.split(",")
 
     tutorialData.close()
 
@@ -240,8 +237,6 @@ def saveSections(completedSections):
 
     for i in completedSections:
         data = data + i + ","
-
-    print(data)
 
     tutorialData.write(data)
     # -------------------
