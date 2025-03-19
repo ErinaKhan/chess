@@ -123,8 +123,12 @@ helpButton = utils.Button(SCREEN_WIDTH * 0.95,10,help_btn,0.15)
 #pawn_rect.topleft = (BOARD_START_X,BOARD_START_Y + SQUARE_SIZE)
 
 allPieces = []
-timerMins = 0.05
+timerMins = 0.1
 AIMoveDelayTimer = timer.Timer(int(timerMins * 60 * 1000))
+
+gameTimerMins = 4
+AITimer = timer.Timer(int(gameTimerMins * 60 * 1000))
+PlayerTimer = timer.Timer(int(gameTimerMins * 60 * 1000))
 
 def drawPiece(boardx,boardy,i,j):
     currentSquareIndex = (i * 8) + j
@@ -171,9 +175,18 @@ def drawBoard(fen=""):
     text = ""
     drawPieces()
 
+    PlayerTimer.start()
+    AITimer.start()
+
     while running:
 
         screen.fill((219, 200, 167))
+
+        if PlayerTimer.active:
+            PlayerTimer.update()
+
+        if AITimer.active:
+            AITimer.update()
 
         if AIMoveDelayTimer.active:
             AIMoveDelayTimer.update()
@@ -206,8 +219,6 @@ def drawBoard(fen=""):
                 newSquare = utils.OverlaySquare(square,boardx,boardy,OVERLAY_SQUARE_COLOUR)
                 overlaySquares = overlaySquares + [newSquare]
 
-            
-
         for i in range(8):
 
             for j in range(8):
@@ -227,6 +238,7 @@ def drawBoard(fen=""):
 
         if not Engine.Checkmate:
             if playerTurn:
+                AITimer.pause()
                 for square in overlaySquares:
                     if square.drawButton(screen) and selectedPiece != None :
                         start = int(math.pow(2,selectedPiece.coordinates))
@@ -239,7 +251,9 @@ def drawBoard(fen=""):
                         newOverlay = []
                         allMoves = []
                         trackedMoves = settings.getMoveList()
+                        AITimer.unpause()
             else:
+                PlayerTimer.pause()
                 if AIMoveDelayTimer.timeRanOut:
                     playerTurn = True
                     selectedPiece = None
@@ -258,6 +272,7 @@ def drawBoard(fen=""):
 
                     trackedMoves = settings.getMoveList()
                     AIMoveDelayTimer.reset(int(timerMins * 60 * 1000))
+                    PlayerTimer.unpause()
         else:
             running = False
         
@@ -289,6 +304,8 @@ def drawBoard(fen=""):
             print(allEvents)
             settings.resetEvents()
 
+        PlayerTimer.drawTimerUI(screen,300,800,100,200)
+        AITimer.drawTimerUI(screen,300,100,100,200)
         drawMoveTracker(trackedMoves)
         pygame.display.update()
 
