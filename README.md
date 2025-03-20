@@ -56,6 +56,24 @@ Here is an example of the tutorial selection page and an example of a lesson:
 ## How to add tutorial sections
 
 adding to the tutorial section is currently very simple. 
+### 
+How to find the file
+
+1. First navigate to the `Tutorial` folder in the project
+2. Go into the `Dialogue.txt` file
+###
+
+How the file works
+
+* Each line of the text file is a seperate section of tutorial
+
+* Each section of tutorial should be split by the ':' character
+
+* These sections are the [Title of the section,Text to show user when clicked,FEN string that is loaded into the game when practicing what you've learned]
+
+* Example of a possible line --> 'Lesson ?? - XXXXX:BLAHBLAHBLAH:rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1:'
+###
+Now you can simply add a new line satisfying these conditions to add a new section to the tutorial
 
 ## Future ambitions
 
