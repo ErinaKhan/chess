@@ -12,7 +12,7 @@
 
 This chess engine was originally created as a console application in **python** however has now been transferred to use the **pygame** framework. This engines intended use now is to be a pygame application however the **original console application** can still be accessed if the user chooses.
 
-## prerequisites
+## Project Prerequisites
 
 To be able to run this project you may need to install two libraries onto your pc if you don't have these already. These being the pygame module and the keyboard module.
 \
