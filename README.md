@@ -52,3 +52,16 @@ Here is an example of the tutorial selection page and an example of a lesson:
 ![tutorial select](https://imgur.com/jDEHvUQ.png)
 ###
 ![example tutorial](https://imgur.com/eAAVFeV.png)
+
+## How to add tutorial sections
+
+adding to the tutorial section is currently very simple. 
+
+## Future ambitions
+
+In terms of the future of this project I plan on the following
+
+1. Adding a better AI to the program that can search to much deeper depths
+2. Expanding the tutorial module to allow for much more comprehensive teaching rather then simple text and gameplay
+3. Adding a hosted multiplayer feature (players can host lobbies on their devices that others can join)
+
