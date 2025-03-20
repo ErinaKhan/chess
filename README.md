@@ -12,6 +12,20 @@
 
 This chess engine was originally created as a console application in **python** however has now been transferred to use the **pygame** framework. This engines intended use now is to be a pygame application however the **original console application** can still be accessed if the user chooses.
 
+## prerequisites
+
+To be able to run this project you may need to install two libraries onto your pc if you don't have these already. These being the pygame module and the keyboard module.
+\
+\
+To install, navigate to your termal in your chosen IDE and type the following:
+###
+`pip3 install pygame`
+###
+then...
+###
+`pip3 install keyboard`
+###
+This should now run successfully. If it doesnt restart your IDE and try again. 
 ## How to access console version?
 To access the console application:
 
@@ -35,11 +49,6 @@ The console application **doesn't contain** any **tutorial section** or **settin
 > [!TIP]
 > To make FEN strings to load into the engine I would recommend using [this website](https://www.redhotpawn.com/chess/chess-fen-viewer.php) for creating custom boards and use [this](http://bernd.bplaced.net/fengenerator/fengenerator.html) for generating random boards. (these websites are not created by me)
 ###
-
-## Console application example (Loading and playing game)
-
-Example below uses [Bernd's Random FEN Generator](http://bernd.bplaced.net/fengenerator/fengenerator.html):
-
 ## Pygame example 
 ![Alt Text](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExejVtMTd5emtuODR0MDV5azUzZHFvYTJsdWIyN3FvcmozYzN4YjRqNyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/qdGhRLpWaQPRXpnHuV/giphy.gif)
 ###
@@ -53,7 +62,7 @@ Here is an example of the tutorial selection page and an example of a lesson:
 ###
 ![example tutorial](https://imgur.com/eAAVFeV.png)
 
-## How to add tutorial sections
+## How to add your own tutorial sections
 
 adding to the tutorial section is currently very simple. 
 ### 
@@ -67,11 +76,11 @@ How the file works
 
 * Each line of the text file is a seperate section of tutorial
 
-* Each section of tutorial should be split by the ':' character
+* Each field of tutorial should be split by the ':' character
 
-* These sections are the [Title of the section,Text to show user when clicked,FEN string that is loaded into the game when practicing what you've learned]
+* the fields are: `title of the section;Text to show user when clicked;FEN string that is loaded when practicing what you've learned;`
 
-* Example of a possible line --> 'Lesson ?? - XXXXX:BLAHBLAHBLAH:rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1:'
+* Example: `Lesson 18 - Test;This is a test;rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1;`
 ###
 Now you can simply add a new line satisfying these conditions to add a new section to the tutorial
 
