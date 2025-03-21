@@ -83,6 +83,12 @@ How the file works
 * Example: `Lesson 18 - Test:This is a test:rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1:`
 ###
 Now you can simply add a new line satisfying these conditions to add a new section to the tutorial
+\
+for example the sample text I placed above would generate the following UI in the game
+
+![example1](https://imgur.com/OUeTcOv.png)
+
+![example2](https://imgur.com/I1FrK3V.png)
 
 ## Future ambitions
 
