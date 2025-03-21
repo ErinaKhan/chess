@@ -76,11 +76,11 @@ How the file works
 
 * Each line of the text file is a seperate section of tutorial
 
-* Each field of tutorial should be split by the ':' character
+* Each field of tutorial should be split by the ':' character as well as a ':' at the end
 
-* the fields are: `title of the section;Text to show user when clicked;FEN string that is loaded when practicing what you've learned;`
+* the fields are: `title of the section:Text to show user when clicked:FEN string that is loaded when practicing what you've learned:`
 
-* Example: `Lesson 18 - Test;This is a test;rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1;`
+* Example: `Lesson 18 - Test:This is a test:rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1:`
 ###
 Now you can simply add a new line satisfying these conditions to add a new section to the tutorial
 
