@@ -17,7 +17,7 @@ This chess engine was originally created as a console application in **python** 
 To be able to run this project you may need to install two libraries onto your pc if you don't have these already. These being the pygame module and the keyboard module.
 \
 \
-To install, navigate to your termal in your chosen IDE and type the following:
+To install, navigate to your terminal in your chosen IDE (Visual Studio Code) and type the following:
 ###
 `pip3 install pygame`
 ###
