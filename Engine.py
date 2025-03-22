@@ -49,6 +49,10 @@ global blackRooks
 global blackQueens
 global blackKing
 
+#------------------------------------------------------------------------------------------------------------------------
+
+# colours "WHITE" and  "BLACK"
+
 global playerColour
 global enemyColour
 
@@ -610,8 +614,6 @@ def castle(chosenLegalMove,colour):
             updateBoard(int(math.pow(2,56)),int(math.pow(2,58)),colour,False,None)
             return [56,58],"KINGSIDE"
 
-
-
 def isPromoting(binary,chosenLegalMove):
     if ((chosenLegalMove >= 0 and chosenLegalMove <= 7) or (chosenLegalMove >= 56 and chosenLegalMove <= 63)) and getPieceTypeFromSquare(binary) == "PAWN":
         return True
@@ -833,7 +835,6 @@ def search(moves,colour,searchMoves=[]):
             return bestMove,extraInfo,newEvaluation
     else:
         return None,None,None
-
 
 def searchv2(depth,colour,searchMoves = []):
     resetData(searchMoves)

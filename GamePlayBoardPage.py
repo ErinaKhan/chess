@@ -120,8 +120,6 @@ White = (240,217,181), Black = (181,136,99) - lichess board'''
 exitButton = utils.Button(20,SCREEN_HEIGHT * 0.8,back_btn,0.25)
 helpButton = utils.Button(SCREEN_WIDTH * 0.95,10,help_btn,0.15)
 
-#pawn_rect.topleft = (BOARD_START_X,BOARD_START_Y + SQUARE_SIZE)
-
 allPieces = []
 timerMins = 0.1
 AIMoveDelayTimer = timer.Timer(int(timerMins * 60 * 1000))
@@ -136,13 +134,10 @@ def drawPiece(boardx,boardy,i,j):
     colour = str(Engine.getColour(squareBinary))
     piece = str(Engine.getPieceTypeFromSquare(squareBinary))
     
-    if colour+piece != "NONENONE":
+    if colour+piece != "NONENONE": # if not empty square
         new_piece = image_lookup[colour+piece]
         new_piece = pygame.transform.scale(new_piece, (100,100))
         pieceButton = utils.chessPiece(colour,currentSquareIndex,boardx,boardy,new_piece)
-        #new_piece = pygame.transform.scale(new_piece, (90,90))
-        #pygame.draw.rect(screen,(232,46,46),(boardx + PIECE_PLACEMENT,boardy + PIECE_PLACEMENT,PIECE_SIZE,PIECE_SIZE))
-        #screen.blit(new_piece,(boardx + PIECE_PLACEMENT,boardy + PIECE_PLACEMENT))
         return pieceButton
 
 def drawPieces():
@@ -197,16 +192,13 @@ def drawBoard(fen=""):
 
         if helpButton.drawButton(screen):
             # do help stuff
-            if text == "un paused":
-                text = "paused"
-                AIMoveDelayTimer.pause()
-            else:
-                text = "un paused"
-                AIMoveDelayTimer.unpause()
-            i = i + 1
+            import TutorialPage 
+            TutorialPage.Start()
 
+        # draws outer edge to the board
         pygame.draw.rect(screen,(107, 70, 44),(BOARD_START_X - OUTERBOARD_OFFSET,BOARD_START_Y - OUTERBOARD_OFFSET,(SQUARE_SIZE * 8) + (2 * OUTERBOARD_OFFSET),(SQUARE_SIZE * 8) + (2 * OUTERBOARD_OFFSET)),border_radius=10)
 
+        # if the piece selected is different to the current piece selected it will add the new squares to a list so they can be higlighted red later    
         if overlay != newOverlay:
             overlay = newOverlay
             overlaySquares = []
@@ -218,6 +210,9 @@ def drawBoard(fen=""):
                 boardy = BOARD_START_Y + (SQUARE_SIZE * y)
                 newSquare = utils.OverlaySquare(square,boardx,boardy,OVERLAY_SQUARE_COLOUR)
                 overlaySquares = overlaySquares + [newSquare]
+
+        #-------------------------------------------------------------------------------------------
+        # draws all of the squares in the board aswell as pieces
 
         for i in range(8):
 
@@ -235,9 +230,10 @@ def drawBoard(fen=""):
                         pygame.draw.rect(screen,(BLACK_SQUARE_COLOUR),(boardx,boardy,SQUARE_SIZE,SQUARE_SIZE))
                     else:
                         pygame.draw.rect(screen,(WHITE_SQUARE_COLOUR),(boardx,boardy,SQUARE_SIZE,SQUARE_SIZE))
+        #-------------------------------------------------------------------------------------------
 
         if not Engine.Checkmate:
-            if playerTurn:
+            if playerTurn: # runs the players turn
                 AITimer.pause()
                 for square in overlaySquares:
                     if square.drawButton(screen) and selectedPiece != None :
@@ -252,9 +248,9 @@ def drawBoard(fen=""):
                         allMoves = []
                         trackedMoves = settings.getMoveList()
                         AITimer.unpause()
-            else:
+            else: # runs the AIs turn
                 PlayerTimer.pause()
-                if AIMoveDelayTimer.timeRanOut:
+                if AIMoveDelayTimer.timeRanOut: # timer delay so the AI doesnt always move instantly
                     playerTurn = True
                     selectedPiece = None
                     newOverlay = []
@@ -274,15 +270,15 @@ def drawBoard(fen=""):
                     AIMoveDelayTimer.reset(int(timerMins * 60 * 1000))
                     PlayerTimer.unpause()
         else:
-            running = False
+            running = False # if its checkmate the game stops running
         
         for piece in allPieces:
-            if piece.drawButton(screen) and piece.colour == Engine.playerColour:
-                allMoves = Engine.filterMovesBySquare(piece.coordinates,piece.colour)
+            if piece.drawButton(screen) and piece.colour == Engine.playerColour: # if the player selects a piece of their colour
+                allMoves = Engine.filterMovesBySquare(piece.coordinates,piece.colour) # gets where they can move
                 selectedPiece = piece
                 newOverlay = []
                 for move in allMoves:
-                    newOverlay = newOverlay + [move[1]]
+                    newOverlay = newOverlay + [move[1]] # adds to new overlay
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -332,11 +328,6 @@ def drawMoveTracker(moves):
         
 def opponentTurn(colour):
     moves = Engine.generateAllMoves(colour,False)
-    #chosenMove,extraInfo,eval = Engine.search(moves,colour)
-    #chosenMove,extraInfo,newEvaluation = Engine.search(moves,colour,1,1)
-    #newEvaluation,chosenMove = Engine.searchv2(2,colour)
-    #print(Engine.search(moves,colour,1,1))
-    #chosenMove,extraInfo = Engine.searchWithDepth(2,colour,moves)
     chosenMove,extraInfo,newEvaluation = Engine.search(moves,colour)
     if len(moves) > 0:
         Engine.makeMove(int(math.pow(2,chosenMove[0])),int(math.pow(2,chosenMove[1])),colour,False,extraInfo)    
