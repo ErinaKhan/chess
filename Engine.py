@@ -193,7 +193,8 @@ def makeMove(square,chosenLegalMove,colour,isFake=False,extraInfo=None):
         blackPiecesData = [blackPawns, blackBishops, blackHorses, blackRooks, blackQueens, blackKing]
         currentBoardFullData = [whitePiecesData,blackPiecesData,castlingData]
         kingIsChecked = getCheckMoves(switchColours(colour))
-        signalGameUIEvents.addMoveToTracker(getPieceTypeFromSquare(chosenLegalMove),getColour(chosenLegalMove),isCapture,kingIsChecked,lastMove[0],lastMove[1])
+        if not settings.isConsoleApplication():
+            signalGameUIEvents.addMoveToTracker(getPieceTypeFromSquare(chosenLegalMove),getColour(chosenLegalMove),isCapture,kingIsChecked,lastMove[0],lastMove[1])
 
 def updateBoard(square,chosenLegalMove,colour,isFake,extraInfo):
     global bitWordBoard
@@ -333,7 +334,7 @@ def generateAllMoves(turn,isResponses,movesToSearch=[]):
             currentSquareIndex = (rank * 8) + file
             squareBinary = int(math.pow(2,currentSquareIndex))
 
-            if getColour(squareBinary) == turn: # need to change
+            if getColour(squareBinary) == turn: 
 
                 pieceType = getPieceTypeFromSquare(squareBinary)
 
@@ -455,7 +456,6 @@ def generatePawnMoves(startSquare,colour):
         print("ERROR")
 
     return moves
-
 
 def generateHorseMoves(startSquare,colour):
     moves = []

@@ -18,7 +18,7 @@ boardWidth = 8
 boardHeight = 8
 
 # used for the sizing of the ui on screen measured in characters
-pixelWidth = 5
+pixelWidth = 3
 pixelHeight = 1
 
 def padding(): # to be wrapped around the pieces in the squares so the pieces are perfectly centred on the x axis
@@ -65,7 +65,7 @@ def createOverlay(moves):
         overlay = overlay + [move[1]]
     return overlay
 
-def drawBoard(overlay): # need to have an overlay variable with a list of moves to draw X's on
+def drawBoard(overlay = None): # need to have an overlay variable with a list of moves to draw X's on
     line("top")
     for rank in range(boardHeight):
         line(rank)

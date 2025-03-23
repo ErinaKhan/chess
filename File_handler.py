@@ -133,8 +133,6 @@ def getFEN():
     return fen
 
 def FENBoard(fenString):
-    
-    # https://en.wikipedia.org/wiki/Forsyth–Edwards_Notation for more info
     allInfo = fenString.split(' ')
     boardData = allInfo[0].split("/")
     whosTurn = allInfo[1]
