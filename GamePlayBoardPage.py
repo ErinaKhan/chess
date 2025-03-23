@@ -232,7 +232,7 @@ def drawBoard(fen=""):
                         pygame.draw.rect(screen,(WHITE_SQUARE_COLOUR),(boardx,boardy,SQUARE_SIZE,SQUARE_SIZE))
         #-------------------------------------------------------------------------------------------
 
-        if not Engine.Checkmate:
+        if not Engine.Checkmate and not Engine.Stalemate:
             if playerTurn: # runs the players turn
                 AITimer.pause()
                 for square in overlaySquares:
@@ -265,6 +265,8 @@ def drawBoard(fen=""):
                                 y = BOARD_START_Y + (SQUARE_SIZE * y)
                                 allPieces[allPieces.index(piece)].move(screen,x,y,chosenMove[1])
                                 disposeOfPiece(Engine.playerColour,chosenMove[1])
+                    else:
+                        running = False
 
                     trackedMoves = settings.getMoveList()
                     AIMoveDelayTimer.reset(int(timerMins * 60 * 1000))
@@ -300,12 +302,13 @@ def drawBoard(fen=""):
             print(allEvents)
             settings.resetEvents()
 
-        PlayerTimer.drawTimerUI(screen,300,800,100,200)
-        AITimer.drawTimerUI(screen,300,100,100,200)
+
+        PlayerTimer.drawTimerUI(screen,SCREEN_WIDTH * 0.2,SCREEN_HEIGHT * 0.8,60,100)
+        AITimer.drawTimerUI(screen,SCREEN_WIDTH * 0.2,SCREEN_HEIGHT * 0.1,60,100)
         drawMoveTracker(trackedMoves)
         pygame.display.update()
 
-    if Engine.Checkmate:
+    if Engine.Checkmate or Engine.Stalemate:
         winLossScreen(playerTurn)
 
 def drawMoveTracker(moves):
@@ -355,7 +358,6 @@ def setup(fen=""):
 
 def winLossScreen(turn):
     running = True
-    AIMoveDelayTimer.pause()
 
     while running:
         size = (SQUARE_SIZE * 6) + (2*OUTERBOARD_OFFSET)
@@ -367,10 +369,13 @@ def winLossScreen(turn):
         locationY = (SCREEN_HEIGHT - size) // 2
         checkmateScreen = pygame.draw.rect(screen,(255,255,255),(locationX,locationY,size,size),border_radius=10)
         font = pygame.font.Font(None, 120)
-        if turn:
-            text_surface = font.render("You Win", True, (0,0,0))
-        else: 
-            text_surface = font.render("You Lose", True, (0,0,0))
+        if Engine.Stalemate:
+            text_surface = font.render("Stalemate", True, (0,0,0))
+        else:
+            if turn:
+                text_surface = font.render("You Win", True, (0,0,0))
+            else: 
+                text_surface = font.render("You Lose", True, (0,0,0))
 
         text_rect = text_surface.get_rect(center=(checkmateScreen.center[0],checkmateScreen.top + 60))
         screen.blit(text_surface, text_rect)

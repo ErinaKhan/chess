@@ -379,9 +379,10 @@ def generateAllMoves(turn,isResponses,movesToSearch=[]):
                 if movesToSearch == []:
                     global Stalemate
                     Stalemate = True
-                    UI.clear()
-                    UI.stalemateUI()
-                    UI.sleep(10)
+                    if settings.isConsoleApplication():
+                        UI.clear()
+                        UI.stalemateUI()
+                        UI.sleep(10)
 
 
         return legalMoves
