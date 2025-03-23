@@ -11,7 +11,7 @@ SCREEN_WIDTH = info.current_w
 SCREEN_HEIGHT = info.current_h
 
 screen = pygame.display.set_mode((SCREEN_WIDTH - 10,SCREEN_HEIGHT- 50),pygame.RESIZABLE)
-pygame.display.set_caption('DEMO')
+pygame.display.set_caption('Learn')
 
 INNER_SCREEN_WIDTH = SCREEN_WIDTH * 0.8
 TUTORIAL_SECTION_WIDTH = INNER_SCREEN_WIDTH * 0.7

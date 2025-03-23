@@ -1,7 +1,4 @@
 import pygame
-import Engine
-import File_handler as FileHandler
-import textwrap
 import os
 
 #pygame intialization
@@ -11,7 +8,7 @@ pygame.init()
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 info = pygame.display.Info() # get users devices screen dimensions
 
-SCREEN_WIDTH = info.current_w 
+SCREEN_WIDTH = info.current_w # gets width and height of users devices screen
 SCREEN_HEIGHT = info.current_h
 
 screen = pygame.display.set_mode((SCREEN_WIDTH - 10,SCREEN_HEIGHT- 50),pygame.RESIZABLE) # fullscreens the display

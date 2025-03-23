@@ -22,7 +22,7 @@ SCREEN_WIDTH = info.current_w
 SCREEN_HEIGHT = info.current_h
 
 screen = pygame.display.set_mode((SCREEN_WIDTH - 10,SCREEN_HEIGHT- 50),pygame.RESIZABLE)
-pygame.display.set_caption('DEMO')
+pygame.display.set_caption('Play')
 
 SQUARE_SIZE = 100
 OUTERBOARD_OFFSET = 15
@@ -121,12 +121,6 @@ exitButton = utils.Button(20,SCREEN_HEIGHT * 0.8,back_btn,0.25)
 helpButton = utils.Button(SCREEN_WIDTH * 0.95,10,help_btn,0.15)
 
 allPieces = []
-timerMins = 0.1
-AIMoveDelayTimer = timer.Timer(int(timerMins * 60 * 1000))
-
-gameTimerMins = 4
-AITimer = timer.Timer(int(gameTimerMins * 60 * 1000))
-PlayerTimer = timer.Timer(int(gameTimerMins * 60 * 1000))
 
 def drawPiece(boardx,boardy,i,j):
     currentSquareIndex = (i * 8) + j
@@ -151,8 +145,6 @@ def drawPieces():
                 allPieces.append(piece)
 
 
-AIMoveDelayTimer.start()
-
 def drawBoard(fen=""):
 
     settings = setup(fen)
@@ -170,6 +162,14 @@ def drawBoard(fen=""):
     text = ""
     drawPieces()
 
+    timerMins = 0.1
+    AIMoveDelayTimer = timer.Timer(int(timerMins * 60 * 1000))
+
+    gameTimerMins = 4
+    AITimer = timer.Timer(int(gameTimerMins * 60 * 1000))
+    PlayerTimer = timer.Timer(int(gameTimerMins * 60 * 1000))
+
+    AIMoveDelayTimer.start()   
     PlayerTimer.start()
     AITimer.start()
 
@@ -322,7 +322,7 @@ def drawMoveTracker(moves):
             fullMoveNum = (i + 1) // 2
     
     if len(moves) % 2 != 0:
-        surface = font.render(str(fullMoveNum) + ". " + moves[-1], True, (0,0,0))
+        surface = font.render(str(fullMoveNum + 1) + ". " + moves[-1], True, (0,0,0))
         rect = surface.get_rect(center=(trackerRect.midtop[0],(trackerRect.midtop[1]) + fontSize + (fullMoveNum * fontSize)))
         screen.blit(surface, rect)
         
