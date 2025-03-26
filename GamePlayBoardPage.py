@@ -162,7 +162,7 @@ def drawBoard(fen=""):
     text = ""
     drawPieces()
 
-    timerMins = 0.1
+    timerMins = 0.05
     AIMoveDelayTimer = timer.Timer(int(timerMins * 60 * 1000))
 
     gameTimerMins = 4
@@ -182,9 +182,6 @@ def drawBoard(fen=""):
 
         if AITimer.active:
             AITimer.update()
-
-        if AIMoveDelayTimer.active:
-            AIMoveDelayTimer.update()
 
         if exitButton.drawButton(screen):
             # exit page
@@ -235,6 +232,7 @@ def drawBoard(fen=""):
         if not Engine.Checkmate and not Engine.Stalemate:
             if playerTurn: # runs the players turn
                 AITimer.pause()
+                AIMoveDelayTimer.pause()
                 for square in overlaySquares:
                     if square.drawButton(screen) and selectedPiece != None :
                         start = int(math.pow(2,selectedPiece.coordinates))
@@ -250,6 +248,10 @@ def drawBoard(fen=""):
                         AITimer.unpause()
             else: # runs the AIs turn
                 PlayerTimer.pause()
+                AIMoveDelayTimer.unpause()
+                if AIMoveDelayTimer.active:
+                    AIMoveDelayTimer.update()
+
                 if AIMoveDelayTimer.timeRanOut: # timer delay so the AI doesnt always move instantly
                     playerTurn = True
                     selectedPiece = None
